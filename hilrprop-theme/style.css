@@ -1,0 +1,336 @@
+/*
+ Theme Name:   HILR Proposal App
+ Theme URI:    http://hilr.harvard.edu/
+ Description:  A simple theme to support styling forms and views
+ Author:       Frederick Hewett
+ Author URI:   https://twitter.com/fred02138
+ Template:     twentyseventeen
+ Version:      1.0.0
+ License:      GNU General Public License v2 or later
+ License URI:  http://www.gnu.org/licenses/gpl-2.0.html
+ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, accessibility-ready
+ Text Domain:  hilr_proposal_app
+*/
+
+h2.gsection_title {
+	color: blue;
+	font-weight: bold;
+}
+
+/*these rules allow for a wider display */
+@media screen and (min-width: 48em) {
+	.wrap, #primary {
+		max-width: 1250px;
+	}
+}
+.wrap {
+	max-width: 90%;
+}
+#primary {
+	max-width: 1250px !important;
+}
+div.gform_wrapper {
+	max-width: 80%;
+	margin: auto;
+}
+
+.wrap>header {  /* excess whitespace on homepage */
+	display: none
+}
+@media screen and (min-width: 30em) {
+.page-one-column .panel-content .wrap {
+    max-width: 1250px;
+	}
+}
+@media screen and (min-width: 48em) {
+	.panel-content .wrap {
+    padding-bottom: 4.5em;
+    padding-top: 2em;
+	}
+}
+	
+/* rule to remove excess whitespace on inbox page at top */
+@media screen and (min-width: 48em) {
+.page.page-one-column .entry-header, .twentyseventeen-front-page.page-one-column .entry-header, 
+.archive.page-one-column:not(.has-sidebar) .page-header {
+    /* margin-bottom: 4em; */
+}}
+/* more whitespace reduction -- banner/branding */
+@media screen and (min-width: 30em) {
+.site-branding {
+    padding: 1em 0;
+}}
+/* rule to remove excess whitespace on inbox entry page */
+@media screen and (min-width: 48em) {
+.site-content {
+    padding: 0 0 0;
+}}
+/* reduce vertical padding on main nav menu */
+@media screen and (min-width: 48em) {
+.main-navigation a {
+    padding: 0 1.25em;
+}
+}
+
+/* center the nav menu */
+.navigation-top>.wrap {
+	text-align: center;
+}
+#site-navigation {
+	display: inline-block;
+}
+/* more styles for top nav */
+#top-menu .menu-item.current-menu-item > a {
+	color: white;
+}
+#top-menu .menu-item.current-menu-item {
+	color: white;
+	background-color: #222;
+	padding: 12px 0;
+	margin-bottom: 0;
+}
+.navigation-top > .wrap {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+@media screen and (min-width: 48em) {
+.page.page-one-column .entry-header, .twentyseventeen-front-page.page-one-column .entry-header, .archive.page-one-column:not(.has-sidebar) .page-header {
+    margin-bottom: 0;
+}}
+
+/* SGL form - lay out horiz */
+.sgl-email {
+	float: left;
+}
+.sgl-phone {
+	float: left;
+}
+
+/* discussion header */
+.gv-table-single-container .gravityflow-dicussion-item-name {
+	font-size: 0.9em;
+	font-weight: 700;
+	padding-right: 18px;
+}
+.gv-table-single-container .gravityflow-dicussion-item-date {
+	font-size: 0.9em;
+	font-weight: 600;
+	color: gray;
+}
+
+.hilr-discussion span {
+	font-size: 0.9em;
+	font-weight: 700;
+}
+
+/* apportion the table cells of the list of books in the course proposal form */
+.hilr-booklist td[class*="_cell1"] { /* author */
+	width: 25%;
+}
+.hilr-booklist td[class*="_cell2"] { /* title */
+	width: 40%;
+}
+.hilr-booklist td[class*="_cell3"] { /* publisher */
+	width: 15%;
+}
+.hilr-booklist td[class*="_cell4"] { /* publisher */
+	width: 15%;
+}
+
+/* Keep the booklist column headers close to their inputs */
+.hilr-booklist thead th {
+	vertical-align: bottom !important;
+}
+
+/* make the three choices for schedule times sit left-to-right rather than stacked */
+.hilr-sched-1, .hilr-sched-2 {
+	float:left;
+	width: 32%;
+	padding-bottom: 20px;
+}
+
+.gform_wrapper ul li.gfield.hilr-sched-1 {
+	clear: none !important
+}
+
+.gform_wrapper ul li.gfield.hilr-sched-2 {
+	clear: none !important
+}
+
+.gform_wrapper ul li.gfield.hilr-sched-3 {
+	clear: none !important
+}
+
+.hilr-sched-3 {
+	width: 32%;
+	float: left;
+}
+
+/* hide most of the buttons on the rich text editor toolbar */
+.hilr-hide-rte-tools .mce-btn {
+	display: none !important;
+}
+.hilr-hide-rte-tools .mce-btn[aria-label="Italic"] {
+	display: inline-block !important;
+}
+.hilr-hide-toggle .mce-btn[aria-label="Toolbar Toggle"] {
+	display: none !important;
+}
+
+/* make the SGL info fields lay out horizontally */
+
+.sgl-email, .sgl-phone {
+	float: left !important;
+}
+.gform_wrapper ul li.gfield.sgl-email {
+    clear: none !important;
+}
+.gform_wrapper ul li.gfield.sgl-phone {
+    clear: none !important;
+}
+.gform_wrapper ul li.gfield.sgl-prev {
+    clear: none !important;
+}
+.sgl-prev select {
+	height: 36px;
+}
+.sgl-email input {
+	width: 100% !important;
+}
+.sgl-phone input {
+	width: 100% !important;
+}
+.sgl-prev input {
+	width: 10% !important;
+}
+.sgl-prev .gfield_description {
+	display: inline
+}
+
+/* make the edit link in a Gravity View display stand out*/
+.gv-field-2-edit_link td a {
+	color: blue;
+	font-weight: bold;
+}
+
+/* fix the table cell vertical alignment on the inbox page */
+.gravityflow-inbox tbody tr {
+	vertical-align: bottom;
+}
+
+.hilr-view-course-title {
+	font-size: 1.5em;
+}
+
+/* style the injected textarea and its submit button on the single entry view page */
+#hilr-comment-input {
+	height: 180px;
+	width: 60%;
+	margin: 0 auto 10px auto;
+}
+.hilr-add-comment-button {
+	float: right;
+	margin-top: 8px;
+	margin-left: 8px;
+}
+.hilr-discussion-scroller {
+	max-height: 350px;
+	overflow-y: auto;
+	border: solid 1px #ddd;
+}
+
+/* style the "Save and Continue" link on the form to look like the Submit button */
+#gform_save_2_link {
+	padding: 11px;
+	color: white;
+	font-weight: bold;
+	background-color: black;
+}
+
+/* make visited links green in the proposal listings */
+.gv-table-multiple-container a:visited {
+	color: #4C4;
+}
+/* style for injected reset button on main form */
+#hilr_reset_btn {
+	margin-left: 30px;
+}
+
+.hilr-catview-title {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+.hilr-catview-sglname {
+	clear: both;
+	font-weight: 600;
+}
+.hilr-catview-course-number {
+	float: left;
+	margin-right: 15px !important;
+}
+.site-branding {
+	background-image: url(http://ccsubmit.com/wp-content/uploads/2018/04/banner-image.jpg);
+	background-repeat: no-repeat;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	height: 100px;
+}
+/* goto workflow link on view pages */
+#goto-workflow {
+	color: blue;
+	text-decoration: underline;
+	font-weight: 100;
+}
+/* hide the time slot in the At a Glance view */
+.hilr-glance-slot, .hilr-glance-duration {
+	display: none;
+}
+.hilr-glanceview-header {
+	background-color: black;
+	color: white;
+	font-weight: 400;
+	padding: 5px;
+	text-transform: uppercase;
+}
+.hilr-glance-full {}
+.hilr-glance-first {
+	background-color: #ddd;
+}
+.hilr-glance-second { 
+	background-color: #999;
+}
+.hilr-admin-btn {
+	margin: 5px 0;
+}
+.hilr-admin-number {
+	width: 80px !important;
+	display: inline !important;
+}
+
+.hilr-slot-save-btn {
+	background-color: #7a7;
+	padding: 3px;
+	margin:  0 6px;
+}
+.hilr-slot-cancel-btn {
+	background-color: #b66;
+	padding: 3px 8px;
+	margin: 0 6px;
+}
+.hilr-scheduling-entryid {
+	display:none; /* hidden column in scheduling table */
+}
+/* this is for in-place editing on the scheduling view */
+.gv-field-2-55 {
+	min-width: 250px;
+}
+.gv-field-2-55 select {
+	height: 22px;
+}
+
+
+
+
+
+

@@ -16,7 +16,7 @@
 <!-- 7. WordPress will then import each of the posts, pages, comments, categories, etc. -->
 <!--    contained in this file into your site. -->
 
-<!-- generator="WordPress/4.9.5" created="2018-05-08 18:55" -->
+<!-- generator="WordPress/4.9.5" created="2018-05-08 20:34" -->
 <rss version="2.0"
 	xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
 	xmlns:content="http://purl.org/rss/1.0/modules/content/"
@@ -29,7 +29,7 @@
 	<title></title>
 	<link>http://ccsubmit.com</link>
 	<description></description>
-	<pubDate>Tue, 08 May 2018 18:55:50 +0000</pubDate>
+	<pubDate>Tue, 08 May 2018 20:34:33 +0000</pubDate>
 	<language>en-US</language>
 	<wp:wxr_version>1.2</wp:wxr_version>
 	<wp:base_site_url>http://ccsubmit.com</wp:base_site_url>
@@ -369,12 +369,13 @@ As a new WordPress user, you should go to <a href="http://ccsubmit.com//wp-admin
 		<dc:creator><![CDATA[hilradmin]]></dc:creator>
 		<guid isPermaLink="false">http://ccsubmit.com/?page_id=373</guid>
 		<description></description>
-		<content:encoded><![CDATA[<script type="text/javascript">HILRCC.setupAdminPage();</script>
-<a href="http://ccsubmit.com/index.php/adminstrative/weekly-update/">Weekly View</a>
+		<content:encoded><![CDATA[<a href="http://ccsubmit.com/index.php/adminstrative/weekly-update/">Weekly View</a>
 <a href="http://ccsubmit.com/index.php/catalog/">Catalog View</a>
-<h3>Course numbering</h3>
-<div><button id="hilr-clear-numbers-btn" class="hilr-admin-btn">Clear course numbers</button></div>
-<div><button id="hilr-assign-numbers-btn" class="hilr-admin-btn">Assign course numbers</button> starting with <input id="hilr-start-number" class="hilr-admin-number" type="text" value="100" /></div>]]></content:encoded>
+<a href="http://ccsubmit.com/index.php/adminstrative/at-a-glance/">At a Glance View</a>
+<a href="http://ccsubmit.com/index.php/adminstrative/scheduling/">Scheduling</a>
+<a href="http://ccsubmit.com/index.php/adminstrative/workflow-status/">Workflow Status View</a>
+<a href="http://ccsubmit.com/index.php/adminstrative/course-numbering/">Course Numbering</a>
+]]></content:encoded>
 		<excerpt:encoded><![CDATA[]]></excerpt:encoded>
 		<wp:post_id>373</wp:post_id>
 		<wp:post_date><![CDATA[2018-04-24 13:43:25]]></wp:post_date>
@@ -526,6 +527,34 @@ As a new WordPress user, you should go to <a href="http://ccsubmit.com//wp-admin
 		<wp:comment_status><![CDATA[closed]]></wp:comment_status>
 		<wp:ping_status><![CDATA[closed]]></wp:ping_status>
 		<wp:post_name><![CDATA[at-a-glance]]></wp:post_name>
+		<wp:status><![CDATA[publish]]></wp:status>
+		<wp:post_parent>373</wp:post_parent>
+		<wp:menu_order>0</wp:menu_order>
+		<wp:post_type><![CDATA[page]]></wp:post_type>
+		<wp:post_password><![CDATA[]]></wp:post_password>
+		<wp:is_sticky>0</wp:is_sticky>
+		<wp:postmeta>
+			<wp:meta_key><![CDATA[_edit_last]]></wp:meta_key>
+			<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>
+	</item>
+	<item>
+		<title>Course Numbering</title>
+		<link>http://ccsubmit.com/index.php/adminstrative/course-numbering/</link>
+		<pubDate>Tue, 08 May 2018 20:18:44 +0000</pubDate>
+		<dc:creator><![CDATA[hilradmin]]></dc:creator>
+		<guid isPermaLink="false">http://ccsubmit.com/?page_id=463</guid>
+		<description></description>
+		<content:encoded><![CDATA[<script type="text/javascript">HILRCC.setupAdminPage();</script>
+<div><button id="hilr-clear-numbers-btn" class="hilr-admin-btn">Clear course numbers</button></div>
+<div><button id="hilr-assign-numbers-btn" class="hilr-admin-btn">Assign course numbers</button> starting with <input id="hilr-start-number" class="hilr-admin-number" type="text" value="100" /></div>]]></content:encoded>
+		<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+		<wp:post_id>463</wp:post_id>
+		<wp:post_date><![CDATA[2018-05-08 16:18:44]]></wp:post_date>
+		<wp:post_date_gmt><![CDATA[2018-05-08 20:18:44]]></wp:post_date_gmt>
+		<wp:comment_status><![CDATA[closed]]></wp:comment_status>
+		<wp:ping_status><![CDATA[closed]]></wp:ping_status>
+		<wp:post_name><![CDATA[course-numbering]]></wp:post_name>
 		<wp:status><![CDATA[publish]]></wp:status>
 		<wp:post_parent>373</wp:post_parent>
 		<wp:menu_order>0</wp:menu_order>

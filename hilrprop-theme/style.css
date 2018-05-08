@@ -329,6 +329,18 @@ div.gform_wrapper {
 	height: 22px;
 }
 
+/* printing rules */
+@media print {
+
+	.gv-table-container tfoot {
+		display: none;
+	}
+	.gv-table-container table tbody td {
+		padding: 0 !important;
+		font-size: 0.8em;
+	}
+
+}
 
 
 

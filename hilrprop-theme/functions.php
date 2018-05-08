@@ -30,7 +30,18 @@ define('HILRCC_FIELD_ID_READINGS_STRING', '64');
 define('HILRCC_FIELD_ID_SUPPRESS_NOTIFY', '66');
 define('HILRCC_FIELD_ID_TIME_PREFERENCE', '67');
 
+define('HILRCC_STEP_ID_INITIALIZATION', '1');
+define('HILRCC_STEP_ID_REVIEW_NOTIFICATION', '3');
+define('HILRCC_STEP_ID_TABLING', '6');
+define('HILRCC_STEP_ID_NOTIFY_CHANGES', '17');
 define('HILRCC_STEP_ID_REV_BY_COMM', '13');
+define('HILRCC_STEP_ID_MOD_BY_SPONSOR', '2');
+define('HILRCC_STEP_ID_POST_REV_MOD', '14');
+define('HILRCC_STEP_ID_POST_REV_ROUT', '15');
+define('HILRCC_STEP_ID_VOTING', '8');
+define('HILRCC_STEP_ID_FINAL_SPONSOR_REVIEW', '16');
+define('HILRCC_STEP_ID_PRE_PUB', '10');
+define('HILRCC_STEP_ID_PUB', '11');
 
 define('HILRCC_LABEL_AUTHOR', 'Author (first last)');
 define('HILRCC_LABEL_TITLE', 'Title');
@@ -39,6 +50,19 @@ define('HILRCC_LABEL_EDITION', 'Edition and Date');
 define('HILRCC_LABEL_ONLY_ED', 'Only this edition (Y/N)');
 define('HILRCC_TAG_BOLD_OPEN', '<strong>');
 define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
+
+$workflow_button_labels_map = array(
+	HILRCC_STEP_ID_INITIALIZATION => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
+	HILRCC_STEP_ID_TABLING => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
+	HILRCC_STEP_ID_REV_BY_COMM => array("APPROVE"=>"Advance", "REJECT"=>"Needs Discussion", "REVERT"=>"Edit"),
+	HILRCC_STEP_ID_MOD_BY_SPONSOR => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
+	HILRCC_STEP_ID_POST_REV_MOD => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
+	HILRCC_STEP_ID_POST_REV_ROUT => array("APPROVE"=>"Approve", "REJECT"=>"Redject", "REVERT"=>"Revert"),
+	HILRCC_STEP_ID_VOTING => array("APPROVE"=>"Approve", "REJECT"=>"Redject", "REVERT"=>"Revert"),
+	HILRCC_STEP_ID_FINAL_SPONSOR_REVIEW => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
+	HILRCC_STEP_ID_PRE_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
+	HILRCC_STEP_ID_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save")
+);
 
 function HILRCC_enqueue_styles()
 {
@@ -509,32 +533,51 @@ function HILRCC_validate_phone($numberString)
 add_filter('gravityflow_approve_label_workflow_detail', 'filter_approve_label_workflow_detail', 10, 2);
 function filter_approve_label_workflow_detail($approve_label, $step)
 {
-    if ($step->get_name() == "Review by Committee") {
-        return 'Advance';
-    } else {
-        return "Approve";
-    }
+	global $workflow_button_labels_map;
+
+	return $workflow_button_labels_map[strval($step->get_id())]["APPROVE"];
 }
 
 add_filter('gravityflow_revert_label_workflow_detail', 'filter_revert_label_workflow_detail', 10, 2);
 function filter_revert_label_workflow_detail($approve_label, $step)
 {
-    if ($step->get_name() == "Review by Committee") {
-        return "Edit";
-    } else {
-        return "Revert";
-    }
+	global $workflow_button_labels_map;
+
+	return $workflow_button_labels_map[strval($step->get_id())]["REVERT"];
 }
 
 add_filter('gravityflow_reject_label_workflow_detail', 'filter_reject_label_workflow_detail', 10, 2);
 function filter_reject_label_workflow_detail($reject_label, $step)
 {
-    if ($step->get_name() == "Review by Committee") {
-        return "Needs discussion";
-    } else {
-        return "Reject";
-    }
+	global $workflow_button_labels_map;
+
+	return $workflow_button_labels_map[strval($step->get_id())]["REJECT"];
 }
+
+add_filter( 'gravityflow_update_button_text_user_input', 'filter_submit_label_workflow_detail' );
+function filter_submit_label_workflow_detail( $text ) {
+	global $workflow_button_labels_map;
+	
+	$entry_id = get_query_string_param("lid");
+	if (!empty($entry_id)) {
+		$entry = GFAPI::get_entry( $entry_id );
+		$flow_api  = new Gravity_Flow_API(HILRCC_PROPOSAL_FORM_ID);
+		$step = $flow_api->get_current_step($entry);
+	
+		return $workflow_button_labels_map[strval($step->get_id())]["SUBMIT"];
+	}
+	else {
+		return "Submit";
+	}
+
+}
+
+function get_query_string_param($param) {
+	parse_str($_SERVER['QUERY_STRING'], $output);
+	return $output[$param];
+}
+
+
 
 /* login page customization */
 function my_login_logo()

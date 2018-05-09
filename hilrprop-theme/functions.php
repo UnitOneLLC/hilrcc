@@ -11,6 +11,7 @@ define('HILRCC_FIELD_ID_DURATION', '3');
 define('HILRCC_FIELD_ID_BOOKS', '14');
 define('HILRCC_FIELD_ID_SGL1_BIO', '18');
 define('HILRCC_FIELD_ID_SGL2_BIO', '19');
+define('HILRCC_FIELD_ID_CLASS_SIZE', '27');
 define('HILRCC_FIELD_ID_DISCUSSION', '36');
 define('HILRCC_FIELD_ID_STATUS', '37');
 define('HILRCC_FIELD_ID_CHOICE_1', '38');
@@ -26,9 +27,12 @@ define('HILRCC_FIELD_ID_SGL1_FIRST', '56.3');
 define('HILRCC_FIELD_ID_SGL1_LAST', '56.6');
 define('HILRCC_FIELD_ID_SGL2_FIRST', '57.3');
 define('HILRCC_FIELD_ID_SGL2_LAST', '57.6');
+define('HILRCC_FIELD_ID_WORKLOAD', '58');
+define('HILRCC_FIELD_ID_WEBSITE', '60.1');
 define('HILRCC_FIELD_ID_READINGS_STRING', '64');
 define('HILRCC_FIELD_ID_SUPPRESS_NOTIFY', '66');
 define('HILRCC_FIELD_ID_TIME_PREFERENCE', '67');
+define('HILRCC_FIELD_ID_COURSE_INFO_STRING', '68');
 
 define('HILRCC_STEP_ID_INITIALIZATION', '1');
 define('HILRCC_STEP_ID_REVIEW_NOTIFICATION', '3');
@@ -54,7 +58,7 @@ define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
 $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_INITIALIZATION => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_TABLING => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
-	HILRCC_STEP_ID_REV_BY_COMM => array("APPROVE"=>"Advance", "REJECT"=>"Needs Discussion", "REVERT"=>"Edit"),
+	HILRCC_STEP_ID_REV_BY_COMM => array("APPROVE"=>"Ready to Vote", "REJECT"=>"Needs Discussion", "REVERT"=>"Edit"),
 	HILRCC_STEP_ID_MOD_BY_SPONSOR => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_POST_REV_MOD => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_POST_REV_ROUT => array("APPROVE"=>"Approve", "REJECT"=>"Redject", "REVERT"=>"Revert"),
@@ -770,6 +774,7 @@ function HILRCC_update_automatic_fields($entry_id)
     HILRCC_update_readings($entry_id);
     HILRCC_auto_bold_sgl_names($entry_id);
     HILRCC_update_time_summary($entry_id);
+    HILRCC_update_workload_string($entry_id);
 }
 /* update the Readings string for the catalog based on the Books field */
 
@@ -852,6 +857,38 @@ function HILRCC_update_time_summary($entry_id)
     	}
     }
     GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_TIME_PREFERENCE, $val);
+}
+
+function HILRCC_update_workload_string($entry_id)
+{
+    $entry = GFAPI::get_entry($entry_id);
+	$workload = rgar($entry, HILRCC_FIELD_ID_WORKLOAD);
+	$website = rgar($entry, HILRCC_FIELD_ID_WEBSITE);
+	$limit = HILRCC_get_class_limit($entry);
+	if (!empty($website)) {
+		$website .= ". ";
+	}
+	$val = "";
+	if (!empty($workload) and ($workload != '0') and (intval($workload) > 0)) {
+		$n = intval($workload);
+		$f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+		if ($n < 10) {
+			$workload = $f->format($n);
+		}	
+	
+	    $val = "Estimated amount of work outside class is $workload hours per week. ";
+	}
+    $val .= $website;
+    $val .= "Class size is limited to " . $limit . ".";
+    
+    GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_COURSE_INFO_STRING, $val);
+}
+
+function HILRCC_get_class_limit($entry)
+{
+	echo("class size=");
+	var_dump(rgar($entry,HILRCC_FIELD_ID_CLASS_SIZE));
+	return '20';
 }
 
 ?>

@@ -332,7 +332,7 @@ div.gform_wrapper {
 /* printing rules */
 @media print {
 
-	.gv-table-container tfoot {
+	.gv-table-container tfoot, .entry-title, #colophon {
 		display: none;
 	}
 	.gv-table-container table tbody td {

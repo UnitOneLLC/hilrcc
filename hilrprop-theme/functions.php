@@ -650,6 +650,9 @@ function is_entry_assigned_current_user($entry)
 	$user_id = $user->ID;
 	$current_step = $entry['workflow_step'];
 	$step = $flow_api->get_step($current_step, $entry);
+	if (empty($step)) {
+		return false;
+	}
 
 	$assignees = $step->get_assignees();
 	foreach ($assignees as $ass) {
@@ -864,7 +867,8 @@ function HILRCC_update_workload_string($entry_id)
     $entry = GFAPI::get_entry($entry_id);
 	$workload = rgar($entry, HILRCC_FIELD_ID_WORKLOAD);
 	$website = rgar($entry, HILRCC_FIELD_ID_WEBSITE);
-	$limit = HILRCC_get_class_limit($entry);
+	$limit = rgar($entry,HILRCC_FIELD_ID_CLASS_SIZE);
+	
 	if (!empty($website)) {
 		$website .= ". ";
 	}
@@ -875,6 +879,7 @@ function HILRCC_update_workload_string($entry_id)
 		if ($n < 10) {
 			$workload = $f->format($n);
 		}	
+
 	
 	    $val = "Estimated amount of work outside class is $workload hours per week. ";
 	}
@@ -882,13 +887,6 @@ function HILRCC_update_workload_string($entry_id)
     $val .= "Class size is limited to " . $limit . ".";
     
     GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_COURSE_INFO_STRING, $val);
-}
-
-function HILRCC_get_class_limit($entry)
-{
-	echo("class size=");
-	var_dump(rgar($entry,HILRCC_FIELD_ID_CLASS_SIZE));
-	return '20';
 }
 
 ?>

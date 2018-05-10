@@ -328,6 +328,18 @@ div.gform_wrapper {
 .gv-field-2-55 select {
 	height: 22px;
 }
+/* let the 'either 1st or 2nd half' choice be auto-width */
+#label_2_3_4 {
+	display: inline;
+}
+/* prevent truncating display of the bottom of radio buttons in the main form */
+[class*=gchoice_2_] input {
+    margin-top: -1px !important;
+}
+/* suppress date created column on workflow status page (?) */
+.column-date_created { 	
+	display:none;
+}
 
 /* printing rules */
 @media print {

@@ -1,4 +1,4 @@
-/* 
+/*
  * hilrprop.js
  * Copyright (c) 2018 HILR
  *
@@ -8,7 +8,7 @@ var HILRCC = {
 	/* the string table is set up in functions.php -- see HILRCC_enqueue_styles */
 	stringTable: HILRCC_stringTable,
 
-	/* Custom CSS classes on certain inputs encode the instructions for 
+	/* Custom CSS classes on certain inputs encode the instructions for
 	 * rearranging the DOM afer load.
 	 */
 	MOVECLASS_STEM : "hilr-movecell-",
@@ -18,18 +18,18 @@ var HILRCC = {
 	
 	formIsDirty: false, /* flag used by unload handler */
 	
-	/* 
+	/*
 	 * this function is invoked via jQuery when any page on the site loads.
 	 */
 	onLoad: function() {
 		/* if this is the home page (i.e. the form), add a button to reset the form */
-		if (window.location.pathname == "/" || window.location.pathname == "") {
+		if (window.location.pathname === "/" || window.location.pathname === "") {
 			HILRCC.setupMainForm();
 		}
 	
 		/* install the unload handler */
 		var inputs = jQuery("input").not("[type='hidden']").not("[class*='admin']").add("textarea").not("#gravityflow-note");
-		if ( inputs.length != 0 ) {
+		if ( inputs.length !== 0 ) {
 			jQuery(window).on("beforeunload", HILRCC.onUnload);
 			inputs.change(function() {HILRCC.formIsDirty = true;});
 			
@@ -40,7 +40,7 @@ var HILRCC = {
 			submitBtn = jQuery("#gravityflow_update_button");
 			if (submitBtn.length) {
 				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
-			}			
+			}
 		}
 	
 		var viewId = HILRCC.getGravityViewId();
@@ -77,7 +77,7 @@ var HILRCC = {
 		var today = new Date();
 		if (today.getMonth() < 6) { /* Jan is 0 */
 			var idclass = ".gchoice_" + HILRCC.stringTable.formId + "_3_1";
-			var delayStartOption = jQuery(".hilr-duration " + idclass); 
+			var delayStartOption = jQuery(".hilr-duration " + idclass);
 			if (delayStartOption) {
 				delayStartOption.hide();
 			}
@@ -88,7 +88,7 @@ var HILRCC = {
 		jQuery('.hilr-sched-2 input[type=radio]').click(function() {HILRCC.onSchedClick(this.value, 2);});
 		jQuery('.hilr-sched-3 input[type=radio]').click(function() {HILRCC.onSchedClick(this.value, 3);});
 
-		/* 
+		/*
 		 * Save and Continue
 		 */
 		jQuery("#gform_save_" + HILRCC.stringTable.formId + "_link").on("click", HILRCC.saveEmailSession);
@@ -108,11 +108,11 @@ var HILRCC = {
 		}
     },
     
-	/* 
+	/*
 	   This function makes the radio groups for the 1st, 2nd, and
 	   3rd time slots mutually exclusive, e.g. if the user checks
 	   Tuesday PM for the 1st choice, then Tuesday PM is unchecked
-	   for the 2nd and 3rd choices 
+	   for the 2nd and 3rd choices
 	*/
 	onSchedClick: function(val, clickedGroup) {
 		var clicked, others = Array(2);
@@ -143,7 +143,7 @@ var HILRCC = {
 	/*
 	 * In GV single entry mode, reconfigure the table for compactness based on
 	 * CSS class names.
-	 */	
+	 */
 	rearrangeGravityViewTable: function() {
 		 var movers = jQuery("[class*=" + HILRCC.MOVECLASS_STEM +"]");
 		 for (var i=0; i < movers.length; ++i) {
@@ -157,7 +157,7 @@ var HILRCC = {
 	
 			if (jQuery(movers[i]).hasClass(HILRCC.KEEP_TH)) {
 				var th = jQuery(movers[i]).children('th')[0];
-				jQuery(td).html("<b>" + jQuery(th).text() + "</b>: " + jQuery(td).text()); 
+				jQuery(td).html("<b>" + jQuery(th).text() + "</b>: " + jQuery(td).html());
 			}
 		 }
 		 /* remove TH elements for rows that have class hilr-remove-th */
@@ -174,7 +174,7 @@ var HILRCC = {
 		 }
 	},
     
-	/* 
+	/*
 	 * Inject a textarea and a button in the single item
 	 * view for adding comments on a proposal
 	 */
@@ -183,8 +183,8 @@ var HILRCC = {
 			 var editLinkRow = jQuery(".hilr-edit-link");
 			 if (editLinkRow.length) {
 				var markup=
-					"<th>Add a comment</th>" + 
-					"<td colspan='3'>" + 
+					"<th>Add a comment</th>" +
+					"<td colspan='3'>" +
 					"<textarea id='hilr_comment_input' rows='5' cols='80' class='hilr-comment-input'></textarea>" +
 					"<button id='hilr_add_comment_btn' class='hilr-add-comment-button'>Submit</button>" +
 					"<button id='hilr_discard_comment_btn' class='hilr-add-comment-button'>Discard and Go Back</button>" +
@@ -194,7 +194,7 @@ var HILRCC = {
 				jQuery("#hilr_add_comment_btn").click(HILRCC.handle_add_comment);
 				jQuery("#hilr_discard_comment_btn").click(HILRCC.handle_discard_comment);
 			 }
-			 /* 
+			 /*
 			 * This code is to contain a discussion thread in a scrolling div
 			 * so that it doesn't take up too much vertical real-estate.
 			 */
@@ -207,7 +207,7 @@ var HILRCC = {
 			}
 		});
 
-	},    
+	},
     
     setupAdminPage: function() {
     	jQuery(window).load(function() {
@@ -332,7 +332,7 @@ var HILRCC = {
 		var month = today.getMonth();
 		var year = today.getYear() + 1900;
 		var comingSeason = "";
-		if (month <= 6) 
+		if (month <= 6)
 			comingSeason = "Fall ";
 		else {
 			comingSeason = "Spring ";
@@ -365,10 +365,10 @@ var HILRCC = {
     
     confirmClearForm: function() {
     	HILRCC.formIsDirty = false;
-    	return confirm('Do you really want to clear all fields?');
+    	return confirm('Do you really want to reset the form?');
     },
     
-    /* GravityView pages have a custom widget on the multiple items view 
+    /* GravityView pages have a custom widget on the multiple items view
        that contains a span with class 'hilr-view-id'. The id of the span
        is the name of the view.
     */
@@ -399,7 +399,7 @@ var HILRCC = {
     		var items = jQuery(".gv-list-view");
     		var currentSlot = "";
     		for (var i=0; i < items.length; ++i) {
-    			var item = jQuery(jQuery(items[i]).children(".gv-list-view-title")[0]);    			
+    			var item = jQuery(jQuery(items[i]).children(".gv-list-view-title")[0]);
 
 				var durationDiv = item.children(".hilr-glance-duration")[0];
 				if (durationDiv) {
@@ -501,22 +501,22 @@ var HILRCC = {
     
     goToInboxView: function(id) {
 		var newUrl = HILRCC.stringTable.siteURL + "inbox/?page=gravityflow-inbox"
-			 + "&view=entry&id=" + HILRCC.stringTable.formId + "&lid=" 
+			 + "&view=entry&id=" + HILRCC.stringTable.formId + "&lid="
 			 + id;
-		window.location.replace(newUrl);
+		window.location.href = newUrl;
 	},
     
     goToAdministrativeView: function(id) {
 		var newUrl = HILRCC.stringTable.siteURL + "administrative/workflow-status/?page=gravityflow-inbox"
-			 + "&view=entry&id=" + HILRCC.stringTable.formId + "&lid=" 
+			 + "&view=entry&id=" + HILRCC.stringTable.formId + "&lid="
 			 + id;
-		window.location.replace(newUrl);
+		window.location.href = newUrl;
 	},
     
     
     /*
-     * For the Save and Continue page, we want to pre-populate the email input with the 
-     * last SGL1 email entered into the form. This is saved in session storage when the 
+     * For the Save and Continue page, we want to pre-populate the email input with the
+     * last SGL1 email entered into the form. This is saved in session storage when the
      * user clicks the "Save and Continue" button.
      */
     saveEmailSession: function() {
@@ -538,7 +538,7 @@ var HILRCC = {
      * column converts it from text to a dropdown and a button for easy update.
      */
      morphSlotCell: function(td) {
-     	var dropdownMarkup = "<select>" + 
+     	var dropdownMarkup = "<select>" +
      		"<option>Monday AM</option>" +
      		"<option>Monday PM</option>" +
      		"<option>Tuesday AM</option>" +
@@ -602,21 +602,21 @@ function ScheduleGrid(id) {
 		create: function(parentId) {
 			var markup = "<table id=" + id + "class='hilr-schedule-grid'>" +
 				"<tr>" +
-					"<th></th>" + 
-					"<th>Monday</th>" + 
-					"<th>Tuesday</th>" + 
-					"<th>Wednesday</th>" + 
-					"<th>Thursday</th>" + 
-				"</tr>" + 
+					"<th></th>" +
+					"<th>Monday</th>" +
+					"<th>Tuesday</th>" +
+					"<th>Wednesday</th>" +
+					"<th>Thursday</th>" +
+				"</tr>" +
 				"<tr id='AM_1'>" +
 					"<td>1st AM</td><td></td><td></td><td></td><td></td>" +
-				"</tr>" + 
+				"</tr>" +
 				"<tr id='PM_1'>" +
 					"<td>1st PM</td><td></td><td></td><td></td><td></td>" +
 				"</tr>" +
 				"<tr id='AM_2'>" +
 					"<td>2nd AM</td><td></td><td></td><td></td><td></td>" +
-				"</tr>" + 
+				"</tr>" +
 				"<tr id='PM_2'>" +
 					"<td>2nd PM</td><td></td><td></td><td></td><td></td>" +
 				"</tr>" +
@@ -654,7 +654,7 @@ function ScheduleGrid(id) {
 					var fullVal = summary["Full Term"][slot];
 					var halfVal = half[slot];
 
-					return halfVal + fullVal;					
+					return halfVal + fullVal;
 				}
 				
 				function updateRow(rowId) {

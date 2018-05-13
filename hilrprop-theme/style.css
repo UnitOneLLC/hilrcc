@@ -72,6 +72,11 @@ div.gform_wrapper {
 }
 }
 
+/* use more real estate -- get rid of excess whitespace -- Gravity Flow Inbox entry */
+.entry-detail-view div.gform_wrapper {
+	max-width: 95%;
+}
+
 /* center the nav menu */
 .navigation-top>.wrap {
 	text-align: center;
@@ -270,7 +275,7 @@ div.gform_wrapper {
 	margin-right: 15px !important;
 }
 .site-branding {
-	background-image: url(http://ccsubmit.com/wp-content/uploads/2018/04/banner-image.jpg);
+	background-image: url(http://ccsubmit.com/wp-content/themes/hilrprop-theme/images/banner-no-shield.jpg);
 	background-repeat: no-repeat;
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -340,6 +345,16 @@ div.gform_wrapper {
 .column-date_created { 	
 	display:none;
 }
+/* make the checkbox for "Print timeline" in the workflow controls align correctly with its label */
+input[name="print_notes"] {
+	display: block;
+	clear: left;
+	float: left;
+}
+label[for="print_notes"], .gravityflow_workflow_wrap .detail-view-print .button {
+	float: left;
+}
+
 
 /* printing rules */
 @media print {
@@ -351,7 +366,6 @@ div.gform_wrapper {
 		padding: 0 !important;
 		font-size: 0.8em;
 	}
-
 }
 
 

@@ -276,6 +276,25 @@ var HILRCC = {
 		});
     },
     /*
+     * Make an ajax call to update all the computed fields for the current semester 
+     */
+    updateComputedFields: function() {
+    	var data = {
+			'action': 'update_computed_fields',
+			'semester' : HILRCC.getCurrentSemester()
+		};
+
+		jQuery.post(HILRCC.stringTable.ajaxURL, data, function(response) {
+			if (response.indexOf("SUCCESS") == 0) {
+				alert("Successfully recomputed fields.");
+			}
+			else  {
+				alert("Sorry, there was a problem: " + response);
+			}
+		});
+    
+    },
+    /*
      * Make an ajax call to post a comment (discussion entry).
      */
     handle_add_comment: function() {
@@ -384,7 +403,7 @@ var HILRCC = {
     
     prepareView: function(viewId) {
     
-    	if (viewId == 'inbox-view') {
+    	if (viewId === 'inbox-view') {
     		titles = jQuery("td.gv-field-2-1");
     		for (var i=0; i < titles.length; ++i) {
     			var anchor = jQuery(jQuery(titles[i]).children('a')[0]);
@@ -395,7 +414,7 @@ var HILRCC = {
     			anchor.attr('href', 'javascript:HILRCC.goToInboxView(' + id + ')');
         	}
         }
-    	else if (viewId == 'at-a-glance') {
+    	else if (viewId === 'at-a-glance') {
     		var items = jQuery(".gv-list-view");
     		var currentSlot = "";
     		for (var i=0; i < items.length; ++i) {
@@ -430,9 +449,22 @@ var HILRCC = {
     			}
     		}
     	}
-    	else if (viewId == 'scheduling') {
+    	else if (viewId === 'scheduling') {
     		var slotCells = jQuery("td." + HILRCC.stringTable.slot_cell_class);
     		slotCells.dblclick(function() {HILRCC.morphSlotCell(this)});
+    	}
+    	else if (viewId === 'catalog') {
+    		/* make a single paragraph for the course description and course info fields. */
+    		var descriptions = jQuery("div." + HILRCC.stringTable.course_desc_class);
+    		for (var i=0; i < descriptions.length; ++i) {
+    			var desc = jQuery(descriptions[i]);
+    			var info = jQuery(desc).next();
+    			if (info.hasClass(HILRCC.stringTable.course_info_class)) {
+    				var graf = jQuery(desc.children("p")[0]);
+    				graf.html( graf.html() + " " + info.text() );
+    				info.html("");
+    			}
+    		}
     	}
     },
     
@@ -467,6 +499,8 @@ var HILRCC = {
 					jQuery(jQuery(".gravityflow-action-buttons").children("input")[0]).trigger('click');
 				});
 		}
+		/* hide the 'suppress notify' input */
+		jQuery("#" + HILRCC.stringTable.suppress_id).hide();
     },
     
     /*
@@ -539,6 +573,7 @@ var HILRCC = {
      */
      morphSlotCell: function(td) {
      	var dropdownMarkup = "<select>" +
+     		"<option></option>" + 
      		"<option>Monday AM</option>" +
      		"<option>Monday PM</option>" +
      		"<option>Tuesday AM</option>" +

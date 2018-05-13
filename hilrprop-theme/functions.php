@@ -8,6 +8,7 @@ define('HILRCC_VIEW_ID_INBOX', '415');
 
 define('HILRCC_FIELD_ID_TITLE', '1');
 define('HILRCC_FIELD_ID_DURATION', '3');
+define('HILRCC_FIELD_ID_COURSE_DESC', '6');
 define('HILRCC_FIELD_ID_BOOKS', '14');
 define('HILRCC_FIELD_ID_SGL1_BIO', '18');
 define('HILRCC_FIELD_ID_SGL2_BIO', '19');
@@ -34,7 +35,7 @@ define('HILRCC_FIELD_ID_SUPPRESS_NOTIFY', '66');
 define('HILRCC_FIELD_ID_TIME_PREFERENCE', '67');
 define('HILRCC_FIELD_ID_COURSE_INFO_STRING', '68');
 
-define('HILRCC_STEP_ID_INITIALIZATION', '1');
+define('HILRCC_STEP_ID_SPONSOR_ASSIGNMENT', '1');
 define('HILRCC_STEP_ID_REVIEW_NOTIFICATION', '3');
 define('HILRCC_STEP_ID_TABLING', '6');
 define('HILRCC_STEP_ID_NOTIFY_CHANGES', '17');
@@ -56,15 +57,15 @@ define('HILRCC_TAG_BOLD_OPEN', '<strong>');
 define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
 
 $workflow_button_labels_map = array(
-	HILRCC_STEP_ID_INITIALIZATION => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
+	HILRCC_STEP_ID_SPONSOR_ASSIGNMENT => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_TABLING => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_REV_BY_COMM => array("APPROVE"=>"Ready to Vote", "REJECT"=>"Needs Discussion", "REVERT"=>"Edit"),
 	HILRCC_STEP_ID_MOD_BY_SPONSOR => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_POST_REV_MOD => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
-	HILRCC_STEP_ID_POST_REV_ROUT => array("APPROVE"=>"Approve", "REJECT"=>"Redject", "REVERT"=>"Revert"),
-	HILRCC_STEP_ID_VOTING => array("APPROVE"=>"Approve", "REJECT"=>"Redject", "REVERT"=>"Revert"),
+	HILRCC_STEP_ID_POST_REV_ROUT => array("APPROVE"=>"Approve", "REJECT"=>"Reject", "REVERT"=>"Send to Sponsor"),
+	HILRCC_STEP_ID_VOTING => array("APPROVE"=>"Approve", "REJECT"=>"Reject", "REVERT"=>"Revert"),
 	HILRCC_STEP_ID_FINAL_SPONSOR_REVIEW => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
-	HILRCC_STEP_ID_PRE_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
+	HILRCC_STEP_ID_PRE_PUB => array("SUBMIT"=>"Submit for Catalog", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save")
 );
 
@@ -87,7 +88,10 @@ function HILRCC_enqueue_styles()
 		'suppress_input' => 'input_' . HILRCC_FIELD_ID_SUPPRESS_NOTIFY,
 		'sgl1_email_name' => 'input_' . HILRCC_FIELD_ID_SGL1_EMAIL,
 		'formId' => HILRCC_PROPOSAL_FORM_ID,
-		'slot_cell_class' => "gv-field-" . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_TIMESLOT
+		'slot_cell_class' => "gv-field-" . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_TIMESLOT,
+		'suppress_id' => "field_" . HILRCC_PROPOSAL_FORM_ID . "_" . HILRCC_FIELD_ID_SUPPRESS_NOTIFY,
+		'course_desc_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_COURSE_DESC,
+		'course_info_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_COURSE_INFO_STRING
 	));        
 	
 /*    
@@ -385,7 +389,7 @@ add_action('wp_ajax_update_timeslot', 'HILRCC_update_time_slot');
 function HILRCC_update_time_slot() {
 	$entry_id = $_POST["entry_id"];
 	$timeslot = $_POST["timeslot"];
-	
+	$slot_val;	
 	$lookup = array(
 				  "Monday AM" => 1,
 				  "Monday PM" => 2,
@@ -396,9 +400,15 @@ function HILRCC_update_time_slot() {
 				  "Thursday AM" => 7,
 				  "Thursday PM" => 8);
 
-	if (array_key_exists($timeslot, $lookup)) {
-		
-	    $result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_TIMESLOT, $lookup[$timeslot]) ;	
+	if (empty($timeslot)) {
+		$slot_val = 0;
+	}
+	elseif (array_key_exists($timeslot, $lookup)) {
+		$slot_val = $lookup[$timeslot];
+	}
+	
+	if (isset($slot_val)) {
+	    $result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_TIMESLOT, $slot_val) ;		
 	}
 	else {
 		echo("FAIL: bad slot: $timeslot");
@@ -410,6 +420,29 @@ function HILRCC_update_time_slot() {
     } else {
         echo ("FAIL: GFAPI");
     }
+}
+/*
+ * ajax call to update all automatic (computed) fields (takes semester as arg)
+ */
+add_action('wp_ajax_update_computed_fields', 'HILRCC_ajax_update_computed_fields');
+function HILRCC_ajax_update_computed_fields() 
+{
+	$semester = stripslashes_deep($_POST["semester"]);
+	$search = array();
+	$search[HILRCC_FIELD_ID_SEMESTER] = $semester;
+	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
+	$entries = GFAPI::get_entries(0, $search, null);
+	
+	if (is_wp_error($entries)) {
+		echo "FAIL: " . $entries.get_error_message($entries.get_error_code());
+	}
+	else {
+		foreach($entries as &$entry) {
+			$entry_id = $entry['id'];
+			HILRCC_update_computed_fields($entry_id);
+		}
+		echo "SUCCESS";
+	}
 }
 
 /**
@@ -758,11 +791,11 @@ function HILRCC_gravityflow_step_complete($step_id, $entry_id, $form_id, $status
             $result = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_STATUS, $newFieldValue);
         }
     }
-    /* for UI steps, update automatic fields */
+    /* for UI steps, update computed fields */
     $api  = new Gravity_Flow_API($form_id);
     $step = $api->get_current_step(GFAPI::get_entry($entry_id));
     if (HILRCC_is_UI_step($step)) {
-        HILRCC_update_automatic_fields($entry_id);
+        HILRCC_update_computed_fields($entry_id);
     }
 }
 /* return true if the passed step is a User Input step */
@@ -771,8 +804,8 @@ function HILRCC_is_UI_step($step)
     $step_type = $step->get_type();
     return $step_type == 'user_input';
 }
-/* synthetic fields are based on the values of other fields */
-function HILRCC_update_automatic_fields($entry_id)
+/* computed fields are based on the values of other fields */
+function HILRCC_update_computed_fields($entry_id)
 {
     HILRCC_update_readings($entry_id);
     HILRCC_auto_bold_sgl_names($entry_id);
@@ -851,12 +884,15 @@ function HILRCC_update_time_summary($entry_id)
     foreach ($choices as $id) {
     	$i += 1;
     	$choice = $entry[$id];
-    	$val .= "($i-" . substr($choice, 0, 3) . " ";
+    	$val .= substr($choice, 0, 3) . " ";
     	if (strpos($choice, 'AM') !== false) {
-    		$val .= 'AM) ';
+    		$val .= 'AM';
     	}
     	else {
-    		$val .= 'PM) ';
+    		$val .= 'PM';
+    	}
+    	if ($i !== 3) {
+    		$val .= ' / ';
     	}
     }
     GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_TIME_PREFERENCE, $val);

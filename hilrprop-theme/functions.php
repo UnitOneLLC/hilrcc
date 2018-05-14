@@ -2,7 +2,11 @@
 
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 
+define('HILRCC_VIEW_ID_REVIEW', '129');
+define('HILRCC_VIEW_ID_VOTING', '273');
 define('HILRCC_VIEW_ID_CATALOG', '201');
+define('HILRCC_VIEW_ID_ALL', '308');
+define('HILRCC_VIEW_ID_DISCUSS', '376');
 define('HILRCC_VIEW_ID_GLANCE', '426');
 define('HILRCC_VIEW_ID_INBOX', '415');
 
@@ -10,6 +14,7 @@ define('HILRCC_FIELD_ID_TITLE', '1');
 define('HILRCC_FIELD_ID_DURATION', '3');
 define('HILRCC_FIELD_ID_COURSE_DESC', '6');
 define('HILRCC_FIELD_ID_BOOKS', '14');
+define('HILRCC_FIELD_ID_OTHER_MAT', '15');
 define('HILRCC_FIELD_ID_SGL1_BIO', '18');
 define('HILRCC_FIELD_ID_SGL2_BIO', '19');
 define('HILRCC_FIELD_ID_CLASS_SIZE', '27');
@@ -203,6 +208,76 @@ function HILRCC_hide_menu_on_homepage($menu)
     }
     return $menu;
 }
+
+/* utility function */
+function get_entry_id_from_gravityview_url() {
+	/* look for '/entry/' followed by id */
+    $url = $_SERVER['REQUEST_URI'];
+    $path = parse_url($url)['path'];
+	$elems = preg_split('/\//', $path);    
+	$pos = array_search('entry', $elems);
+	if (is_numeric($pos) and ($pos < (count($elems)-1))) {
+		return $elems[$pos+1];
+	}
+    else {
+    	return NULL;
+    }
+}
+
+/*
+ * Some views need a "Go to Workflow View" link. This code 
+ * puts that in (for the single entry view).
+ */
+function HILRCC_inject_workflow_link() 
+{
+	$link = site_url() . "/index.php/";
+	$view = GravityView_View::getInstance();
+	$entry_id = get_entry_id_from_gravityview_url();
+	if ($entry_id == NULL) {
+		return;
+	}
+    $entry = GFAPI::get_entry($entry_id);
+	$user = wp_get_current_user();
+    /* if the entry is assigned to the current user, link to the inbox */
+	if (is_entry_assigned_current_user($entry)) {
+		$link .= "inbox/?page=gravityflow-inbox&view=entry&id=" . HILRCC_PROPOSAL_FORM_ID . 
+		         "&lid=" . $entry['id'];
+		$text = "View in Inbox";
+	}
+	/* if the current user is an admin, link to the administravie workflow view page */
+	elseif ( in_array('cc_admin', (array) $user->roles) or
+		     in_array('administrator', (array) $user->roles) or
+		     in_array('catalog_admin', (array) $user->roles) ) {
+		     
+			$link .= "administrative/workflow-status/?page=gravityflow-inbox&view=entry&id=" . 
+			         HILRCC_PROPOSAL_FORM_ID . "&lid=" . $entry['id'];
+			$text = "View in Workflow";			         
+	}
+	else {
+		unset($link);
+	}
+
+	if (isset($link)) {
+	?>
+		<div >
+			<a id="goto-workflow" href="<?php echo $link ?>"><?php echo $text ?>⟶</a>
+		</div>
+	<?php
+	}
+}
+/* function to hook the gravityview_render_entry action (per view) */
+function add_actions_for_workflow_links() {
+	$have_workflow_views = array(
+		HILRCC_VIEW_ID_REVIEW,
+		HILRCC_VIEW_ID_VOTING,
+		HILRCC_VIEW_ID_ALL,
+		HILRCC_VIEW_ID_DISCUSS
+	);
+	foreach ($have_workflow_views as &$view_id) {
+		add_action('gravityview_render_entry_' . $view_id, 'HILRCC_inject_workflow_link');
+	}
+}
+add_actions_for_workflow_links();
 
 /* 
  * ajax handler to re-number the courses 
@@ -811,6 +886,7 @@ function HILRCC_update_computed_fields($entry_id)
     HILRCC_auto_bold_sgl_names($entry_id);
     HILRCC_update_time_summary($entry_id);
     HILRCC_update_workload_string($entry_id);
+    HILRCC_compress_spaces($entry_id);
 }
 /* update the Readings string for the catalog based on the Books field */
 
@@ -825,16 +901,41 @@ function HILRCC_update_readings($entry_id)
         return;
     }
     
+    /* Check for special case: multiple books all with 'This edition only'.
+     * In this case, we emit 'These editions only:'
+     */
+     
+    $isSpecialTheseCase = true;
+    if (count($books) <= 1) {
+    	$isSpecialTheseCase = false;
+    }
+    else {
+		foreach ($books as &$book) {
+			$edOnly  = strtoupper($book[HILRCC_LABEL_ONLY_ED]);
+			if (strpos($edOnly, 'Y') === false) {
+				$isSpecialTheseCase = false;
+				break;
+			}
+		}
+	}
+    
+    /* now generate the string */
     $isFirst = true;
-    foreach ($books as $book) {
+    foreach ($books as &$book) {
         if (!$isFirst) {
-            $readingString = $readingString . "; ";
+            $readingString .= "; ";
+        }
+        if ($isFirst and $isSpecialTheseCase) {
+        	$readingString .= "Only these editions: ";
         }
         $isFirst = false;
-        $edOnly  = strtoupper($book[HILRCC_LABEL_ONLY_ED]);
-        if (strpos($edOnly, 'Y') !== false) {
-            $readingString = $readingString . "This edition only: ";
-        }
+        
+        if (!$isSpecialTheseCase) {
+			$edOnly  = strtoupper($book[HILRCC_LABEL_ONLY_ED]);
+			if (strpos($edOnly, 'Y') !== false) {
+				$readingString = $readingString . "This edition only: ";
+			}
+		}
         
         $author = $book[HILRCC_LABEL_AUTHOR] . ", ";
         $title  = "<em>" . $book[HILRCC_LABEL_TITLE] . "</em>";
@@ -923,6 +1024,29 @@ function HILRCC_update_workload_string($entry_id)
     $val .= "Class size is limited to " . $limit . ".";
     
     GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_COURSE_INFO_STRING, $val);
+}
+
+function HILRCC_compress_spaces_in_field($entry_id, $field_id) 
+{
+    $entry = GFAPI::get_entry($entry_id);
+	$field_val = rgar($entry, $field_id);
+	if (!empty($field_val)) {
+		$targets = array("\x20\x20","\xc2\xa0\x20");
+		$num_replaced = 0;
+		$new_val = str_replace($targets, " ", $field_val, $num_replaced); /* replace 2 spaces with 1 */
+		if ($num_replaced !== 0) {
+			GFAPI::update_entry_field($entry_id, $field_id, $new_val);
+		}
+	}
+}
+
+function HILRCC_compress_spaces($entry_id) 
+{
+	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_TITLE);
+	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_COURSE_DESC);
+	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_SGL1_BIO);
+	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_SGL2_BIO);
+	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_OTHER_MAT);
 }
 
 ?>

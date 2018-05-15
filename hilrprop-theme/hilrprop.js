@@ -450,8 +450,40 @@ var HILRCC = {
     		}
     	}
     	else if (viewId === 'scheduling') {
-    		var slotCells = jQuery("td." + HILRCC.stringTable.slot_cell_class);
-    		slotCells.dblclick(function() {HILRCC.morphSlotCell(this)});
+    		jQuery("td." + HILRCC.stringTable.slot_cell_class).dblclick(
+    		  	function() {
+					var props = {
+						options: ["Monday AM", "Monday PM", "Tuesday AM", "Tuesday PM",
+								   "Wednesday AM", "Wednesday PM", "Thursday AM", "Thursday PM" ],
+						updateAjaxAction: "update_timeslot",
+						onAjaxSuccess: function() {
+							document.body.hilr_schedule_grid.update(null);
+						}
+     				};
+    				(new InplaceCellEditor()).create(this, props);
+    			});
+    			
+    		jQuery("td." + HILRCC.stringTable.size_cell_class).dblclick(
+    		  	function() {
+					var props = {
+						options: ["12", "18", "20", "22", "25"],
+						updateAjaxAction: "update_class_size"
+					};
+    				(new InplaceCellEditor()).create(this, props);
+    			});	
+ 
+     		jQuery("td." + HILRCC.stringTable.duration_cell_class).dblclick(
+    		  	function() {
+					var props = {
+						options: ["Full Term", "Full Term Delayed Start", "First Half", "Second Half", "Either First or Second Half"],
+						updateAjaxAction: "update_duration",
+						onAjaxSuccess: function() {
+							document.body.hilr_schedule_grid.update(null);
+						}
+     				};
+    				(new InplaceCellEditor()).create(this, props);
+    			});	
+   			
     	}
     	else if (viewId === 'catalog') {
     		/* make a single paragraph for the course description and course info fields. */
@@ -567,61 +599,7 @@ var HILRCC = {
     	return window.sessionStorage.getItem("sgl1Email");
     },
     
-    /*
-     * On the scheduling view, double clicking on a cell in the Assigned Slot
-     * column converts it from text to a dropdown and a button for easy update.
-     */
-     morphSlotCell: function(td) {
-     	var dropdownMarkup = "<select>" +
-     		"<option></option>" + 
-     		"<option>Monday AM</option>" +
-     		"<option>Monday PM</option>" +
-     		"<option>Tuesday AM</option>" +
-     		"<option>Tuesday PM</option>" +
-     		"<option>Wednesday AM</option>" +
-     		"<option>Wednesday PM</option>" +
-     		"<option>Thursday AM</option>" +
-     		"<option>Thursday PM</option>" +
-     		"</select>" +
-     		"<button title='Save' class='hilr-slot-save-btn' onclick='javascript:HILRCC.saveSlot(this)'>&#x2714;</button>" +
-     		"<button title='Cancel' class='hilr-slot-cancel-btn' onclick='javascript:HILRCC.cancelSlot(this)'>X</button>"
-
-     	
-     	var jtd = jQuery(td)
-     	td.hilr_save_text = jtd.text();
-     	jtd.html(dropdownMarkup);
-     	jtd.children('select').val(td.hilr_save_text);
-     },
-     
-     saveSlot: function(btn) {
-     	var parentRow = jQuery(btn).parent().parent();
-     	var id = parentRow.children(".hilr-scheduling-entryid").text();
-     	var slot = jQuery(btn).parent().children("select").val()
-    	var data = {
-			'action': 'update_timeslot',
-			'entry_id' : id,
-			'timeslot' : slot
-		};
-
-		jQuery.post(HILRCC.stringTable.ajaxURL, data, function(response) {
-			if (response.indexOf("SUCCESS") == 0) {
-				var td = jQuery(btn).parent();
-				var val = jQuery(td.children('select')[0]).val();
-				td.html(val);
-		     	document.body.hilr_schedule_grid.update(null);
-			}
-			else  {
-				alert("Sorry, there was a problem: " + response);
-			}
-		});
-     },
-     
-     cancelSlot: function(btn) {
-		var td = jQuery(btn).parent();
-		td.html(td[0].hilr_save_text);
-     },
-     
-     setUpScheduleGrid: function(gridid) {
+    setUpScheduleGrid: function(gridid) {
      	document.body.hilr_schedule_grid = new ScheduleGrid().create(gridid);
      	document.body.hilr_schedule_grid.update(null);
      }
@@ -710,6 +688,78 @@ function ScheduleGrid(id) {
 				
 				if (onComplete) onComplete();
 			});
+		}
+	};
+}
+
+function InplaceCellEditor() {
+	return {
+		options: null,
+		tcell: null,
+		saveTitle: 'Save',
+		cancelTitle: 'Cancel',
+		onSaveJs: "",
+		saveText: "",
+		updateAjaxAction: "",
+		onAjaxSuccess: null,
+		
+		create: function(td, props) {
+			this.tcell = td;
+			this.tcell.editor = this;
+			
+			for (key in props) {
+				this[key] = props[key];
+			}
+			
+			var markup = "<select>";
+			if (this.options == null) {
+				alert("InplaceCellEditor with no options");
+				return;
+			}
+			for (var i=0; i < this.options.length; ++i) {
+				markup += "<option>" + this.options[i] + "</option>";
+			}
+			markup += "</select>";
+			markup += "<button title='" + this.saveTitle + "' class='hilr-slot-save-btn' onclick='javascript:"
+			          + "this.editor.saveValue(this)" + "'>&#x2714;</button>";
+			markup += "<button title='" + this.cancelTitle + "' class='hilr-slot-cancel-btn' onclick='javascript:"
+			          + "this.editor.restore()" + "'>X</button>";
+			          
+			var jtd = jQuery(td)
+			this.saveText = jtd.text();
+			jtd.html(markup);
+			jtd.children('select').val(this.saveText);
+			var buttons = jtd.children('button');
+			buttons[0].editor = this;
+			buttons[1].editor = this;
+		},
+		
+		saveValue: function(btn) {
+			var parentRow = jQuery(btn).parent().parent();
+			var id = parentRow.children(".hilr-scheduling-entryid").text();
+			var val = jQuery(btn).parent().children("select").val()
+			var data = {
+				'action': this.updateAjaxAction,
+				'entry_id' : id,
+				'value' : val
+			};
+
+			jQuery.post(HILRCC.stringTable.ajaxURL, data, function(response) {
+				if (response.indexOf("SUCCESS") == 0) {
+					var td = jQuery(btn).parent();
+					var val = jQuery(td.children('select')[0]).val();
+					td.html(val);
+					if (td[0].editor.onAjaxSuccess) 
+						td[0].editor.onAjaxSuccess();
+				}
+				else  {
+					alert("Sorry, there was a problem: " + response);
+				}
+			});
+		 },
+		
+		restore: function() {
+			jQuery(this.tcell).html(this.saveText);
 		}
 	};
 }

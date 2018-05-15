@@ -96,7 +96,9 @@ function HILRCC_enqueue_styles()
 		'slot_cell_class' => "gv-field-" . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_TIMESLOT,
 		'suppress_id' => "field_" . HILRCC_PROPOSAL_FORM_ID . "_" . HILRCC_FIELD_ID_SUPPRESS_NOTIFY,
 		'course_desc_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_COURSE_DESC,
-		'course_info_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_COURSE_INFO_STRING
+		'course_info_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_COURSE_INFO_STRING,
+		'size_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_CLASS_SIZE,
+		'duration_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_DURATION
 	));        
 	
 /*    
@@ -463,7 +465,7 @@ function HILRCC_fetch_time_summary() {
 add_action('wp_ajax_update_timeslot', 'HILRCC_update_time_slot');
 function HILRCC_update_time_slot() {
 	$entry_id = $_POST["entry_id"];
-	$timeslot = $_POST["timeslot"];
+	$timeslot = $_POST["value"];
 	$slot_val;	
 	$lookup = array(
 				  "Monday AM" => 1,
@@ -496,6 +498,41 @@ function HILRCC_update_time_slot() {
         echo ("FAIL: GFAPI");
     }
 }
+
+/*
+ * ajax call to update the class size
+ */
+add_action('wp_ajax_update_class_size', 'HILRCC_update_class_size');
+function HILRCC_update_class_size() {
+	$entry_id = $_POST["entry_id"];
+	$class_size = $_POST["value"];
+	
+	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_CLASS_SIZE, $class_size) ;		
+    
+    if ($result) {
+        echo ("SUCCESS");
+    } else {
+        echo ("FAIL: GFAPI");
+    }
+}
+
+/*
+ * ajax call to update the duration field
+ */
+add_action('wp_ajax_update_duration', 'HILRCC_update_duration');
+function HILRCC_update_duration() {
+	$entry_id = $_POST["entry_id"];
+	$class_size = $_POST["value"];
+	
+	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_DURATION, $class_size) ;		
+    
+    if ($result) {
+        echo ("SUCCESS");
+    } else {
+        echo ("FAIL: GFAPI");
+    }
+}
+
 /*
  * ajax call to update all automatic (computed) fields (takes semester as arg)
  */

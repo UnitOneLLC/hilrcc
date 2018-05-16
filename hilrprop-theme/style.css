@@ -271,8 +271,8 @@ div.gform_wrapper {
 	font-weight: 600;
 }
 .hilr-catview-course-number {
-	float: left;
-	margin-right: 15px !important;
+	font-family: arial;
+	font-weight: 100;
 }
 .site-branding {
 	background-image: url(http://ccsubmit.com/wp-content/themes/hilrprop-theme/images/banner-no-shield.jpg);
@@ -354,7 +354,10 @@ input[name="print_notes"] {
 label[for="print_notes"], .gravityflow_workflow_wrap .detail-view-print .button {
 	float: left;
 }
-
+#sched_grid_0 td {
+    text-align:	center; 
+    vertical-align:	middle;
+}
 
 /* printing rules */
 @media print {

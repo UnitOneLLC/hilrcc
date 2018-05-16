@@ -276,7 +276,7 @@ var HILRCC = {
 		});
     },
     /*
-     * Make an ajax call to update all the computed fields for the current semester 
+     * Make an ajax call to update all the computed fields for the current semester
      */
     updateComputedFields: function() {
     	var data = {
@@ -415,6 +415,9 @@ var HILRCC = {
         	}
         }
     	else if (viewId === 'at-a-glance') {
+    	
+			HILRCC.combineCourseNumbersWithTitle();
+			
     		var items = jQuery(".gv-list-view");
     		var currentSlot = "";
     		for (var i=0; i < items.length; ++i) {
@@ -456,12 +459,11 @@ var HILRCC = {
 						options: ["Monday AM", "Monday PM", "Tuesday AM", "Tuesday PM",
 								   "Wednesday AM", "Wednesday PM", "Thursday AM", "Thursday PM" ],
 						updateAjaxAction: "update_timeslot",
-						onAjaxSuccess: function() {
-							document.body.hilr_schedule_grid.update(null);
-						}
-     				};
-    				(new InplaceCellEditor()).create(this, props);
-    			});
+						onAjaxSuccess: HILRCC.updateScheduleGrid
+					};
+    			    (new InplaceCellEditor()).create(this, props);
+    		     }
+    		);
     			
     		jQuery("td." + HILRCC.stringTable.size_cell_class).dblclick(
     		  	function() {
@@ -470,22 +472,34 @@ var HILRCC = {
 						updateAjaxAction: "update_class_size"
 					};
     				(new InplaceCellEditor()).create(this, props);
-    			});	
+    		  	}
+    		);
  
      		jQuery("td." + HILRCC.stringTable.duration_cell_class).dblclick(
     		  	function() {
 					var props = {
 						options: ["Full Term", "Full Term Delayed Start", "First Half", "Second Half", "Either First or Second Half"],
 						updateAjaxAction: "update_duration",
-						onAjaxSuccess: function() {
-							document.body.hilr_schedule_grid.update(null);
-						}
+						onAjaxSuccess: HILRCC.updateScheduleGrid
      				};
     				(new InplaceCellEditor()).create(this, props);
-    			});	
+    			}
+    		);
    			
+     		jQuery("td." + HILRCC.stringTable.room_cell_class).dblclick(
+    		  	function() {
+					var props = {
+						options: HILRCC.stringTable.room_list.split(','),
+						updateAjaxAction: "update_room",
+						onAjaxSuccess: HILRCC.updateScheduleGrid
+     				};
+    				(new InplaceCellEditor()).create(this, props);
+    			}
+    		);
     	}
     	else if (viewId === 'catalog') {
+			HILRCC.combineCourseNumbersWithTitle();
+			    		
     		/* make a single paragraph for the course description and course info fields. */
     		var descriptions = jQuery("div." + HILRCC.stringTable.course_desc_class);
     		for (var i=0; i < descriptions.length; ++i) {
@@ -498,6 +512,18 @@ var HILRCC = {
     			}
     		}
     	}
+    },
+    
+    /* both catalog view and at-a-glance view need this utility function */
+    combineCourseNumbersWithTitle: function() {
+		/* combine course number field with title string, throw away course number container */
+		var courseNos = jQuery("h3.hilr-catview-course-number");
+		for (var i=0; i < courseNos.length; ++i) {
+			var jnum = jQuery(courseNos[i]);
+			var titleDiv = jnum.next();
+			titleDiv.html("<p><span class='hilr-catview-course-number'>" + jnum.text() + "</span> " + titleDiv.text() + "</p>");
+			jnum.remove();
+		}
     },
     
     isGravityFlowInboxEntry: function() {
@@ -599,10 +625,56 @@ var HILRCC = {
     	return window.sessionStorage.getItem("sgl1Email");
     },
     
-    setUpScheduleGrid: function(gridid) {
-     	document.body.hilr_schedule_grid = new ScheduleGrid().create(gridid);
-     	document.body.hilr_schedule_grid.update(null);
-     }
+    setUpScheduleGrid: function() {
+    	if (window.location.href.indexOf("/entry/") === -1) { /* don't show grid on single entry page */
+    		
+			jQuery(function() {
+				jQuery( "#sched_grid_0" ).tabs();
+			 });
+			 HILRCC.updateScheduleGrid();
+         }
+         else {
+         	jQuery("#sched_grid_0").hide();
+         }
+	},
+		
+		
+	updateScheduleGrid: function() {
+        var data = {
+				'action': 'get_sched_grid_data'
+		};
+        jQuery.post(HILRCC.stringTable.ajaxURL, data, function(response) {
+					HILRCC.populateScheduleGrid(response);
+		});    
+	},		
+    
+    lastGridDataSet: null,
+    
+    populateScheduleGrid(response) {
+    	jQuery("#sched_grid_1 td").not(".hilr-room-name").text("");
+    	jQuery("#sched_grid_2 td").not(".hilr-room-name").text("");
+    	
+    	var len = response.length;
+    	if (response[len-1] == '0') {
+			response = response.substr(0, len-1)
+		}
+				
+		var gridData = JSON.parse(response);
+	
+    	HILRCC.lastGridDataSet = gridData;
+    	
+		for (key in gridData) {
+			var cellData = gridData[key];
+			var cell = jQuery("#" + key);
+			if (cellData.length > 1) {
+				cell.text("\u2757");
+			}
+			else {
+				cell.text("\u2714");
+			}
+		}    
+    
+    }
         
 };
 		
@@ -613,7 +685,7 @@ function ScheduleGrid(id) {
 	return {
 	
 		create: function(parentId) {
-			var markup = "<table id=" + id + "class='hilr-schedule-grid'>" +
+			var markup = "<table id='" + id + "' class='hilr-schedule-grid'>" +
 				"<tr>" +
 					"<th></th>" +
 					"<th>Monday</th>" +
@@ -749,7 +821,7 @@ function InplaceCellEditor() {
 					var td = jQuery(btn).parent();
 					var val = jQuery(td.children('select')[0]).val();
 					td.html(val);
-					if (td[0].editor.onAjaxSuccess) 
+					if (td[0].editor.onAjaxSuccess)
 						td[0].editor.onAjaxSuccess();
 				}
 				else  {

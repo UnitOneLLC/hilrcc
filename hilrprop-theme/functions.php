@@ -39,6 +39,7 @@ define('HILRCC_FIELD_ID_READINGS_STRING', '64');
 define('HILRCC_FIELD_ID_SUPPRESS_NOTIFY', '66');
 define('HILRCC_FIELD_ID_TIME_PREFERENCE', '67');
 define('HILRCC_FIELD_ID_COURSE_INFO_STRING', '68');
+define('HILRCC_FIELD_ID_ROOM', '69');
 
 define('HILRCC_STEP_ID_SPONSOR_ASSIGNMENT', '1');
 define('HILRCC_STEP_ID_REVIEW_NOTIFICATION', '3');
@@ -61,6 +62,8 @@ define('HILRCC_LABEL_ONLY_ED', 'Only this edition (Y/N)');
 define('HILRCC_TAG_BOLD_OPEN', '<strong>');
 define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
 
+define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM');
+
 $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_SPONSOR_ASSIGNMENT => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_TABLING => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
@@ -71,7 +74,7 @@ $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_VOTING => array("APPROVE"=>"Approve", "REJECT"=>"Reject", "REVERT"=>"Revert"),
 	HILRCC_STEP_ID_FINAL_SPONSOR_REVIEW => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_PRE_PUB => array("SUBMIT"=>"Submit for Catalog", "SAVE"=>"Save"),
-	HILRCC_STEP_ID_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save")
+	HILRCC_STEP_ID_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 );
 
 function HILRCC_enqueue_styles()
@@ -81,7 +84,7 @@ function HILRCC_enqueue_styles()
     $parent_style = 'gravityflow_status';
     
     wp_enqueue_style($parent_style, get_template_directory_uri() . '/style.css', array(), '0.9.0');
-    
+    wp_enqueue_script('jquery-ui-tabs');
     wp_register_script('hilrpropjs', get_stylesheet_directory_uri() . '/hilrprop.js', array(
         'jquery'
     ));
@@ -98,16 +101,10 @@ function HILRCC_enqueue_styles()
 		'course_desc_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_COURSE_DESC,
 		'course_info_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_COURSE_INFO_STRING,
 		'size_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_CLASS_SIZE,
-		'duration_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_DURATION
+		'duration_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_DURATION,
+		'room_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_ROOM,
+		'room_list' => HILRCC_ROOMS
 	));        
-	
-/*    
-    wp_localize_script('hilrpropjs', 'HILRCC_ajax_map', array(
-        'ajaxURL' => admin_url('admin-ajax.php')
-    ));
-    
-    wp_localize_script('hilrpropjs', 'HILRCC_suppress_input', 'input_' . HILRCC_FIELD_ID_SUPPRESS_NOTIFY);
-*/
 }
 add_action('wp_enqueue_scripts', 'HILRCC_enqueue_styles');
 
@@ -525,6 +522,23 @@ function HILRCC_update_duration() {
 	$class_size = $_POST["value"];
 	
 	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_DURATION, $class_size) ;		
+    
+    if ($result) {
+        echo ("SUCCESS");
+    } else {
+        echo ("FAIL: GFAPI");
+    }
+}
+
+/*
+ * ajax call to update the room field
+ */
+add_action('wp_ajax_update_room', 'HILRCC_update_room');
+function HILRCC_update_room() {
+	$entry_id = $_POST["entry_id"];
+	$room = $_POST["value"];
+	
+	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_ROOM, $room) ;		
     
     if ($result) {
         echo ("SUCCESS");
@@ -1085,5 +1099,5 @@ function HILRCC_compress_spaces($entry_id)
 	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_SGL2_BIO);
 	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_OTHER_MAT);
 }
-
+include 'schedgrid.php';
 ?>

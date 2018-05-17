@@ -62,7 +62,7 @@ define('HILRCC_LABEL_ONLY_ED', 'Only this edition (Y/N)');
 define('HILRCC_TAG_BOLD_OPEN', '<strong>');
 define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
 
-define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM');
+define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM,305,307');
 
 $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_SPONSOR_ASSIGNMENT => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
@@ -93,6 +93,7 @@ function HILRCC_enqueue_styles()
 	wp_localize_script('hilrpropjs', 'HILRCC_stringTable', array(
 		'siteURL' => site_url() . "/index.php/",
         'ajaxURL' => admin_url('admin-ajax.php'),
+        'childThemeRootURL' => get_stylesheet_directory_uri(),
 		'suppress_input' => 'input_' . HILRCC_FIELD_ID_SUPPRESS_NOTIFY,
 		'sgl1_email_name' => 'input_' . HILRCC_FIELD_ID_SGL1_EMAIL,
 		'formId' => HILRCC_PROPOSAL_FORM_ID,
@@ -237,26 +238,35 @@ function HILRCC_inject_workflow_link()
 	}
     $entry = GFAPI::get_entry($entry_id);
 	$user = wp_get_current_user();
+	$isInInbox = false;
     /* if the entry is assigned to the current user, link to the inbox */
 	if (is_entry_assigned_current_user($entry)) {
 		$link .= "inbox/?page=gravityflow-inbox&view=entry&id=" . HILRCC_PROPOSAL_FORM_ID . 
 		         "&lid=" . $entry['id'];
 		$text = "View in Inbox";
+		$isInInbox = true;
 	}
 	/* if the current user is an admin, link to the administravie workflow view page */
-	elseif ( in_array('cc_admin', (array) $user->roles) or
-		     in_array('administrator', (array) $user->roles) or
-		     in_array('catalog_admin', (array) $user->roles) ) {
-		     
+	if ( in_array('cc_admin', (array) $user->roles) or
+		 in_array('administrator', (array) $user->roles) or
+		 in_array('catalog_admin', (array) $user->roles) ) {
+		/* and emit an edit link (will be completed on client) for admins -- only
+		   for the All Proposals view
+		*/
+		$view_id = GravityView_View::getInstance()->getViewId();
+		if ($view_id == HILRCC_VIEW_ID_ALL) {
+			?>
+				<div><a id="hilr_edit_this_proposal_link">Edit this proposal⟶</a></div>
+			<?php
+		}
+		if (!$isInInbox) {
 			$link .= "administrative/workflow-status/?page=gravityflow-inbox&view=entry&id=" . 
-			         HILRCC_PROPOSAL_FORM_ID . "&lid=" . $entry['id'];
-			$text = "View in Workflow";			         
-	}
-	else {
-		unset($link);
+					 HILRCC_PROPOSAL_FORM_ID . "&lid=" . $entry['id'];
+			$text = "View in Workflow";
+		}
 	}
 
-	if (isset($link)) {
+	if (isset($text)) {
 	?>
 		<div >
 			<a id="goto-workflow" href="<?php echo $link ?>"><?php echo $text ?>⟶</a>

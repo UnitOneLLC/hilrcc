@@ -54,6 +54,8 @@ var HILRCC = {
 		if (HILRCC.isGravityFlowInboxEntry()) {
 			HILRCC.modifyInboxEntry();
 		}
+		
+		HILRCC.fixAdminBox();
     },
     
     isGravitySingleView: function() {
@@ -214,6 +216,34 @@ var HILRCC = {
 	    	jQuery("#hilr-clear-numbers-btn").on('click', HILRCC.clearCourseNumbers);
 			jQuery("#hilr-assign-numbers-btn").on('click',HILRCC.assignCourseNumbers);
 		});
+    },
+    
+    fixAdminBox: function() {
+    	var adminBox = jQuery("#postbox-container-1 div.postbox").not("#gravityflow-status-box-container");
+    	if (adminBox.length != 1)
+    		return;
+
+		var warningUrl = HILRCC.stringTable.childThemeRootURL + "/adminwarning.html";
+  		var markUp = "<div class='hilr-admin-postbox-wrapper'>" + 
+						"<button id='hilr-toggle-admin-btn'>Workflow Controls</button>" +
+					 "</div>" + 
+					 "<iframe id='hilr-admin-warning-frame' src='" + warningUrl + "'/>";
+
+    	adminBox.before(markUp);
+    	adminBox.toggle();
+    	
+		jQuery("#hilr-toggle-admin-btn").click(function() {
+			var ANIMATION_TIME_MS = 250;
+			jQuery("#postbox-container-1 div.postbox").not("#gravityflow-status-box-container").toggle(ANIMATION_TIME_MS);
+	    	jQuery("#hilr-admin-warning-frame").toggle(ANIMATION_TIME_MS);
+	    	return false;
+	    });
+    },
+    
+    warningIframeLoaded: function(h) {
+    	var frame = jQuery('#hilr-admin-warning-frame');
+		frame.height(h+15);
+		frame.toggle();
     },
     
     /*
@@ -401,8 +431,10 @@ var HILRCC = {
     	}
     },
     
+    /* code specific to different GravityView views */
     prepareView: function(viewId) {
     
+    	/* for inbox view, munge course title links to open workflow inbox for proposal */
     	if (viewId === 'inbox-view') {
     		titles = jQuery("td.gv-field-2-1");
     		for (var i=0; i < titles.length; ++i) {
@@ -414,10 +446,22 @@ var HILRCC = {
     			anchor.attr('href', 'javascript:HILRCC.goToInboxView(' + id + ')');
         	}
         }
+        else if (viewId == 'all-proposals-single') {
+        	/* process edit link for single entry view */
+			var entryEditLink = jQuery(".gv-field-" + HILRCC.stringTable.formId + "-edit_link td a");
+			if (entryEditLink.length == 1) {
+				var url = entryEditLink.attr("href");
+				var topAnchor = jQuery("#hilr_edit_this_proposal_link");
+				if (topAnchor.length == 1) {
+					topAnchor.attr("href", url);
+				}
+			}
+        }
     	else if (viewId === 'at-a-glance') {
     	
 			HILRCC.combineCourseNumbersWithTitle();
 			
+			/* inject css classes for shading */
     		var items = jQuery(".gv-list-view");
     		var currentSlot = "";
     		for (var i=0; i < items.length; ++i) {
@@ -438,7 +482,8 @@ var HILRCC = {
 					}
 				}
 
-
+				/* intersperse headers for time slot */
+				
     			var thisSlotDiv = item.children(".hilr-glance-slot")[0];
     			if (thisSlotDiv) {
     				var slot = jQuery(thisSlotDiv).text();
@@ -453,6 +498,9 @@ var HILRCC = {
     		}
     	}
     	else if (viewId === 'scheduling') {
+    	
+    		/* install in-place editors for slot, size, room, and duration columns */
+    		
     		jQuery("td." + HILRCC.stringTable.slot_cell_class).dblclick(
     		  	function() {
 					var props = {
@@ -680,89 +728,6 @@ var HILRCC = {
 		
 jQuery(document).ready(HILRCC.onLoad);
 
-
-function ScheduleGrid(id) {
-	return {
-	
-		create: function(parentId) {
-			var markup = "<table id='" + id + "' class='hilr-schedule-grid'>" +
-				"<tr>" +
-					"<th></th>" +
-					"<th>Monday</th>" +
-					"<th>Tuesday</th>" +
-					"<th>Wednesday</th>" +
-					"<th>Thursday</th>" +
-				"</tr>" +
-				"<tr id='AM_1'>" +
-					"<td>1st AM</td><td></td><td></td><td></td><td></td>" +
-				"</tr>" +
-				"<tr id='PM_1'>" +
-					"<td>1st PM</td><td></td><td></td><td></td><td></td>" +
-				"</tr>" +
-				"<tr id='AM_2'>" +
-					"<td>2nd AM</td><td></td><td></td><td></td><td></td>" +
-				"</tr>" +
-				"<tr id='PM_2'>" +
-					"<td>2nd PM</td><td></td><td></td><td></td><td></td>" +
-				"</tr>" +
-			  "<table>";
-			jQuery("#" + parentId).html(markup);
-			return this;
-		},
-		
-		update: function(onComplete) {
-			var data = {
-				'action': 'fetch_time_preference_summary'
-			};
-
-			jQuery.post(HILRCC.stringTable.ajaxURL, data, function(response) {
-				var len = response.length;
-				if (response[len-1] == '0') {
-					response = response.substr(0, len-1)
-				}
-				
-				var summary = JSON.parse(response);
-				var strings = [
-					"Monday AM",
-					"Monday PM",
-					"Tuesday AM",
-					"Tuesday PM",
-					"Wednesday AM",
-					"Wednesday PM",
-					"Thursday AM",
-					"Thursday PM"
-				];
-				
-				function grid_sum(rowTR, slot) {
-					var half = summary[(rowTR.attr('id').indexOf("_1") > 0) ? "First Half" : "Second Half"];
-					
-					var fullVal = summary["Full Term"][slot];
-					var halfVal = half[slot];
-
-					return halfVal + fullVal;
-				}
-				
-				function updateRow(rowId) {
-					var row = jQuery("#" + rowId);
-					var cells = row.children("td");
-					var isMorning = rowId.indexOf("AM") != -1;
-					for (var i = 1; i <= 5; i += 1) {
-						var td = jQuery(cells[i]);
-						var index = isMorning ? (i-1)*2 : (i-1)*2 + 1;
-						td.text(grid_sum(row, strings[index]));
-					}
-				}
-
-				updateRow("AM_1");
-				updateRow("PM_1");
-				updateRow("AM_2");
-				updateRow("PM_2");
-				
-				if (onComplete) onComplete();
-			});
-		}
-	};
-}
 
 function InplaceCellEditor() {
 	return {

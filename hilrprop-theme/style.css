@@ -354,9 +354,23 @@ input[name="print_notes"] {
 label[for="print_notes"], .gravityflow_workflow_wrap .detail-view-print .button {
 	float: left;
 }
+#sched_grid_0, #sched_grid_1, #sched_grid_2 {
+	width: 90%;
+	margin: 0 auto;
+}
 #sched_grid_0 td {
     text-align:	center; 
     vertical-align:	middle;
+}
+#hilr-toggle-admin-btn {
+	font-size: 12px;
+	margin: 10px 0;
+}
+#hilr-admin-warning-frame {
+	border:none;
+}
+.gv-field-2-edit_link { /* hide the edit link on all proposals single entry view */
+	display: none;
 }
 
 /* printing rules */

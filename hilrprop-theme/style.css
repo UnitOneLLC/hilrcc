@@ -27,7 +27,7 @@ h2.gsection_title {
 	max-width: 90%;
 }
 #primary {
-	max-width: 1250px !important;
+	max-width: 1250px;
 }
 div.gform_wrapper {
 	max-width: 80%;
@@ -310,12 +310,12 @@ div.gform_wrapper {
 .hilr-slot-save-btn {
 	background-color: #7a7;
 	padding: 3px;
-	margin:  0 6px;
+	margin:  0 4px;
 }
 .hilr-slot-cancel-btn {
 	background-color: #b66;
 	padding: 3px 8px;
-	margin: 0 6px;
+	margin: 0 4px;
 }
 .hilr-scheduling-entryid {
 	display:none; /* hidden column in scheduling table */
@@ -324,10 +324,17 @@ div.gform_wrapper {
 .gv-field-2-55 {
 	min-width: 250px;
 }
-.gv-field-2-55 select, .gv-field-2-3 select, .gv-field-2-27 select {
+.gv-field-2-69, .gv-field-2-27 {
+	min-width: 150px;
+	text-align: center;
+}
+.gv-field-2-67 {
+	min-width: 205px;
+}
+.gv-field-2-55 select, .gv-field-2-3 select, .gv-field-2-27 select, .gv-field-2-69 select {
 	height: 22px;
 }
-td.gv-field-2-55, td.gv-field-2-3, td.gv-field-2-27 {
+td.gv-field-2-55, td.gv-field-2-3, td.gv-field-2-27, td.gv-field-2-69 {
 	cursor: pointer;
 }
 .gv-field-2-3 select {
@@ -393,7 +400,7 @@ label[for="print_notes"], .gravityflow_workflow_wrap .detail-view-print .button 
 		font-size: 0.8em;
 	}
 	
-	#masthead {
+	#masthead, .gv-sort {
 		display: none;
 	}
 }

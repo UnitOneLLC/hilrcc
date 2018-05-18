@@ -502,6 +502,9 @@ var HILRCC = {
     	}
     	else if (viewId === 'scheduling') {
     	
+    		/* allow a little more width */
+    		jQuery("#primary").css("max-width", "1400px");
+    	
     		/* install in-place editors for slot, size, room, and duration columns */
     		
     		jQuery("td." + HILRCC.stringTable.slot_cell_class).dblclick(

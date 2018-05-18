@@ -34,7 +34,6 @@ define('HILRCC_FIELD_ID_SGL1_LAST', '56.6');
 define('HILRCC_FIELD_ID_SGL2_FIRST', '57.3');
 define('HILRCC_FIELD_ID_SGL2_LAST', '57.6');
 define('HILRCC_FIELD_ID_WORKLOAD', '58');
-define('HILRCC_FIELD_ID_WEBSITE', '60.1');
 define('HILRCC_FIELD_ID_READINGS_STRING', '64');
 define('HILRCC_FIELD_ID_SUPPRESS_NOTIFY', '66');
 define('HILRCC_FIELD_ID_TIME_PREFERENCE', '67');
@@ -586,18 +585,6 @@ function HILRCC_ajax_update_computed_fields()
  *
  * @return array('is_valid'=>bool, 'message'=>string)
  */
-add_filter( 'gform_field_validation', 'HILRCC_validate_field', 10, 4 );
-function HILRCC_validate_field($result, $value, $form, $field)
-{
-    if (($field->adminLabel == 'sgl_1_phone') or ($field->adminLabel == 'sgl_2_phone')) {
-        if (!HILRCC_validate_phone($value)) {
-            $result['is_valid'] = false;
-            $result['message']  = $value . ' is not a valid phone number';
-        }
-    }
-    return $result;
-}
-
 
 add_filter('gform_validation', 'HILRCC_custom_validation');
 function HILRCC_custom_validation($validation_result)
@@ -609,6 +596,8 @@ function HILRCC_custom_validation($validation_result)
     $phone1 = rgpost('input_' . HILRCC_FIELD_ID_PHONE_1);
     $phone2 = rgpost('input_' . HILRCC_FIELD_ID_PHONE_2);
     
+    /* this is the old code to validate time slots -- we no longer enforce unique slots */
+    /*
     if ($c1 != $c2) {
         $c2_ok = true;
     } else {
@@ -619,6 +608,7 @@ function HILRCC_custom_validation($validation_result)
     } else {
         $c3_ok = false;
     }
+    */
     $phone1_ok = HILRCC_validate_phone($phone1);
     if (($phone2 != NULL) and ($phone2 != '')) {
         $phone2_ok = HILRCC_validate_phone($phone2);
@@ -626,7 +616,7 @@ function HILRCC_custom_validation($validation_result)
         $phone2_ok = true;
     }
     
-    if ($c2_ok and $c3_ok and $phone1_ok and $phone2_ok) {
+    if ($phone1_ok and $phone2_ok) {
         $validation_result['is_valid'] = true;
         return $validation_result;
     }
@@ -636,7 +626,7 @@ function HILRCC_custom_validation($validation_result)
     
     //finding Field with ID of 1 and marking it as failed validation
     foreach ($form['fields'] as &$field) {
-        
+	/* no longer enforcing this
         if (($field->id == HILRCC_FIELD_ID_CHOICE_2) and (!$c2_ok)) {
             $field->failed_validation  = true;
             $field->validation_message = 'Second choice cannot be the same as first.';
@@ -646,6 +636,7 @@ function HILRCC_custom_validation($validation_result)
             $field->failed_validation  = true;
             $field->validation_message = 'Third choice cannot be the same as first or second.';
         }
+    */
         
         if (($field->id == HILRCC_FIELD_ID_PHONE_1) and (!$phone1_ok)) {
             $field->failed_validation  = true;
@@ -1064,12 +1055,8 @@ function HILRCC_update_workload_string($entry_id)
 {
     $entry = GFAPI::get_entry($entry_id);
 	$workload = rgar($entry, HILRCC_FIELD_ID_WORKLOAD);
-	$website = rgar($entry, HILRCC_FIELD_ID_WEBSITE);
 	$limit = rgar($entry,HILRCC_FIELD_ID_CLASS_SIZE);
 	
-	if (!empty($website)) {
-		$website .= ". ";
-	}
 	$val = "";
 	if (!empty($workload) and ($workload != '0') and (intval($workload) > 0)) {
 		$n = intval($workload);
@@ -1081,7 +1068,6 @@ function HILRCC_update_workload_string($entry_id)
 	
 	    $val = "Estimated amount of work outside class is $workload hours per week. ";
 	}
-    $val .= $website;
     $val .= "Class size is limited to " . $limit . ".";
     
     GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_COURSE_INFO_STRING, $val);

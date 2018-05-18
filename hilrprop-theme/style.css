@@ -372,6 +372,13 @@ label[for="print_notes"], .gravityflow_workflow_wrap .detail-view-print .button 
 .gv-field-2-edit_link { /* hide the edit link on all proposals single entry view */
 	display: none;
 }
+#input_2_58 { /* input for workload in main form */
+	width: 250px;
+}
+#hilr_course_names { /* li on Scheduling page (defined in schedgrid.php) */
+	font-size: 12px;
+	margin-left: 20px;
+}
 
 /* printing rules */
 @media print {

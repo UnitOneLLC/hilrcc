@@ -86,10 +86,11 @@ var HILRCC = {
 		}
 
 		/* initialize listeners for schedule choice radio buttons */
+		/**** DISABLING THIS CODE
 		jQuery('.hilr-sched-1 input[type=radio]').click(function() {HILRCC.onSchedClick(this.value, 1);});
 		jQuery('.hilr-sched-2 input[type=radio]').click(function() {HILRCC.onSchedClick(this.value, 2);});
 		jQuery('.hilr-sched-3 input[type=radio]').click(function() {HILRCC.onSchedClick(this.value, 3);});
-
+		******/
 		/*
 		 * Save and Continue
 		 */
@@ -116,6 +117,7 @@ var HILRCC = {
 	   Tuesday PM for the 1st choice, then Tuesday PM is unchecked
 	   for the 2nd and 3rd choices
 	*/
+	/********** DISABLING THIS CODE 
 	onSchedClick: function(val, clickedGroup) {
 		var clicked, others = Array(2);
 		if (clickedGroup === 1) {
@@ -141,6 +143,7 @@ var HILRCC = {
 			}
 		}
 	},
+	*/
 
 	/*
 	 * In GV single entry mode, reconfigure the table for compactness based on
@@ -679,13 +682,35 @@ var HILRCC = {
 			jQuery(function() {
 				jQuery( "#sched_grid_0" ).tabs();
 			 });
+			 
 			 HILRCC.updateScheduleGrid();
          }
          else {
          	jQuery("#sched_grid_0").hide();
          }
 	},
-		
+	
+	addGridListeners: function() {
+		 cells = jQuery("#sched_grid_1 td img").add("#sched_grid_2 td img").not(".hilr-room-name"); /* picks up emojis */
+		 cells.on("mouseover", function(e) {
+			var id = e.target.parentElement.id;
+			if (HILRCC.lastGridDataSet) {
+				var courses = HILRCC.lastGridDataSet[id];
+				if (courses && courses.length) {
+					var s = "";
+					var target = jQuery("#hilr_course_names");
+					for (let i=0; i < courses.length; ++i) {
+						s += courses[i] + "<br>";
+					}
+					target.html(s);
+				}
+			 }
+		 });
+		 cells.on("mouseout", function(e) {
+			var id = e.target.id;
+			jQuery("#hilr_course_names").html("");
+		 });
+	},
 		
 	updateScheduleGrid: function() {
         var data = {
@@ -693,6 +718,7 @@ var HILRCC = {
 		};
         jQuery.post(HILRCC.stringTable.ajaxURL, data, function(response) {
 					HILRCC.populateScheduleGrid(response);
+  			 		setTimeout(HILRCC.addGridListeners,1000);
 		});    
 	},		
     

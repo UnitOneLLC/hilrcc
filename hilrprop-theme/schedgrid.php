@@ -88,6 +88,7 @@ function HILRCC_emit_sched_grid()
   <ul>
     <li><a href="#sched_grid_1">First Half</a></li>
     <li><a href="#sched_grid_2">Second Half</a></li>
+    <li id="hilr_course_names"></li>
   </ul>
 
 <table id='sched_grid_1'>

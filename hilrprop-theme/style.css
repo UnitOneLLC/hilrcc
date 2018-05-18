@@ -26,7 +26,7 @@ h2.gsection_title {
 .wrap {
 	max-width: 90%;
 }
-#primary {
+#page .site-content .wrap #primary {
 	max-width: 1250px;
 }
 div.gform_wrapper {

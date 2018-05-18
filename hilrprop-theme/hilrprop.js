@@ -28,7 +28,7 @@ var HILRCC = {
 		}
 	
 		/* install the unload handler */
-		var inputs = jQuery("input").not("[type='hidden']").not("[class*='admin']").add("textarea").not("#gravityflow-note");
+		var inputs = jQuery("input").not("[type='hidden']").not("[class*='admin']").add("textarea").not("#gravityflow-note").not("#gravityflow-admin-action");
 		if ( inputs.length !== 0 ) {
 			jQuery(window).on("beforeunload", HILRCC.onUnload);
 			inputs.change(function() {HILRCC.formIsDirty = true;});
@@ -187,6 +187,7 @@ var HILRCC = {
     	jQuery(window).load(function() {
 			 var editLinkRow = jQuery(".hilr-edit-link");
 			 if (editLinkRow.length) {
+			 	editLinkRow.removeClass("gv-field-2-edit_link");
 				var markup=
 					"<th>Add a comment</th>" +
 					"<td colspan='3'>" +

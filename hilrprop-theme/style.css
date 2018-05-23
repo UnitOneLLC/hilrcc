@@ -386,6 +386,9 @@ label[for="print_notes"], .gravityflow_workflow_wrap .detail-view-print .button 
 	font-size: 12px;
 	margin-left: 20px;
 }
+table.gravityflow-step-user_input .hilr-hide-for-committee {
+	display: none;
+}
 
 /* printing rules */
 @media print {

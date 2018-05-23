@@ -1,7 +1,17 @@
 <?php
-
+# HILR Course Proposals app (server side).
+# Copyright (c) 2018 HILR
+# Author: Frederick Hewett
+#
+# This is a Wordpress app that uses three plug-ins (Gravity Forms,
+# GravityView,and Gravity Flow) to implement the ingestion of
+# course proposal forms and a workflow to process them, culminating
+# in formatting for publication in the course catalog.
+#
+#ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
-
+#
+# IDs for GravityView views
 define('HILRCC_VIEW_ID_REVIEW', '129');
 define('HILRCC_VIEW_ID_VOTING', '273');
 define('HILRCC_VIEW_ID_CATALOG', '201');
@@ -9,7 +19,8 @@ define('HILRCC_VIEW_ID_ALL', '308');
 define('HILRCC_VIEW_ID_DISCUSS', '376');
 define('HILRCC_VIEW_ID_GLANCE', '426');
 define('HILRCC_VIEW_ID_INBOX', '415');
-
+#
+# IDs for fields in the Gravity Forms form
 define('HILRCC_FIELD_ID_TITLE', '1');
 define('HILRCC_FIELD_ID_DURATION', '3');
 define('HILRCC_FIELD_ID_COURSE_DESC', '6');
@@ -18,6 +29,7 @@ define('HILRCC_FIELD_ID_OTHER_MAT', '15');
 define('HILRCC_FIELD_ID_SGL1_BIO', '18');
 define('HILRCC_FIELD_ID_SGL2_BIO', '19');
 define('HILRCC_FIELD_ID_CLASS_SIZE', '27');
+define('HILRCC_FIELD_ID_THANK_YOU', '44');
 define('HILRCC_FIELD_ID_DISCUSSION', '36');
 define('HILRCC_FIELD_ID_STATUS', '37');
 define('HILRCC_FIELD_ID_CHOICE_1', '38');
@@ -39,7 +51,9 @@ define('HILRCC_FIELD_ID_SUPPRESS_NOTIFY', '66');
 define('HILRCC_FIELD_ID_TIME_PREFERENCE', '67');
 define('HILRCC_FIELD_ID_COURSE_INFO_STRING', '68');
 define('HILRCC_FIELD_ID_ROOM', '69');
-
+define('HILRCC_FIELD_ID_INSTRUCTIONS', '72');
+#
+# IDs for steps in the Gravity Flow workflow attached to the form
 define('HILRCC_STEP_ID_SPONSOR_ASSIGNMENT', '1');
 define('HILRCC_STEP_ID_REVIEW_NOTIFICATION', '3');
 define('HILRCC_STEP_ID_TABLING', '6');
@@ -52,7 +66,8 @@ define('HILRCC_STEP_ID_VOTING', '8');
 define('HILRCC_STEP_ID_FINAL_SPONSOR_REVIEW', '16');
 define('HILRCC_STEP_ID_PRE_PUB', '10');
 define('HILRCC_STEP_ID_PUB', '11');
-
+#
+# Other string constants
 define('HILRCC_LABEL_AUTHOR', 'Author (first last)');
 define('HILRCC_LABEL_TITLE', 'Title');
 define('HILRCC_LABEL_PUBLISHER', 'Publisher');
@@ -60,9 +75,11 @@ define('HILRCC_LABEL_EDITION', 'Edition and Date');
 define('HILRCC_LABEL_ONLY_ED', 'Only this edition (Y/N)');
 define('HILRCC_TAG_BOLD_OPEN', '<strong>');
 define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
-
+#
+# Room List - the room list is comma-separated. This is used on the scheduling page.
 define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM,305,307');
-
+#
+# Labels for workflow action buttons, per step
 $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_SPONSOR_ASSIGNMENT => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_TABLING => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
@@ -73,7 +90,7 @@ $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_VOTING => array("APPROVE"=>"Approve", "REJECT"=>"Reject", "REVERT"=>"Revert"),
 	HILRCC_STEP_ID_FINAL_SPONSOR_REVIEW => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_PRE_PUB => array("SUBMIT"=>"Submit for Catalog", "SAVE"=>"Save"),
-	HILRCC_STEP_ID_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
+	HILRCC_STEP_ID_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save")
 );
 
 function HILRCC_enqueue_styles()
@@ -104,7 +121,7 @@ function HILRCC_enqueue_styles()
 		'duration_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_DURATION,
 		'room_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_ROOM,
 		'room_list' => HILRCC_ROOMS
-	));        
+	));
 }
 add_action('wp_enqueue_scripts', 'HILRCC_enqueue_styles');
 
@@ -213,7 +230,7 @@ function get_entry_id_from_gravityview_url() {
 	/* look for '/entry/' followed by id */
     $url = $_SERVER['REQUEST_URI'];
     $path = parse_url($url)['path'];
-	$elems = preg_split('/\//', $path);    
+	$elems = preg_split('/\//', $path);
 	$pos = array_search('entry', $elems);
 	if (is_numeric($pos) and ($pos < (count($elems)-1))) {
 		return $elems[$pos+1];
@@ -224,10 +241,10 @@ function get_entry_id_from_gravityview_url() {
 }
 
 /*
- * Some views need a "Go to Workflow View" link. This code 
+ * Some views need a "Go to Workflow View" link. This code
  * puts that in (for the single entry view).
  */
-function HILRCC_inject_workflow_link() 
+function HILRCC_inject_workflow_link()
 {
 	$link = site_url() . "/index.php/";
 	$view = GravityView_View::getInstance();
@@ -240,7 +257,7 @@ function HILRCC_inject_workflow_link()
 	$isInInbox = false;
     /* if the entry is assigned to the current user, link to the inbox */
 	if (is_entry_assigned_current_user($entry)) {
-		$link .= "inbox/?page=gravityflow-inbox&view=entry&id=" . HILRCC_PROPOSAL_FORM_ID . 
+		$link .= "inbox/?page=gravityflow-inbox&view=entry&id=" . HILRCC_PROPOSAL_FORM_ID .
 		         "&lid=" . $entry['id'];
 		$text = "View in Inbox";
 		$isInInbox = true;
@@ -259,7 +276,7 @@ function HILRCC_inject_workflow_link()
 			<?php
 		}
 		if (!$isInInbox) {
-			$link .= "administrative/workflow-status/?page=gravityflow-inbox&view=entry&id=" . 
+			$link .= "administrative/workflow-status/?page=gravityflow-inbox&view=entry&id=" .
 					 HILRCC_PROPOSAL_FORM_ID . "&lid=" . $entry['id'];
 			$text = "View in Workflow";
 		}
@@ -287,8 +304,8 @@ function add_actions_for_workflow_links() {
 }
 add_actions_for_workflow_links();
 
-/* 
- * ajax handler to re-number the courses 
+/*
+ * ajax handler to re-number the courses
  */
 add_action('wp_ajax_renumber_courses', 'renumber_courses');
 function renumber_courses() {
@@ -329,7 +346,7 @@ function renumber_courses() {
 			GFAPI::update_entry_field($entry['id'], HILRCC_FIELD_ID_COURSE_NO, $number);
 			$number = $number + 1;
 		}
-		echo "SUCCESS";	
+		echo "SUCCESS";
 	}
 }
 
@@ -351,15 +368,15 @@ function clear_course_numbers() {
 		foreach ($entries as &$entry) {
 			GFAPI::update_entry_field($entry['id'], HILRCC_FIELD_ID_COURSE_NO, null);
 		}
-		echo "SUCCESS";	
+		echo "SUCCESS";
 	}
 }
 
-/* 
- * ajax call for adding a comment 
+/*
+ * ajax call for adding a comment
  */
-add_action('wp_ajax_add_comment', 'add_comment');
-function add_comment()
+add_action('wp_ajax_add_comment', 'HILRCC_ajax_add_comment');
+function HILRCC_ajax_add_comment()
 {
     if (!current_user_can('gravityforms_edit_entries')) {
         echo ("ERROR: capability");
@@ -383,17 +400,24 @@ function add_comment()
         return;
     }
     
-    $form      = GFAPI::get_form(HILRCC_PROPOSAL_FORM_ID);
-    $discfield = GFFormsModel::get_field($form, HILRCC_FIELD_ID_DISCUSSION);
-    $discvalue = $discfield->get_value_save_entry($comment, $form, $input_name = '', $entry_id, $entry);
-    $result    = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_DISCUSSION, $discvalue);
-    
+    $result = HILRCC_add_comment($entry_id, $comment);
+
     if ($result) {
         echo ("SUCCESS");
     } else {
         echo ("FAIL: GFAPI");
     }
 }
+
+function HILRCC_add_comment($entry_id, $comment) {
+    $form      = GFAPI::get_form(HILRCC_PROPOSAL_FORM_ID);
+    $entry     = GFAPI::get_entry($entry_id);
+    $discfield = GFFormsModel::get_field($form, HILRCC_FIELD_ID_DISCUSSION);
+    $discvalue = $discfield->get_value_save_entry($comment, $form, $input_name = '', $entry_id, $entry);
+    $result    = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_DISCUSSION, $discvalue);
+    return $result;
+}
+
 
 /*
  * ajax call to check if entry is assigned to logged-in user
@@ -439,17 +463,17 @@ function HILRCC_fetch_time_summary() {
 	$entries = GFAPI::get_entries(0, $search, null);
 	$result = array();
 	
-	$result['Full Term'] = array("Monday AM" => 0, "Monday PM" => 0, 
-					 "Tuesday AM" => 0, "Tuesday PM" => 0, 
-					 "Wednesday AM" => 0, "Wednesday PM" => 0, 
+	$result['Full Term'] = array("Monday AM" => 0, "Monday PM" => 0,
+					 "Tuesday AM" => 0, "Tuesday PM" => 0,
+					 "Wednesday AM" => 0, "Wednesday PM" => 0,
 					 "Thursday AM" => 0, "Thursday PM" => 0);
-	$result['First Half'] = array("Monday AM" => 0, "Monday PM" => 0, 
-					 "Tuesday AM" => 0, "Tuesday PM" => 0, 
-					 "Wednesday AM" => 0, "Wednesday PM" => 0, 
+	$result['First Half'] = array("Monday AM" => 0, "Monday PM" => 0,
+					 "Tuesday AM" => 0, "Tuesday PM" => 0,
+					 "Wednesday AM" => 0, "Wednesday PM" => 0,
 					 "Thursday AM" => 0, "Thursday PM" => 0);
-	$result['Second Half'] = array("Monday AM" => 0, "Monday PM" => 0, 
-					 "Tuesday AM" => 0, "Tuesday PM" => 0, 
-					 "Wednesday AM" => 0, "Wednesday PM" => 0, 
+	$result['Second Half'] = array("Monday AM" => 0, "Monday PM" => 0,
+					 "Tuesday AM" => 0, "Tuesday PM" => 0,
+					 "Wednesday AM" => 0, "Wednesday PM" => 0,
 					 "Thursday AM" => 0, "Thursday PM" => 0);
 	
 	foreach ($entries as &$entry) {
@@ -472,7 +496,7 @@ add_action('wp_ajax_update_timeslot', 'HILRCC_update_time_slot');
 function HILRCC_update_time_slot() {
 	$entry_id = $_POST["entry_id"];
 	$timeslot = $_POST["value"];
-	$slot_val;	
+	$slot_val;
 	$lookup = array(
 				  "Monday AM" => 1,
 				  "Monday PM" => 2,
@@ -491,7 +515,7 @@ function HILRCC_update_time_slot() {
 	}
 	
 	if (isset($slot_val)) {
-	    $result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_TIMESLOT, $slot_val) ;		
+	    $result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_TIMESLOT, $slot_val) ;
 	}
 	else {
 		echo("FAIL: bad slot: $timeslot");
@@ -513,7 +537,7 @@ function HILRCC_update_class_size() {
 	$entry_id = $_POST["entry_id"];
 	$class_size = $_POST["value"];
 	
-	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_CLASS_SIZE, $class_size) ;		
+	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_CLASS_SIZE, $class_size) ;
     
     if ($result) {
         echo ("SUCCESS");
@@ -530,7 +554,7 @@ function HILRCC_update_duration() {
 	$entry_id = $_POST["entry_id"];
 	$class_size = $_POST["value"];
 	
-	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_DURATION, $class_size) ;		
+	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_DURATION, $class_size) ;
     
     if ($result) {
         echo ("SUCCESS");
@@ -547,7 +571,7 @@ function HILRCC_update_room() {
 	$entry_id = $_POST["entry_id"];
 	$room = $_POST["value"];
 	
-	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_ROOM, $room) ;		
+	$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_ROOM, $room) ;
     
     if ($result) {
         echo ("SUCCESS");
@@ -560,7 +584,7 @@ function HILRCC_update_room() {
  * ajax call to update all automatic (computed) fields (takes semester as arg)
  */
 add_action('wp_ajax_update_computed_fields', 'HILRCC_ajax_update_computed_fields');
-function HILRCC_ajax_update_computed_fields() 
+function HILRCC_ajax_update_computed_fields()
 {
 	$semester = stripslashes_deep($_POST["semester"]);
 	$search = array();
@@ -662,7 +686,7 @@ function HILRCC_validate_phone($numberString)
     */
     $sPattern = "/^
         (?:                                 # Area Code
-            (?:                            
+            (?:
                 \(                          # Open Parentheses
                 (?=\d{3}\))                 # Lookahead.  Only if we have 3 digits and a closing parentheses
             )?
@@ -803,7 +827,7 @@ function HILRCC_custom_view_entries($entries)
     return $entries;
 }
 
-function is_entry_assigned_current_user($entry) 
+function is_entry_assigned_current_user($entry)
 {
 	$flow_api  = new Gravity_Flow_API(HILRCC_PROPOSAL_FORM_ID);
 	$user = wp_get_current_user();
@@ -884,7 +908,7 @@ function glance_comparator($a_entry, $b_entry)
 	}  else {
 		$result = strcmp($a_course_no, $b_course_no);
 		return $result;
-	}  
+	}
 }
 
 /** remove "Howdy" (https://premium.wpmudev.org/blog/add-remove-from-wordpress/) **/
@@ -917,6 +941,12 @@ function HILRCC_gravityflow_step_complete($step_id, $entry_id, $form_id, $status
         if ($newFieldValue != NULL) {
             $result = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_STATUS, $newFieldValue);
         }
+    }
+    /* copy the workflow note to the discussion thread */
+    $note = stripslashes_deep($_POST['gravityflow_note']);
+    if (!empty($note)) {
+      $comment = "[Workflow note] " . $note;
+      HILRCC_add_comment($entry_id, $comment);
     }
     /* for UI steps, update computed fields */
     $api  = new Gravity_Flow_API($form_id);
@@ -1028,7 +1058,7 @@ function HILRCC_replace_if_not_present($text, $old, $new)
     return $text;
 }
 
-function HILRCC_update_time_summary($entry_id) 
+function HILRCC_update_time_summary($entry_id)
 {
     $entry = GFAPI::get_entry($entry_id);
     $val = "";
@@ -1063,7 +1093,7 @@ function HILRCC_update_workload_string($entry_id)
 		$f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
 		if ($n < 10) {
 			$workload = $f->format($n);
-		}	
+		}
 
 	
 	    $val = "Estimated amount of work outside class is $workload hours per week. ";
@@ -1073,7 +1103,7 @@ function HILRCC_update_workload_string($entry_id)
     GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_COURSE_INFO_STRING, $val);
 }
 
-function HILRCC_compress_spaces_in_field($entry_id, $field_id) 
+function HILRCC_compress_spaces_in_field($entry_id, $field_id)
 {
     $entry = GFAPI::get_entry($entry_id);
 	$field_val = rgar($entry, $field_id);
@@ -1087,7 +1117,7 @@ function HILRCC_compress_spaces_in_field($entry_id, $field_id)
 	}
 }
 
-function HILRCC_compress_spaces($entry_id) 
+function HILRCC_compress_spaces($entry_id)
 {
 	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_TITLE);
 	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_COURSE_DESC);

@@ -28,7 +28,13 @@ var HILRCC = {
 		}
 	
 		/* install the unload handler */
-		var inputs = jQuery("input").not("[type='hidden']").not("[class*='admin']").add("textarea").not("#gravityflow-note").not("#gravityflow-admin-action");
+		var inputs = jQuery("input").add("textarea").add("select")
+			.not("[type='hidden']")
+		    .not("[class*='admin']")
+		    .not("#gravityflow-note")
+		    .not("#gentry_display_empty_fields")
+		    .not("#gravityflow-admin-action");
+		    
 		if ( inputs.length !== 0 ) {
 			jQuery(window).on("beforeunload", HILRCC.onUnload);
 			inputs.change(function() {HILRCC.formIsDirty = true;});

@@ -27,8 +27,11 @@ function HILRCC_fetch_sched_grid()
 		$term = rgar($entry, HILRCC_FIELD_ID_DURATION);
 		$title = rgar($entry, HILRCC_FIELD_ID_TITLE);
 		
-		if (empty($slot) or empty($room) or empty($term) or strcmp($term, "Either First or Second Half") == 0) {
+		if (empty($slot) or empty($term) or strcmp($term, "Either First or Second Half") == 0) {
 			continue;
+		}
+		if (empty($room)) {
+			$room = 'Unassigned';
 		}
 		$key;
 		if (strcmp($slot, '1') == 0 or strcmp($slot, '2') == 0) {
@@ -80,7 +83,7 @@ function HILRCC_fetch_sched_grid()
 add_shortcode('HILRCC_sched_grid', 'HILRCC_emit_sched_grid');
 function HILRCC_emit_sched_grid() 
 {
-	$rooms = preg_split('/,/', HILRCC_ROOMS);    
+	$rooms = preg_split('/,/', 'Unassigned,' . HILRCC_ROOMS);    
 
 ?>
 
@@ -88,7 +91,6 @@ function HILRCC_emit_sched_grid()
   <ul>
     <li><a href="#sched_grid_1">First Half</a></li>
     <li><a href="#sched_grid_2">Second Half</a></li>
-    <li id="hilr_course_names"></li>
   </ul>
 
 <table id='sched_grid_1'>

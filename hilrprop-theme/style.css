@@ -148,30 +148,6 @@ div.gform_wrapper {
 	vertical-align: bottom !important;
 }
 
-/* make the three choices for schedule times sit left-to-right rather than stacked */
-.hilr-sched-1, .hilr-sched-2 {
-	float:left;
-	width: 32%;
-	padding-bottom: 20px;
-}
-
-.gform_wrapper ul li.gfield.hilr-sched-1 {
-	clear: none !important
-}
-
-.gform_wrapper ul li.gfield.hilr-sched-2 {
-	clear: none !important
-}
-
-.gform_wrapper ul li.gfield.hilr-sched-3 {
-	clear: none !important
-}
-
-.hilr-sched-3 {
-	width: 32%;
-	float: left;
-}
-
 /* hide most of the buttons on the rich text editor toolbar */
 .hilr-hide-rte-tools .mce-btn {
 	display: none !important;
@@ -388,6 +364,11 @@ label[for="print_notes"], .gravityflow_workflow_wrap .detail-view-print .button 
 }
 table.gravityflow-step-user_input .hilr-hide-for-committee {
 	display: none;
+}
+
+.ui-tooltip li {
+	font-size: 11px;
+	margin-left: 20px;
 }
 
 /* printing rules */

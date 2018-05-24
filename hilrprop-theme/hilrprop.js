@@ -550,7 +550,7 @@ var HILRCC = {
      		jQuery("td." + HILRCC.stringTable.room_cell_class).dblclick(
     		  	function() {
 					var props = {
-						options: HILRCC.stringTable.room_list.split(','),
+						options: ['Unassigned'].concat(HILRCC.stringTable.room_list.split(',')),
 						updateAjaxAction: "update_room",
 						onAjaxSuccess: HILRCC.updateScheduleGrid
      				};
@@ -701,25 +701,25 @@ var HILRCC = {
 	},
 	
 	addGridListeners: function() {
-		 cells = jQuery("#sched_grid_1 td img").add("#sched_grid_2 td img").not(".hilr-room-name"); /* picks up emojis */
-		 cells.on("mouseover", function(e) {
-			var id = e.target.parentElement.id;
+		 cells = jQuery("#sched_grid_1 td img").add("#sched_grid_2 td img"); /* picks up emojis for checkmark and ! */
+		 cells.attr('title', " ");
+		 cells.tooltip();
+		 for (var i=0; i < cells.length; ++i) {
+		 	var cell = cells[i];
+		 	var id = cell.parentElement.id;
 			if (HILRCC.lastGridDataSet) {
 				var courses = HILRCC.lastGridDataSet[id];
 				if (courses && courses.length) {
-					var s = "";
-					var target = jQuery("#hilr_course_names");
+					var s = "<ol>";
 					for (let i=0; i < courses.length; ++i) {
-						s += courses[i] + "<br>";
+						s += "<li>" + courses[i] + "</li>";
 					}
-					target.html(s);
+					s += "</ol>";
+					jQuery(cell).tooltip("option", "content", s);
 				}
 			 }
-		 });
-		 cells.on("mouseout", function(e) {
-			var id = e.target.id;
-			jQuery("#hilr_course_names").html("");
-		 });
+		 }
+		 cells.tooltip();
 	},
 		
 	updateScheduleGrid: function() {
@@ -750,11 +750,14 @@ var HILRCC = {
 		for (key in gridData) {
 			var cellData = gridData[key];
 			var cell = jQuery("#" + key);
-			if (cellData.length > 1) {
-				cell.text("\u2757");
+			if (key.indexOf("Unassigned") !== -1) {
+				cell.text("\u2753"); // question mark in Unassigned row
+			}
+			else if (cellData.length > 1) {
+				cell.text("\u2757"); // exclamation point if multiple
 			}
 			else {
-				cell.text("\u2714");
+				cell.text("\u2714"); // otherwise checkmark
 			}
 		}    
     
@@ -811,6 +814,9 @@ function InplaceCellEditor() {
 			var parentRow = jQuery(btn).parent().parent();
 			var id = parentRow.children(".hilr-scheduling-entryid").text();
 			var val = jQuery(btn).parent().children("select").val()
+			if (val === 'Unassigned') {
+				val = "";
+			}
 			var data = {
 				'action': this.updateAjaxAction,
 				'entry_id' : id,

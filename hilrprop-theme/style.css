@@ -250,6 +250,29 @@ div.gform_wrapper {
 	font-family: arial;
 	font-weight: 100;
 }
+.hilr-catview-nodisplay {
+	display: none;
+}
+.hilr-catview-duration-header {
+	background-color: black;
+	height: 62px;
+	font-size: 34px;
+	font-family: sans-serif;
+	padding: 8px 0 0 10px;
+	color: white;
+	vertical-align: central;
+}
+.hilr-catview-slot-header {
+	background-color: #d2d3d5;
+	height: 35px;
+	color: black;
+	font-size: 21px;
+	font-style: italic;
+	padding: 3px 0 0 10px;
+	margin: 15px 0;
+}
+
+
 .site-branding {
 	background-image: url(http://ccsubmit.com/wp-content/themes/hilrprop-theme/images/banner-no-shield.jpg);
 	background-repeat: no-repeat;

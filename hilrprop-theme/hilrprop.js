@@ -472,9 +472,9 @@ var HILRCC = {
 			HILRCC.combineCourseNumbersWithTitle();
 			
 			/* inject css classes for shading */
-    		var items = jQuery(".gv-list-view");
+    		let items = jQuery(".gv-list-view");
     		var currentSlot = "";
-    		for (var i=0; i < items.length; ++i) {
+    		for (let i=0; i < items.length; ++i) {
     			var item = jQuery(jQuery(items[i]).children(".gv-list-view-title")[0]);
 
 				var durationDiv = item.children(".hilr-glance-duration")[0];
@@ -572,6 +572,54 @@ var HILRCC = {
     				info.html("");
     			}
     		}
+    		
+    		/* insert headers for term and time slot */
+    		var terms = ["Full Semester Courses", 
+    					 "First Half Six-Week Courses", 
+    					 "Second Half Six-Week Courses"];
+    		
+    		var sawFirstHalf = false, sawSecondHalf = false;
+    		let items = jQuery(".gv-list-view");
+    		
+			var durationHead = jQuery(document.createElement("div"));
+			durationHead.addClass("hilr-catview-duration-header");
+			durationHead.text(terms[0]);
+			items[0].before(durationHead[0]);
+			
+			currentSlot = "";
+			
+			for (let i=0; i < items.length; ++i) {
+				var item = items[i];
+				var slot = jQuery(item).find(".hilr-catview-slot").text();
+				var duration = jQuery(item).find(".hilr-catview-duration").text();
+				
+				if (!sawFirstHalf && (duration.indexOf("First Half") == 0)) {
+					sawFirstHalf = true;
+					durationHead = jQuery(document.createElement("div"));
+					durationHead.addClass("hilr-catview-duration-header");
+					durationHead.text(terms[1]);
+					item.before(durationHead[0]);
+					currentSlot = "";
+				}
+				if (!sawSecondHalf && (duration.indexOf("Second Half") == 0)) {
+					sawSecondHalf = true;
+					durationHead = jQuery(document.createElement("div"));
+					durationHead.addClass("hilr-catview-duration-header");
+					durationHead.text(terms[2]);
+					item.before(durationHead[0]);
+					currentSlot = "";
+				}
+				if (slot && (slot != currentSlot)) {
+					currentSlot = slot;
+					let slotDiv = jQuery(document.createElement("div"));
+					slotDiv.addClass("hilr-catview-slot-header");
+					slotDiv.text(slot);
+					item.before(slotDiv[0]);
+				}
+			}
+
+    		
+    		
     	}
     },
     

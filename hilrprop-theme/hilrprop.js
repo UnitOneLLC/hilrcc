@@ -17,6 +17,7 @@ var HILRCC = {
 	KEEP_TH : "hilr-keep-th",
 	
 	formIsDirty: false, /* flag used by unload handler */
+	loadTime: new Date();
 	
 	/*
 	 * this function is invoked via jQuery when any page on the site loads.
@@ -28,26 +29,8 @@ var HILRCC = {
 		}
 	
 		/* install the unload handler */
-		var inputs = jQuery("input").add("textarea").add("select")
-			.not("[type='hidden']")
-		    .not("[class*='admin']")
-		    .not("#gravityflow-note")
-		    .not("#gentry_display_empty_fields")
-		    .not("#gravityflow-admin-action");
-		    
-		if ( inputs.length !== 0 ) {
-			jQuery(window).on("beforeunload", HILRCC.onUnload);
-			inputs.change(function() {HILRCC.formIsDirty = true;});
-			
-			var submitBtn = jQuery("#gform_submit_button_" + HILRCC.stringTable.formId);
-			if (submitBtn.length) {
-				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
-			}
-			submitBtn = jQuery("#gravityflow_update_button");
-			if (submitBtn.length) {
-				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
-			}
-		}
+		//setTimeout(HILRCC.installUnloadHandler, 1000); /* allow settle time for RTE (bug?) */
+		HILRCC.installUnloadHandler();
 	
 		var viewId = HILRCC.getGravityViewId();
 		if (viewId) {
@@ -61,8 +44,39 @@ var HILRCC = {
 			HILRCC.modifyInboxEntry();
 		}
 		
-		HILRCC.fixAdminBox();
+	  	HILRCC.fixAdminBox();
     },
+    
+    installUnloadHandler: function() {
+      var inputs = jQuery("input").add("textarea").add("select")
+			.not("[type='hidden']")
+		    .not("[class*='admin']")
+		    .not("#gravityflow-note")
+		    .not("#gentry_display_empty_fields")
+		    .not("#gravityflow-admin-action");
+		    
+  		if ( inputs.length !== 0 ) {
+  			jQuery(window).on("beforeunload", HILRCC.onUnload);
+  			inputs.change(function() {
+  				if ( ((new Date()) - HILRCC.loadTime) > 1000) /* weirdness with TinyMCE */
+	  			  HILRCC.formIsDirty = true;
+  			});
+  			
+  			var submitBtn = jQuery("#gform_submit_button_" + HILRCC.stringTable.formId);
+  			if (submitBtn.length) {
+  				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
+  			}
+  			submitBtn = jQuery("#gravityflow_update_button");
+  			if (submitBtn.length) {
+  				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
+  			}
+  			submitBtn = jQuery("#gravityflow_save_progress_button");
+  			if (submitBtn.length) {
+  				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
+  			}
+  		}
+ 			HILRCC.formIsDirty = false;
+     },
     
     isGravitySingleView: function() {
     	return (jQuery(".hilr-view-course-title").length == 1);
@@ -123,7 +137,7 @@ var HILRCC = {
 	   Tuesday PM for the 1st choice, then Tuesday PM is unchecked
 	   for the 2nd and 3rd choices
 	*/
-	/********** DISABLING THIS CODE 
+	/********** DISABLING THIS CODE
 	onSchedClick: function(val, clickedGroup) {
 		var clicked, others = Array(2);
 		if (clickedGroup === 1) {
@@ -234,9 +248,9 @@ var HILRCC = {
     		return;
 
 		var warningUrl = HILRCC.stringTable.childThemeRootURL + "/adminwarning.html";
-  		var markUp = "<div class='hilr-admin-postbox-wrapper'>" + 
+  		var markUp = "<div class='hilr-admin-postbox-wrapper'>" +
 						"<button id='hilr-toggle-admin-btn'>Workflow Controls</button>" +
-					 "</div>" + 
+					 "</div>" +
 					 "<iframe id='hilr-admin-warning-frame' src='" + warningUrl + "'/>";
 
     	adminBox.before(markUp);
@@ -391,7 +405,7 @@ var HILRCC = {
 		var month = today.getMonth();
 		var year = today.getYear() + 1900;
 		var comingSeason = "";
-		if (month <= 6)
+		if (month <= 5)
 			comingSeason = "Fall ";
 		else {
 			comingSeason = "Spring ";
@@ -517,7 +531,7 @@ var HILRCC = {
     		jQuery("td." + HILRCC.stringTable.slot_cell_class).dblclick(
     		  	function() {
 					var props = {
-						options: ["Monday AM", "Monday PM", "Tuesday AM", "Tuesday PM",
+						options: ["", "Monday AM", "Monday PM", "Tuesday AM", "Tuesday PM",
 								   "Wednesday AM", "Wednesday PM", "Thursday AM", "Thursday PM" ],
 						updateAjaxAction: "update_timeslot",
 						onAjaxSuccess: HILRCC.updateScheduleGrid
@@ -574,8 +588,8 @@ var HILRCC = {
     		}
     		
     		/* insert headers for term and time slot */
-    		var terms = ["Full Semester Courses", 
-    					 "First Half Six-Week Courses", 
+    		var terms = ["Full Semester Courses",
+    					 "First Half Six-Week Courses",
     					 "Second Half Six-Week Courses"];
     		
     		var sawFirstHalf = false, sawSecondHalf = false;
@@ -749,12 +763,17 @@ var HILRCC = {
 	},
 	
 	addGridListeners: function() {
-		 cells = jQuery("#sched_grid_1 td img").add("#sched_grid_2 td img"); /* picks up emojis for checkmark and ! */
+		 var bUsesImgs = true;
+		 var cells = jQuery("#sched_grid_1 td img").add("#sched_grid_2 td img"); /* picks up emojis for checkmark and ! */
+		 if (cells.length == 0) {
+		    bUsesImgs = false;
+			cells = jQuery("#sched_grid_1 td").add("#sched_grid_2 td").not(".hilr-room-name"); /* Firefox */
+		 }
 		 cells.attr('title', " ");
 		 cells.tooltip();
 		 for (var i=0; i < cells.length; ++i) {
 		 	var cell = cells[i];
-		 	var id = cell.parentElement.id;
+		 	var id = bUsesImgs ? cell.parentElement.id : cell.id;
 			if (HILRCC.lastGridDataSet) {
 				var courses = HILRCC.lastGridDataSet[id];
 				if (courses && courses.length) {
@@ -777,8 +796,8 @@ var HILRCC = {
         jQuery.post(HILRCC.stringTable.ajaxURL, data, function(response) {
 					HILRCC.populateScheduleGrid(response);
   			 		setTimeout(HILRCC.addGridListeners,1000);
-		});    
-	},		
+		});
+	},
     
     lastGridDataSet: null,
     
@@ -807,7 +826,7 @@ var HILRCC = {
 			else {
 				cell.text("\u2714"); // otherwise checkmark
 			}
-		}    
+		}
     
     }
         

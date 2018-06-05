@@ -228,7 +228,12 @@ div.gform_wrapper {
 	font-weight: bold;
 	background-color: black;
 }
-
+/* make the GravityView edit page look more like the Gravity Form */
+.gv-edit-entry-wrapper .gfield_label {
+	background-color: #ebf2ff;
+	width: 100%;
+	padding: 10px;
+}
 /* make visited links green in the proposal listings */
 .gv-table-multiple-container a:visited {
 	color: #4C4;

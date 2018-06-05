@@ -260,7 +260,7 @@ function HILRCC_inject_workflow_link()
 	if (is_entry_assigned_current_user($entry)) {
 		$link .= "inbox/?page=gravityflow-inbox&view=entry&id=" . HILRCC_PROPOSAL_FORM_ID .
 		         "&lid=" . $entry['id'];
-		$text = "View in Inbox";
+		$text = "Act on this proposal";
 		$isInInbox = true;
 	}
 	/* if the current user is an admin, link to the administravie workflow view page */
@@ -279,7 +279,7 @@ function HILRCC_inject_workflow_link()
 		if (!$isInInbox) {
 			$link .= "administrative/workflow-status/?page=gravityflow-inbox&view=entry&id=" .
 					 HILRCC_PROPOSAL_FORM_ID . "&lid=" . $entry['id'];
-			$text = "View in Workflow";
+			$text = "Act on this proposal";
 		}
 	}
 
@@ -314,8 +314,14 @@ function renumber_courses() {
 	$startNumber = intval($start);
 	$semester = stripslashes_deep($_POST["semester"]);
 	$search = array();
-	$search[HILRCC_FIELD_ID_SEMESTER] = $semester;
 	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
+	
+	$search['field_filters'] = array();
+	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_SEMESTER, 'operator'=>'is', 'value'=>$semester);
+	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_STATUS, 'operator'=>'is', 'value'=>'Approved');
+	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_DURATION, 'operator'=>'isnot', 'value'=>'Either First or Second Half');
+	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_TIMESLOT, 'operator'=>'isnot', 'value'=>'');
+	
 	/** THERE MAY BE ADDITIONAL SEARCH CRITERIA **/
 		
 	$entries = GFAPI::get_entries(0, $search, null);
@@ -943,6 +949,18 @@ function HILRCC_gravityflow_step_complete($step_id, $entry_id, $form_id, $status
             $result = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_STATUS, $newFieldValue);
         }
     }
+    if ($step_id == HILRCC_STEP_ID_VOTING) {
+        $newFieldValue = NULL;
+        $formStatus    = $_POST['gravityflow_approval_new_status_step_' . HILRCC_STEP_ID_VOTING];
+        if ($formStatus == 'approved') {
+            $newFieldValue = 'Approved';
+        } else if ($formStatus == 'rejected') {
+            $newFieldValue = 'Rejected';
+        }
+        if ($newFieldValue != NULL) {
+            $result = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_STATUS, $newFieldValue);
+        }
+    }
     /* copy the workflow note to the discussion thread */
     $note = stripslashes_deep($_POST['gravityflow_note']);
     if (!empty($note)) {
@@ -1127,4 +1145,5 @@ function HILRCC_compress_spaces($entry_id)
 	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_OTHER_MAT);
 }
 include 'schedgrid.php';
+include 'drafts.php';
 ?>

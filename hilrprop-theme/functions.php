@@ -13,12 +13,13 @@ define('HILRCC_PROPOSAL_FORM_ID', '2');
 #
 # IDs for GravityView views
 define('HILRCC_VIEW_ID_REVIEW', '129');
-define('HILRCC_VIEW_ID_VOTING', '273');
 define('HILRCC_VIEW_ID_CATALOG', '201');
+define('HILRCC_VIEW_ID_VOTING', '273');
 define('HILRCC_VIEW_ID_ALL', '308');
 define('HILRCC_VIEW_ID_DISCUSS', '376');
-define('HILRCC_VIEW_ID_GLANCE', '426');
+define('HILRCC_VIEW_ID_WEEKLY', '405');
 define('HILRCC_VIEW_ID_INBOX', '415');
+define('HILRCC_VIEW_ID_GLANCE', '426');
 #
 # IDs for fields in the Gravity Forms form
 define('HILRCC_FIELD_ID_TITLE', '1');
@@ -87,7 +88,7 @@ $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_MOD_BY_SPONSOR => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_POST_REV_MOD => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_POST_REV_ROUT => array("APPROVE"=>"Approve", "REJECT"=>"Reject", "REVERT"=>"Send to Sponsor"),
-	HILRCC_STEP_ID_VOTING => array("APPROVE"=>"Approve", "REJECT"=>"Reject", "REVERT"=>"Revert"),
+	HILRCC_STEP_ID_VOTING => array("APPROVE"=>"Approve", "REJECT"=>"Reject", "REVERT"=>"Send to Sponsor"),
 	HILRCC_STEP_ID_FINAL_SPONSOR_REVIEW => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_PRE_PUB => array("SUBMIT"=>"Submit for Catalog", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save")
@@ -248,7 +249,6 @@ function get_entry_id_from_gravityview_url() {
 function HILRCC_inject_workflow_link()
 {
 	$link = site_url() . "/index.php/";
-	$view = GravityView_View::getInstance();
 	$entry_id = get_entry_id_from_gravityview_url();
 	if ($entry_id == NULL) {
 		return;
@@ -270,7 +270,7 @@ function HILRCC_inject_workflow_link()
 		/* and emit an edit link (will be completed on client) for admins -- only
 		   for the All Proposals view
 		*/
-		$view_id = GravityView_View::getInstance()->getViewId();
+		$view_id = HILRCC_get_view_id_from_url();
 		if ($view_id == HILRCC_VIEW_ID_ALL) {
 			?>
 				<div><a id="hilr_edit_this_proposal_link">Edit this proposal⟶</a></div>
@@ -286,7 +286,7 @@ function HILRCC_inject_workflow_link()
 	if (isset($text)) {
 	?>
 		<div >
-			<a id="goto-workflow" href="<?php echo $link ?>"><?php echo $text ?>⟶</a>
+			<a id="goto-workflow" href="<?php echo $link ?>"><?php echo $text?>⟶</a>
 		</div>
 	<?php
 	}
@@ -797,14 +797,44 @@ add_action('login_enqueue_scripts', 'my_login_logo');
 /* In GravityView, display the label of a dropdown field value instead of its sorting value */
 add_filter('gravityview/fields/select/output_label', '__return_true');
 
-/* Attach filter to GravityView get_entries to enable custom sort for catalog view */
-add_filter('gravityview_entries', 'HILRCC_custom_view_entries');
-function HILRCC_custom_view_entries($entries)
+function HILRCC_get_view_id_from_url() 
 {
-    $view_id = GravityView_View::getInstance()->getViewId();
+	$url = $_SERVER['REQUEST_URI'];
+	if (strpos($url, "inbox-view") !== false)
+		return HILRCC_VIEW_ID_INBOX;
+	if (strpos($url, "proposal-view") !== false) 
+		return HILRCC_VIEW_ID_REVIEW;
+	if (strpos($url, "voting-review") !== false)
+		return HILRCC_VIEW_ID_VOTING;
+	if (strpos($url, "all-proposals") !== false)
+		return HILRCC_VIEW_ID_ALL;
+	if (strpos($url, "weekly-update") !== false)
+		return HILRCC_VIEW_ID_WEEKLY;
+	if (strpos($url, "catalog") !== false)
+		return HILRCC_VIEW_ID_CATALOG;
+	if (strpos($url, "at-a-glance") !== false)
+		return HILRCC_VIEW_ID_GLANCE;
+	return '0';
+}
+
+
+/* Attach filter to GravityView get_entries to enable custom sort for catalog view */
+add_filter('gravityview/view/entries', 'HILRCC_custom_view_entries');
+function HILRCC_custom_view_entries($entry_coll)
+{
+#####    $view_id = GravityView_View::getInstance()->getViewId();
+
+	$entries = $entry_coll->all();
+	$view_id = HILRCC_get_view_id_from_url();
+	
     if ($view_id == HILRCC_VIEW_ID_CATALOG) {
         try {
             usort($entries, catalog_comparator);
+            $coll = new \GV\Entry_Collection();
+            foreach($entries as $entry) {
+            	$coll->add($entry);
+            }
+            return $coll;
         }
         catch (Exception $e) {
             echo 'Catalog sorting error:: ', $e->getMessage(), "\n";
@@ -813,25 +843,31 @@ function HILRCC_custom_view_entries($entries)
     else if ($view_id == HILRCC_VIEW_ID_GLANCE) {
         try {
             usort($entries, glance_comparator);
+            $coll = new \GV\Entry_Collection();
+            foreach($entries as $entry) {
+            	$coll->add($entry);
+            }
+            return $coll;
         }
         catch (Exception $e) {
-            echo 'Catalog sorting error:: ', $e->getMessage(), "\n";
+            echo 'Glance sorting error:: ', $e->getMessage(), "\n";
         }
     }
     else if ($view_id == HILRCC_VIEW_ID_INBOX) {
     
-    	$in_inbox = array();
+		$inbox_coll = new \GV\Entry_Collection();
     	$user = wp_get_current_user();
     	$user_id = $user->ID;
     	foreach ($entries as &$entry) {
     		if (is_entry_assigned_current_user($entry)) {
-    			array_push($in_inbox, $entry);
+    			$inbox_coll->add($entry);
     		}
 		}
-		return $in_inbox;
+		return $inbox_coll;
     }
-    
-    return $entries;
+    else {
+    	return $entry_coll;
+    }
 }
 
 function is_entry_assigned_current_user($entry)

@@ -1,5 +1,10 @@
 <?php
-
+# HILR Course Proposals app (server side).
+# Copyright (c) 2018 HILR
+# Author: Frederick Hewett
+#
+# This module serves the scheduling grid page
+#
 add_action('wp_ajax_get_sched_grid_data', 'HILRCC_fetch_sched_grid');
 function HILRCC_fetch_sched_grid() 
 {

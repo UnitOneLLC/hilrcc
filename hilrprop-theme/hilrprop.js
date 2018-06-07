@@ -17,7 +17,7 @@ var HILRCC = {
 	KEEP_TH : "hilr-keep-th",
 	
 	formIsDirty: false, /* flag used by unload handler */
-	loadTime: new Date();
+	loadTime: new Date(),
 	
 	/*
 	 * this function is invoked via jQuery when any page on the site loads.
@@ -29,8 +29,7 @@ var HILRCC = {
 		}
 	
 		/* install the unload handler */
-		//setTimeout(HILRCC.installUnloadHandler, 1000); /* allow settle time for RTE (bug?) */
-		HILRCC.installUnloadHandler();
+		setTimeout(HILRCC.installUnloadHandler, 4000); /* allow settle time for RTE (bug?) */
 	
 		var viewId = HILRCC.getGravityViewId();
 		if (viewId) {
@@ -46,20 +45,23 @@ var HILRCC = {
 		
 	  	HILRCC.fixAdminBox();
     },
-    
+
+	allowedChangeElementIds: ["gravityflow-note", "gravityflow-admin-action", "gentry_display_empty_fields"];
+	     
     installUnloadHandler: function() {
-      var inputs = jQuery("input").add("textarea").add("select")
-			.not("[type='hidden']")
-		    .not("[class*='admin']")
-		    .not("#gravityflow-note")
-		    .not("#gentry_display_empty_fields")
-		    .not("#gravityflow-admin-action");
+
+		var inputs = jQuery("form");		    
 		    
   		if ( inputs.length !== 0 ) {
   			jQuery(window).on("beforeunload", HILRCC.onUnload);
-  			inputs.change(function() {
-  				if ( ((new Date()) - HILRCC.loadTime) > 1000) /* weirdness with TinyMCE */
-	  			  HILRCC.formIsDirty = true;
+  			
+  			inputs.change(function(e) {
+  				var lookingFor = e.target.id;
+  				for(var i=0; i < allowedChangeElementIds.length; ++i) {
+  					if (allowedChangeElementIds[i] == lookingFor)
+  						return;
+  				}
+	  			HILRCC.formIsDirty = true;
   			});
   			
   			var submitBtn = jQuery("#gform_submit_button_" + HILRCC.stringTable.formId);
@@ -74,8 +76,8 @@ var HILRCC = {
   			if (submitBtn.length) {
   				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
   			}
+	 		HILRCC.formIsDirty = false;
   		}
- 			HILRCC.formIsDirty = false;
      },
     
     isGravitySingleView: function() {
@@ -95,9 +97,9 @@ var HILRCC = {
 			jQuery(resetBtn).click(HILRCC.confirmClearForm);
 		}
 		
-		/* hide the delayed start option from January through June */
+		/* hide the delayed start option from January through May */
 		var today = new Date();
-		if (today.getMonth() < 6) { /* Jan is 0 */
+		if (today.getMonth() < 5) { /* Jan is 0 */
 			var idclass = ".gchoice_" + HILRCC.stringTable.formId + "_3_1";
 			var delayStartOption = jQuery(".hilr-duration " + idclass);
 			if (delayStartOption) {
@@ -353,10 +355,9 @@ var HILRCC = {
      */
     handle_add_comment: function() {
     	var text = jQuery("#hilr_comment_input").val();
-    	var path = location.href.split('/');
-    	var entryId = path[path.length-1];
-    	if (!entryId) entryId = path[path.length-2];
-    
+    	var path = location.pathname.split('/');
+   		var entryId = path[path.length-1];
+    	if (!entryId) entryId = path[path.length-2];    
     	var data = {
 			'action': 'add_comment',
 			'entryId' : entryId,
@@ -427,9 +428,11 @@ var HILRCC = {
 		return hilrcls;
     },
     
-    onUnload: function() {
+    onUnload: function(e) {
     	if (HILRCC.formIsDirty) {
-    		return "You have unsaved input -- click Cancel to stay on page";
+			var msg = "You have unsaved input -- click Cancel to stay on page";
+			e.returnValue = msg;
+    		return msg;
     	}
     	else {
     		return undefined;
@@ -832,7 +835,8 @@ var HILRCC = {
         
 };
 		
-jQuery(document).ready(HILRCC.onLoad);
+//jQuery(document).ready(HILRCC.onLoad);
+jQuery(window).on("pageshow", HILRCC.onLoad);
 
 
 function InplaceCellEditor() {
@@ -910,5 +914,20 @@ function InplaceCellEditor() {
 	};
 }
 
-
+/*
+ * Get query string parameter/value
+ * from https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+ * NOT IN USE CURRENTLY
+ */
+ /*
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+*/
 

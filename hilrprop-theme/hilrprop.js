@@ -29,7 +29,7 @@ var HILRCC = {
 		}
 	
 		/* install the unload handler */
-		setTimeout(HILRCC.installUnloadHandler, 4000); /* allow settle time for RTE (bug?) */
+		setTimeout(HILRCC.installUnloadHandler, 3000); /* allow settle time for RTE (bug?) */
 	
 		var viewId = HILRCC.getGravityViewId();
 		if (viewId) {
@@ -46,7 +46,7 @@ var HILRCC = {
 	  	HILRCC.fixAdminBox();
     },
 
-	allowedChangeElementIds: ["gravityflow-note", "gravityflow-admin-action", "gentry_display_empty_fields"];
+	allowedChangeElementIds: ["gravityflow-note", "gravityflow-admin-action", "gentry_display_empty_fields"],
 	     
     installUnloadHandler: function() {
 
@@ -57,8 +57,8 @@ var HILRCC = {
   			
   			inputs.change(function(e) {
   				var lookingFor = e.target.id;
-  				for(var i=0; i < allowedChangeElementIds.length; ++i) {
-  					if (allowedChangeElementIds[i] == lookingFor)
+  				for(var i=0; i < HILRCC.allowedChangeElementIds.length; ++i) {
+  					if (HILRCC.allowedChangeElementIds[i] == lookingFor)
   						return;
   				}
 	  			HILRCC.formIsDirty = true;
@@ -406,7 +406,7 @@ var HILRCC = {
 		var month = today.getMonth();
 		var year = today.getYear() + 1900;
 		var comingSeason = "";
-		if (month <= 5)
+		if (month < 5)
 			comingSeason = "Fall ";
 		else {
 			comingSeason = "Spring ";
@@ -596,7 +596,7 @@ var HILRCC = {
     					 "Second Half Six-Week Courses"];
     		
     		var sawFirstHalf = false, sawSecondHalf = false;
-    		let items = jQuery(".gv-list-view");
+    		let items = jQuery("[id*=gv_list_]");
     		
 			var durationHead = jQuery(document.createElement("div"));
 			durationHead.addClass("hilr-catview-duration-header");
@@ -794,7 +794,8 @@ var HILRCC = {
 		
 	updateScheduleGrid: function() {
         var data = {
-				'action': 'get_sched_grid_data'
+				'action': 'get_sched_grid_data',
+				'semester': HILRCC.getCurrentSemester()
 		};
         jQuery.post(HILRCC.stringTable.ajaxURL, data, function(response) {
 					HILRCC.populateScheduleGrid(response);
@@ -835,8 +836,7 @@ var HILRCC = {
         
 };
 		
-//jQuery(document).ready(HILRCC.onLoad);
-jQuery(window).on("pageshow", HILRCC.onLoad);
+jQuery(window).ready(HILRCC.onLoad);
 
 
 function InplaceCellEditor() {

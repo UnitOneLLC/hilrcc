@@ -794,6 +794,13 @@ function my_login_logo()
 }
 add_action('login_enqueue_scripts', 'my_login_logo');
 
+
+add_filter('gravityview/sorting/full-name', 'HILRCC_set_name_sort_last');
+function HILRCC_set_name_sort_last() {
+	return "last";
+}
+
+
 /* In GravityView, display the label of a dropdown field value instead of its sorting value */
 add_filter('gravityview/fields/select/output_label', '__return_true');
 

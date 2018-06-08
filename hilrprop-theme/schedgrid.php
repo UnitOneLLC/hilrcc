@@ -18,10 +18,13 @@ function HILRCC_fetch_sched_grid()
 		...
 	}
 */
+	$semester = stripslashes_deep($_POST["semester"]);
 	$search = array();
-	$search[HILRCC_FIELD_ID_SEMESTER] = $semester;
 	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
-	/** THERE MAY BE ADDITIONAL SEARCH CRITERIA **/
+	
+	$search['field_filters'] = array();
+	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_SEMESTER, 'operator'=>'is', 'value'=>$semester);
+	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_STATUS, 'operator'=>'is', 'value'=>'Approved');
 	
 	$entries = GFAPI::get_entries(0, $search, null);
 	$result = array();

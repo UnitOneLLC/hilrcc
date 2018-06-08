@@ -102,7 +102,7 @@ var HILRCC = {
 		
 		/* hide the delayed start option from January through May */
 		var today = new Date();
-		if (today.getMonth() < 5) { /* Jan is 0 */
+		if (today.getMonth() < 6) { /* Jan is 0 */
 			var idclass = ".gchoice_" + HILRCC.stringTable.formId + "_3_1";
 			var delayStartOption = jQuery(".hilr-duration " + idclass);
 			if (delayStartOption) {
@@ -409,7 +409,7 @@ var HILRCC = {
 		var month = today.getMonth();
 		var year = today.getYear() + 1900;
 		var comingSeason = "";
-		if (month < 5)
+		if (month < 6)
 			comingSeason = "Fall ";
 		else {
 			comingSeason = "Spring ";

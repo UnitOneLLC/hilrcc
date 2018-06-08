@@ -50,11 +50,14 @@ var HILRCC = {
 	     
     installUnloadHandler: function() {
 
+		jQuery("iframe").contents().find("#tinymce").on("keyup", function() {
+			HILRCC.formIsDirty = true;
+		}); 
+  			
 		var inputs = jQuery("form");		    
 		    
   		if ( inputs.length !== 0 ) {
   			jQuery(window).on("beforeunload", HILRCC.onUnload);
-  			
   			inputs.change(function(e) {
   				var lookingFor = e.target.id;
   				for(var i=0; i < HILRCC.allowedChangeElementIds.length; ++i) {

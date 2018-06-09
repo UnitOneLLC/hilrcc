@@ -11,6 +11,13 @@
 add_shortcode('HILRCC_drafts_table', 'HILRCC_emit_drafts_table');
 function HILRCC_emit_drafts_table()
 {
+  // restrict access to admins
+  $user = wp_get_current_user();
+  if ( !in_array('cc_admin', (array) $user->roles) and
+	   !in_array('administrator', (array) $user->roles)) {
+	   return;
+  }
+
   global $wpdb;
   
   $table = $wpdb->prefix . 'gf_draft_submissions';
@@ -41,9 +48,9 @@ function HILRCC_emit_drafts_table()
 	  $created = $draft['date_created'];
 ?>
 		<tr>
-			<td><a href='$link_url'>$uuid</a></td>
-			<td>$email</td>
-			<td>$created</td>
+			<td><a href='<?php echo"$link_url"; ?>'><?php echo "$uuid"; ?></a></td>
+			<td><?php echo "$email"; ?></td>
+			<td><?php echo "$created" ?></td>
 		</tr>
 <?php
 	}

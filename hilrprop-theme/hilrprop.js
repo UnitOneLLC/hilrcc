@@ -4,6 +4,7 @@
  *
  * Client-side code for HILR Course proposal app
  */
+ 
 var HILRCC = {
 	/* the string table is set up in functions.php -- see HILRCC_enqueue_styles */
 	stringTable: HILRCC_stringTable,
@@ -29,7 +30,7 @@ var HILRCC = {
 		}
 	
 		/* install the unload handler */
-		setTimeout(HILRCC.installUnloadHandler, 3000); /* allow settle time for RTE (bug?) */
+		setTimeout(HILRCC.installUnloadHandler, 2500); /* allow settle time for RTE (bug?) */
 	
 		var viewId = HILRCC.getGravityViewId();
 		if (viewId) {
@@ -91,6 +92,16 @@ var HILRCC = {
      * initialization of the main form
      */
     setupMainForm: function() {
+    
+    	var jform = jQuery("#gform_" + HILRCC.stringTable.formId);
+    	jform.keypress(function(event) {
+    		HILRCC.lastKey = event.charCode;
+    		if (event.charCode == 13) {
+    			event.preventDefault();
+    		}
+    		return true;
+    	});
+
     	/* add a button to reset the form */
 		var footer = jQuery(".gform_footer");
 		if (footer.length == 1) {
@@ -100,15 +111,18 @@ var HILRCC = {
 			jQuery(resetBtn).click(HILRCC.confirmClearForm);
 		}
 		
-		/* hide the delayed start option from January through May */
-		var today = new Date();
-		if (today.getMonth() < 6) { /* Jan is 0 */
+		/* hide the delayed start if target semester is Fall */
+		if (HILRCC.getCurrentSemester().indexOf("Fall") == 0) {
 			var idclass = ".gchoice_" + HILRCC.stringTable.formId + "_3_1";
 			var delayStartOption = jQuery(".hilr-duration " + idclass);
 			if (delayStartOption) {
 				delayStartOption.hide();
 			}
 		}
+
+		var jAjaxFrame = jQuery("#gform_ajax_frame_" + HILRCC.stringTable.formId);		
+		jAjaxFrame.off("load", HILRCC.onLoad);
+		jAjaxFrame.on("load", HILRCC.onLoad);		
 
 		/* initialize listeners for schedule choice radio buttons */
 		/**** DISABLING THIS CODE

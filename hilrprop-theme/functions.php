@@ -612,77 +612,31 @@ function HILRCC_ajax_update_computed_fields()
 }
 
 /**
- * Validate fields, including phone field on submit
+ * Validate phone fields
  *
  * @return array('is_valid'=>bool, 'message'=>string)
  */
-
-add_filter('gform_validation', 'HILRCC_custom_validation');
-function HILRCC_custom_validation($validation_result)
+add_filter('gform_field_validation_' . HILRCC_PROPOSAL_FORM_ID . '_' . HILRCC_FIELD_ID_PHONE_1, 'HILRCC_validate_phone_field_1');
+add_filter('gform_field_validation_' . HILRCC_PROPOSAL_FORM_ID . '_' . HILRCC_FIELD_ID_PHONE_2, 'HILRCC_validate_phone_field_2');
+function HILRCC_validate_phone_field_1() {
+	return HILRCC_validate_phone_field(HILRCC_FIELD_ID_PHONE_1);
+}
+function HILRCC_validate_phone_field_2() {
+	return HILRCC_validate_phone_field(HILRCC_FIELD_ID_PHONE_2);
+}
+function HILRCC_validate_phone_field($field_id)
 {
-    $form   = $validation_result['form'];
-    $c1     = rgpost('input_' . HILRCC_FIELD_ID_CHOICE_1);
-    $c2     = rgpost('input_' . HILRCC_FIELD_ID_CHOICE_2);
-    $c3     = rgpost('input_' . HILRCC_FIELD_ID_CHOICE_3);
-    $phone1 = rgpost('input_' . HILRCC_FIELD_ID_PHONE_1);
-    $phone2 = rgpost('input_' . HILRCC_FIELD_ID_PHONE_2);
-    
-    /* this is the old code to validate time slots -- we no longer enforce unique slots */
-    /*
-    if ($c1 != $c2) {
-        $c2_ok = true;
-    } else {
-        $c2_ok = false;
-    }
-    if (($c1 != $c3) and ($c2 != $c3)) {
-        $c3_ok = true;
-    } else {
-        $c3_ok = false;
-    }
-    */
-    $phone1_ok = HILRCC_validate_phone($phone1);
-    if (($phone2 != NULL) and ($phone2 != '')) {
-        $phone2_ok = HILRCC_validate_phone($phone2);
-    } else {
-        $phone2_ok = true;
-    }
-    
-    if ($phone1_ok and $phone2_ok) {
-        $validation_result['is_valid'] = true;
-        return $validation_result;
-    }
-    
-    // set the form validation to false
-    $validation_result['is_valid'] = false;
-    
-    //finding Field with ID of 1 and marking it as failed validation
-    foreach ($form['fields'] as &$field) {
-	/* no longer enforcing this
-        if (($field->id == HILRCC_FIELD_ID_CHOICE_2) and (!$c2_ok)) {
-            $field->failed_validation  = true;
-            $field->validation_message = 'Second choice cannot be the same as first.';
-        }
-        
-        if (($field->id == HILRCC_FIELD_ID_CHOICE_3) and (!$c3_ok)) {
-            $field->failed_validation  = true;
-            $field->validation_message = 'Third choice cannot be the same as first or second.';
-        }
-    */
-        
-        if (($field->id == HILRCC_FIELD_ID_PHONE_1) and (!$phone1_ok)) {
-            $field->failed_validation  = true;
-            $field->validation_message = 'Please enter a valid phone number.';
-        }
-        
-        if (($field->id == HILRCC_FIELD_ID_PHONE_2) and (!$phone2_ok)) {
-            $field->failed_validation  = true;
-            $field->validation_message = 'Please enter a valid phone number.';
-        }
-    }
-    
-    //Assign modified $form object back to the validation result
-    $validation_result['form'] = $form;
-    return $validation_result;
+	$result = array();
+	$phone = rgpost('input_' . $field_id);
+	if (!HILRCC_validate_phone($phone)) {
+		$result['is_valid'] = false;
+        $result['message'] = 'Please enter a valid phone number.';
+	}
+	else {
+		$result['is_valid'] = true;
+		$result['message'] = '';
+	}
+	return $result;
 }
 
 function HILRCC_validate_phone($numberString)

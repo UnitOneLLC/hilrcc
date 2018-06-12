@@ -104,14 +104,6 @@ div.gform_wrapper {
     margin-bottom: 0;
 }}
 
-/* SGL form - lay out horiz */
-.sgl-email {
-	float: left;
-}
-.sgl-phone {
-	float: left;
-}
-
 /* discussion header */
 .gv-table-single-container .gravityflow-dicussion-item-name {
 	font-size: 0.9em;
@@ -159,20 +151,6 @@ div.gform_wrapper {
 	display: none !important;
 }
 
-/* make the SGL info fields lay out horizontally */
-
-.sgl-email, .sgl-phone {
-	float: left !important;
-}
-.gform_wrapper ul li.gfield.sgl-email {
-    clear: none !important;
-}
-.gform_wrapper ul li.gfield.sgl-phone {
-    clear: none !important;
-}
-.gform_wrapper ul li.gfield.sgl-prev {
-    clear: none !important;
-}
 .sgl-prev select {
 	height: 36px;
 }

@@ -639,6 +639,23 @@ function HILRCC_validate_phone_field($field_id)
 	}
 	return $result;
 }
+// validate workload field
+add_filter('gform_field_validation_' . HILRCC_PROPOSAL_FORM_ID . '_' . HILRCC_FIELD_ID_WORKLOAD, 'HILRCC_validate_workload');
+function HILRCC_validate_workload()
+{
+	$result = array();
+	$workload = rgpost('input_' . HILRCC_FIELD_ID_WORKLOAD);
+	$is_match = preg_match("/[0-4]/", $workload, $matches);
+	if ($is_match and ($matches[0] == trim($workload))) {
+		$result['is_valid'] = true;
+		$result['message'] = '';
+	}
+	else {
+		$result['is_valid'] = false;
+        $result['message'] = 'Please enter a whole number of hours.';
+	}
+	return $result;
+}
 
 function HILRCC_validate_phone($numberString)
 {

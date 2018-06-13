@@ -122,7 +122,8 @@ function HILRCC_enqueue_styles()
 		'size_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_CLASS_SIZE,
 		'duration_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_DURATION,
 		'room_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_ROOM,
-		'room_list' => HILRCC_ROOMS
+		'room_list' => HILRCC_ROOMS,
+		'role_context' => in_array('administrator', (array) wp_get_current_user()->roles) ? 'hilr-cc-adm' : 'hilr-cc-usr'
 	));
 }
 add_action('wp_enqueue_scripts', 'HILRCC_enqueue_styles');

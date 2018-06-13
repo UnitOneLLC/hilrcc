@@ -381,6 +381,13 @@ li label {
 	white-space: nowrap !important;
 }
 
+.hilr-cc-usr #wp-admin-bar-gravityview {
+	display: none;
+}
+.hilr-cc-usr #wp-admin-bar-gform-forms {
+	display: none;
+}
+
 /* printing rules */
 @media print {
 	* { /* this fixes background colors (Chrome) */

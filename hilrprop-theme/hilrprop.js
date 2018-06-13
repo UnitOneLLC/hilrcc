@@ -45,6 +45,11 @@ var HILRCC = {
 		}
 		
 	  	HILRCC.fixAdminBox();
+	  	
+	  	// disable autofill
+		jQuery("input").attr( 'autocomplete', 'new-password' );
+		
+		jQuery("body").addClass(HILRCC.stringTable.role_context);
     },
 
 	allowedChangeElementIds: ["gravityflow-note", "gravityflow-admin-action", "gentry_display_empty_fields"],

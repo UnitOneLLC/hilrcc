@@ -13,7 +13,7 @@
 */
 
 h2.gsection_title {
-	color: blue;
+	color: #a12334;
 	font-weight: bold;
 }
 
@@ -97,6 +97,30 @@ div.gform_wrapper {
 .navigation-top > .wrap {
 	padding-top: 0;
 	padding-bottom: 0;
+}
+/* nav "tabs" */
+li.menu-item-object-page,li.menu-item-object-custom {
+	padding: 12px 0;
+	background-color: #d88080;
+	vertical-align: central;
+	font-weight: normal;
+	border-radius: 6px 6px 0 0 
+}
+li.menu-item-object-page a, li.menu-item-object-custom a {
+	color: #f0f0f0 !important;
+	cursor: pointer;
+}
+li.menu-item-object-page.page_item {
+	background-color: #a12334 !important;
+}
+li.menu-item-object-page.page_item a {
+	color: white !important;
+	font-weight: bold;
+	cursor: pointer;
+}
+li.menu-item-object-page:hover,li.menu-item-object-custom:hover {
+	background-color: #ea9292;
+	font-weight: bold;
 }
 
 @media screen and (min-width: 48em) {
@@ -387,6 +411,39 @@ li label {
 .hilr-cc-usr #wp-admin-bar-gform-forms {
 	display: none;
 }
+
+/* buttons */
+input.gform_button, a.gform_save_link, #hilr_reset_btn {
+    font: 15px "Tahoma", sans-serif;
+    color: #fff;
+    padding: 12px 16px 12px 16px;
+    border: 1px solid #a02020 !important;
+    text-decoration: none;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+    
+    -moz-border-radius: 5px !important;
+    -webkit-border-radius: 5px !important;
+    border-radius: 5px !important;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    background-color: #008fcf;
+    box-shadow:
+		0 1px 0 rgba(0,0,0,.08),
+        inset 0 1px 2px rgba(255,255,255,.67),
+        inset 0 -1px 0 rgba(0,0,0,.14) !important;    
+    background-image: -moz-linear-gradient(0deg, #811314 0%, #c14455 100%);
+    background-image: -o-linear-gradient(0deg, #811314 0%, #c14455 100%);
+    background-image: -webkit-linear-gradient(0deg, #811314 0%, #c14455 100%);
+    background-image: linear-gradient(0deg, #811314 0%, #c14455 100%);
+    cursor: pointer !important;
+	font-weight: bold
+}
+
+input.gform_button:hover, a.gform_save_link:hover, #hilr_reset_btn:hover {
+	opacity: 0.7;
+}
+
 
 /* printing rules */
 @media print {

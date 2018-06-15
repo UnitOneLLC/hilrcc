@@ -108,6 +108,13 @@ function HILRCC_enqueue_styles()
     ));
     wp_enqueue_script('hilrpropjs');
 
+	if (!is_user_logged_in())
+		$role_context = 'hilr-cc-anon';
+	else if (in_array('administrator', (array) wp_get_current_user()->roles))
+		$role_context = 'hilr-cc-adm';
+	else
+		$role_context = 'hilr-cc-usr';
+
 	wp_localize_script('hilrpropjs', 'HILRCC_stringTable', array(
 		'siteURL' => site_url() . "/index.php/",
         'ajaxURL' => admin_url('admin-ajax.php'),
@@ -123,7 +130,7 @@ function HILRCC_enqueue_styles()
 		'duration_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_DURATION,
 		'room_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_ROOM,
 		'room_list' => HILRCC_ROOMS,
-		'role_context' => in_array('administrator', (array) wp_get_current_user()->roles) ? 'hilr-cc-adm' : 'hilr-cc-usr'
+		'role_context' => $role_context
 	));
 }
 add_action('wp_enqueue_scripts', 'HILRCC_enqueue_styles');

@@ -11,11 +11,41 @@
  Tags:         light, dark, two-columns, right-sidebar, responsive-layout, accessibility-ready
  Text Domain:  hilr_proposal_app
 */
+html, body,
+button,
+input,
+select, option,
+textarea {
+	font-family:  Georgia, "Times New Roman", Garamond, serif;
+}
 
 h2.gsection_title {
 	color: #a12334;
 	font-weight: bold;
+	font-family:  Georgia, "Times New Roman", Garamond, serif !important;
 }
+
+/* for inputs, make the border more definite and the text a little darker than parent's */
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="range"],
+input[type="date"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="color"],
+textarea {
+	color: #777;
+	border: 2px solid #aaa;
+}
+
 
 /*these rules allow for a wider display */
 @media screen and (min-width: 48em) {
@@ -75,6 +105,12 @@ div.gform_wrapper {
 /* use more real estate -- get rid of excess whitespace -- Gravity Flow Inbox entry */
 .entry-detail-view div.gform_wrapper {
 	max-width: 95%;
+}
+
+
+div.wrap.gf_entry_wrap.gravityflow_workflow_detail {
+	margin-left: 0;
+	padding-left: 0;
 }
 
 /* center the nav menu */
@@ -283,10 +319,17 @@ li.menu-item-object-page:hover,li.menu-item-object-custom:hover {
 .site-branding {
 	background-image: url(http://ccsubmit.com/wp-content/themes/hilrprop-theme/images/banner-no-shield.jpg);
 	background-repeat: no-repeat;
+    background-position: 21px 0;
+    font-size: 14px;
+    padding: 0 2em;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	height: 100px;
 }
+
 /* hide the time slot in the At a Glance view */
 .hilr-glance-slot, .hilr-glance-duration {
 	display: none;
@@ -412,12 +455,19 @@ li label {
 	display: none;
 }
 
+/* add off-white background on gravity view table cells (but not headers)
+
+.gv-table-view td {
+	background-color: #fffff8;
+}
+
 /* buttons */
 input.gform_button, 
 a.gform_save_link, 
 #hilr_reset_btn, 
 .gravityflow-action-buttons input[type=submit].button,
-.gravityflow-action-buttons button[type=submit].button 
+.gravityflow-action-buttons button[type=submit].button, 
+.hilr-add-comment-button
 {
     font: 15px "Tahoma", sans-serif;
     color: #fff !important;

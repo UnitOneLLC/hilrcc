@@ -53,9 +53,7 @@ textarea {
 		max-width: 1250px;
 	}
 }
-.wrap {
-	max-width: 90%;
-}
+
 #page .site-content .wrap #primary {
 	max-width: 1250px;
 }
@@ -107,12 +105,24 @@ div.gform_wrapper {
 	max-width: 95%;
 }
 
+/* bigger text for field description in main form */
+.gfield_description {
+	font-size: 1em !important;
+}
+
+/* remove check mark, x, undo loop on approval buttons */
+.gravityflow-action-buttons>button>i.fa {
+	display:none
+}
 
 div.wrap.gf_entry_wrap.gravityflow_workflow_detail {
 	margin-left: 0;
 	padding-left: 0;
 }
-
+/* hide gravity view title */
+.entry-header > .entry-title {
+	display: none;
+}
 /* center the nav menu */
 .navigation-top>.wrap {
 	text-align: center;
@@ -458,7 +468,7 @@ li label {
 /* add off-white background on gravity view table cells (but not headers)
 
 .gv-table-view td {
-	background-color: #fffff8;
+	background-color: #fffff7;
 }
 
 /* buttons */
@@ -493,6 +503,17 @@ a.gform_save_link,
     background-image: linear-gradient(0deg, #811314 0%, #c14455 100%);
     cursor: pointer !important;
 	font-weight: bold
+}
+
+#hilr_reset_btn {
+    background-image: -moz-linear-gradient(0deg, #eee 0%, #666 100%);
+    background-image: -o-linear-gradient(0deg, #eee 0%, #666 100%);
+    background-image: -webkit-linear-gradient(0deg, #eee 0%, #666 100%);
+    background-image: linear-gradient(0deg, #eee 0%, #666 100%);
+}
+
+li>.gfield_label {
+	white-space: pre-wrap !important;
 }
 
 .postbox-container .gravityflow-action-buttons button[type=submit],

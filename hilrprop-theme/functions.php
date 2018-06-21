@@ -72,8 +72,8 @@ define('HILRCC_STEP_ID_PUB', '11');
 define('HILRCC_LABEL_AUTHOR', 'Author (first last)');
 define('HILRCC_LABEL_TITLE', 'Title');
 define('HILRCC_LABEL_PUBLISHER', 'Publisher');
-define('HILRCC_LABEL_EDITION', 'Edition and Date');
-define('HILRCC_LABEL_ONLY_ED', 'Only this edition (Y/N)');
+define('HILRCC_LABEL_EDITION', 'Year');
+define('HILRCC_LABEL_ONLY_ED', 'Only this edition (x)');
 define('HILRCC_TAG_BOLD_OPEN', '<strong>');
 define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
 #
@@ -875,8 +875,9 @@ function is_entry_assigned_current_user($entry)
 			}
 		}
 		elseif ($ass->get_type() == 'role') {
-			if ( in_array( $ass->get_id(), (array) $user->roles ) ) {
-				return true;
+			if (in_array( $ass->get_id(), (array) $user->roles ) ) {
+				$step_status = $step->get_role_status($ass->get_id());
+				return ($step_status != 'complete');
 			}
 		}
 	}
@@ -1002,6 +1003,7 @@ function HILRCC_is_UI_step($step)
     $step_type = $step->get_type();
     return $step_type == 'user_input';
 }
+
 /* computed fields are based on the values of other fields */
 function HILRCC_update_computed_fields($entry_id)
 {
@@ -1034,8 +1036,7 @@ function HILRCC_update_readings($entry_id)
     }
     else {
 		foreach ($books as &$book) {
-			$edOnly  = strtoupper($book[HILRCC_LABEL_ONLY_ED]);
-			if (strpos($edOnly, 'Y') === false) {
+			if (!is_this_edition_only($book)) {
 				$isSpecialTheseCase = false;
 				break;
 			}
@@ -1054,8 +1055,7 @@ function HILRCC_update_readings($entry_id)
         $isFirst = false;
         
         if (!$isSpecialTheseCase) {
-			$edOnly  = strtoupper($book[HILRCC_LABEL_ONLY_ED]);
-			if (strpos($edOnly, 'Y') !== false) {
+        	if (is_this_edition_only($book)) {
 				$readingString = $readingString . "This edition only: ";
 			}
 		}
@@ -1070,9 +1070,18 @@ function HILRCC_update_readings($entry_id)
     if (!empty($readingString)) {
         $readingString = $readingString . ".";
     }
+    echo $readingString . " ";
     
     $result = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_READINGS_STRING, $readingString);
     return $result;
+}
+
+function is_this_edition_only($book) {
+	$edOnly  = strtoupper($book[HILRCC_LABEL_ONLY_ED]);
+	if ((strpos($edOnly, 'Y') !== false) or (strpos($edOnly, 'X') !== false)) {
+		return true;
+	}
+	return false;
 }
 
 /* add <strong> tags around SGL names in bios */

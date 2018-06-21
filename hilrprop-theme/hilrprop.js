@@ -46,6 +46,8 @@ var HILRCC = {
 		
 	  	HILRCC.fixAdminBox();
 	  	
+	  	HILRCC.fixInboxTab();
+	  	
 	  	// disable autofill
 		jQuery("input").attr( 'autocomplete', 'new-password' );
 		
@@ -111,7 +113,7 @@ var HILRCC = {
 		var footer = jQuery(".gform_footer");
 		if (footer.length == 1) {
 			var resetBtn = document.createElement("button");
-			jQuery(resetBtn).text("Reset form").attr("type", "reset").attr("id", "hilr_reset_btn");
+			jQuery(resetBtn).text("Reset Form").attr("type", "reset").attr("id", "hilr_reset_btn");
 			footer.append(resetBtn);
 			jQuery(resetBtn).click(HILRCC.confirmClearForm);
 		}
@@ -124,10 +126,6 @@ var HILRCC = {
 				delayStartOption.hide();
 			}
 		}
-
-		var jAjaxFrame = jQuery("#gform_ajax_frame_" + HILRCC.stringTable.formId);		
-		jAjaxFrame.off("load", HILRCC.onLoad);
-		jAjaxFrame.on("load", HILRCC.onLoad);		
 
 		/* initialize listeners for schedule choice radio buttons */
 		/**** DISABLING THIS CODE
@@ -144,6 +142,8 @@ var HILRCC = {
 		if (ajaxSubmitIframe.length) {
 			ajaxSubmitIframe[0].onload = function() {
 				HILRCC.formIsDirty = false;
+				ajaxSubmitIframe.off("load", HILRCC.onLoad);
+				ajaxSubmitIframe.on("load", HILRCC.onLoad);		
 				setTimeout(function() {
 					var emailInput = jQuery("[name='gform_resume_email']");
 					if (emailInput.length) {
@@ -286,6 +286,14 @@ var HILRCC = {
 	    	jQuery("#hilr-admin-warning-frame").toggle(ANIMATION_TIME_MS);
 	    	return false;
 	    });
+    },
+    
+    fixInboxTab: function() {
+    	if (location.pathname == "/index.php/inbox/") {
+			var inboxTab = jQuery("#top-menu>li:first-child");
+			if (inboxTab.length == 1) 
+				inboxTab.addClass("current_page_item current-menu-item page_item");    	
+    	}
     },
     
     warningIframeLoaded: function(h) {
@@ -506,6 +514,9 @@ var HILRCC = {
 				}
 			}
         }
+        else if (viewId == 'review-by-committee-single') {
+        	HILRCC.setupForCommentInput();
+        }
     	else if (viewId === 'at-a-glance') {
     	
 			HILRCC.combineCourseNumbersWithTitle();
@@ -696,8 +707,8 @@ var HILRCC = {
 			var submitButton = buttonContainer.children("input")[0];
 			var newButton = jQuery(submitButton).clone(true);
 			buttonContainer.append(newButton);
-			jQuery(submitButton).val("Submit with notifications");
-			newButton.val("Submit without notifications");
+			jQuery(submitButton).val("Submit and send email");
+			newButton.val("Submit");
 			newButton.attr('disabled', false);
 			
 			newButton.click(function() {

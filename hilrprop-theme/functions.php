@@ -1175,6 +1175,19 @@ function HILRCC_compress_spaces($entry_id)
 	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_SGL2_BIO);
 	HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_OTHER_MAT);
 }
+
+/*
+ * After a GV edit, the default is to stay in edit mode. This function is 
+ * filter that is intended to let you change the message string on a 
+ * successful edit. The hack is to instead inject script that redirects
+ * to the provided backlink (saving the user a click).
+ */
+add_filter( 'gravityview/edit_entry/success', 'HILRCC_filter_edit_success', 10, 4);
+function HILRCC_filter_edit_success($entry_updated_message , $view_id, $entry, $back_link) {
+	return "<script>location.replace('" . $back_link . "')</script>";
+}
+
+
 include 'schedgrid.php';
 include 'drafts.php';
 ?>

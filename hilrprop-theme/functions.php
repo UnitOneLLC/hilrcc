@@ -80,6 +80,9 @@ define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
 # Room List - the room list is comma-separated. This is used on the scheduling page.
 define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM,305,307');
 #
+# Path to login logo image
+define('HILRCC_LOGO_PATH', '/images/text_logo.png');
+#
 # Labels for workflow action buttons, per step
 $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_SPONSOR_ASSIGNMENT => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
@@ -759,14 +762,11 @@ function my_login_logo()
 ?>
     <style type="text/css">
         #login h1 a, .login h1 a {
-            background-image: url(<?php
-    echo get_stylesheet_directory_uri();
-?>/images/hilr-shield.png);
-		height:65px;
-		width:320px;
-		background-size: 80px 92px;
-		background-repeat: no-repeat;
-        	padding-bottom: 30px;
+            background-image: url(<?php echo get_stylesheet_directory_uri() . HILRCC_LOGO_PATH?>);
+            width: 217px;
+			height:250px;
+			background-size: 217px 250px;
+			background-repeat: no-repeat;
         }
     </style>
 <?php

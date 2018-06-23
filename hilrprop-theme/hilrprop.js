@@ -618,6 +618,9 @@ var HILRCC = {
     			var info = jQuery(desc).next();
     			if (info.hasClass(HILRCC.stringTable.course_info_class)) {
     				var graf = jQuery(desc.children("p")[0]);
+    				if (graf.length == 0) {
+  						graf = jQuery(desc.find("td")[0])  
+  					}
     				graf.html( graf.html() + " " + info.text() );
     				info.html("");
     			}

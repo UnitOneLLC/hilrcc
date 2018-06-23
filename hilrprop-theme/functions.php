@@ -1070,7 +1070,6 @@ function HILRCC_update_readings($entry_id)
     if (!empty($readingString)) {
         $readingString = $readingString . ".";
     }
-    echo $readingString . " ";
     
     $result = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_READINGS_STRING, $readingString);
     return $result;
@@ -1145,8 +1144,13 @@ function HILRCC_update_workload_string($entry_id)
 			$workload = $f->format($n);
 		}
 
-	
-	    $val = "Estimated amount of work outside class is $workload hours per week. ";
+		if ($n == 1) {
+		    $val = "Estimated outside work is one hour per week. ";
+		}
+		else {
+		    $val = "Estimated outside work is $workload hours per week. ";
+		}
+			
 	}
     $val .= "Class size is limited to " . $limit . ".";
     

@@ -477,7 +477,8 @@ a.gform_save_link,
 #hilr_reset_btn, 
 .gravityflow-action-buttons input[type=submit].button,
 .gravityflow-action-buttons button[type=submit].button, 
-.hilr-add-comment-button
+.hilr-add-comment-button,
+.hilr-admin-btn
 {
     font: 15px "Tahoma", sans-serif;
     color: #fff !important;
@@ -505,7 +506,7 @@ a.gform_save_link,
 	font-weight: bold
 }
 
-#hilr_reset_btn {
+#hilr_reset_btn, #hilr_discard_comment_btn {
     background-image: -moz-linear-gradient(0deg, #eee 0%, #666 100%);
     background-image: -o-linear-gradient(0deg, #eee 0%, #666 100%);
     background-image: -webkit-linear-gradient(0deg, #eee 0%, #666 100%);

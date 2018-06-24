@@ -106,7 +106,7 @@ div.gform_wrapper {
 }
 
 /* bigger text for field description in main form */
-.gfield_description {
+.gfield_description, .gsection_description {
 	font-size: 1em !important;
 }
 
@@ -327,7 +327,7 @@ li.menu-item-object-page:hover,li.menu-item-object-custom:hover {
 
 
 .site-branding {
-	background-image: url(http://ccsubmit.com/wp-content/themes/hilrprop-theme/images/text_logo.png);
+	background-image: url(http://ccsubmit.com/wp-content/themes/hilrprop-theme/images/banner-no-shield.jpg);
 	background-repeat: no-repeat;
     background-position: 21px 0;
     font-size: 14px;
@@ -528,6 +528,10 @@ li>.gfield_label {
 
 input.gform_button:hover, a.gform_save_link:hover, #hilr_reset_btn:hover, input[type=submit]:hover {
 	opacity: 0.7;
+}
+/* suppress 'characters left' text below limited input fields */
+.charleft {
+	display: none;
 }
 
 /* printing rules */

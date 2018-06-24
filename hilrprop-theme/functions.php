@@ -81,7 +81,7 @@ define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
 define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM,305,307');
 #
 # Path to login logo image
-define('HILRCC_LOGO_PATH', '/images/text_logo.png');
+define('HILRCC_LOGO_PATH', '/images/smaller_text_logo.png');
 #
 # Labels for workflow action buttons, per step
 $workflow_button_labels_map = array(
@@ -763,9 +763,8 @@ function my_login_logo()
     <style type="text/css">
         #login h1 a, .login h1 a {
             background-image: url(<?php echo get_stylesheet_directory_uri() . HILRCC_LOGO_PATH?>);
-            width: 217px;
-			height:250px;
-			background-size: 217px 250px;
+            width: 320px;
+			background-size: auto;
 			background-repeat: no-repeat;
         }
     </style>

@@ -20,7 +20,7 @@ textarea {
 }
 
 h2.gsection_title {
-	color: #a12334;
+	color: #000;
 	font-weight: bold;
 	font-family:  Georgia, "Times New Roman", Garamond, serif !important;
 }
@@ -478,7 +478,8 @@ a.gform_save_link,
 .gravityflow-action-buttons input[type=submit].button,
 .gravityflow-action-buttons button[type=submit].button, 
 .hilr-add-comment-button,
-.hilr-admin-btn
+.hilr-admin-btn,
+.gv-search-button
 {
     font: 15px "Tahoma", sans-serif;
     color: #fff !important;
@@ -529,9 +530,11 @@ li>.gfield_label {
 input.gform_button:hover, a.gform_save_link:hover, #hilr_reset_btn:hover, input[type=submit]:hover {
 	opacity: 0.7;
 }
-/* suppress 'characters left' text below limited input fields */
-.charleft {
-	display: none;
+
+/* search box on all proposals view page */
+.gv-search-box p input {
+	width: 30%;
+	height: 28px;
 }
 
 /* printing rules */

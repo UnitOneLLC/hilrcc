@@ -556,6 +556,9 @@ var HILRCC = {
     				}
     			}
     		}
+			/* set up the copy-to-clipboard button */
+			jQuery("#hilr-copy-glance-to-clipboard-btn").click(HILRCC.copyGravityViewListViewToClipboard);
+    		
     	}
     	else if (viewId === 'scheduling') {
     	
@@ -690,8 +693,31 @@ var HILRCC = {
 				}
 			
 			}
+			/* set up the copy-to-clipboard button */
+			jQuery("#hilr-copy-cat-to-clipboard-btn").click(HILRCC.copyGravityViewListViewToClipboard);
     	}
     },
+    
+    copyGravityViewListViewToClipboard: function() {
+		var range = document.createRange();
+		var startElem = jQuery("div.gv-list-container")[0];
+		var endElem = jQuery("#colophon")[0];
+		range.setStart(startElem, 0);
+		range.setEnd(endElem, 0);
+
+		var selObj = window.getSelection()
+		selObj.removeAllRanges();
+		selObj.addRange(range);
+
+		if (document.execCommand('copy')) {
+			alert("Page copied. Use control-V or command-V to paste.");
+			selObj.removeRange(range);
+			return true;
+		} else {
+			alert('failed to set clipboard content');
+			return false;
+		}
+	},
     
     /* both catalog view and at-a-glance view need this utility function */
     combineCourseNumbersWithTitle: function() {

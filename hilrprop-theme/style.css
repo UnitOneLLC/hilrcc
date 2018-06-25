@@ -532,9 +532,11 @@ input.gform_button:hover, a.gform_save_link:hover, #hilr_reset_btn:hover, input[
 }
 
 /* search box on all proposals view page */
-.gv-search-box p input {
-	width: 30%;
+.gv-search-box p input, .gv-search-box p select {
 	height: 28px;
+}
+form.gv-widget-search {
+	width: 66%;
 }
 
 /* printing rules */

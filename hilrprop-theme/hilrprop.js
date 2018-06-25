@@ -62,7 +62,7 @@ var HILRCC = {
 			HILRCC.formIsDirty = true;
 		}); 
   			
-		var inputs = jQuery("form");		    
+		var inputs = jQuery("form").not(".gv-widget-search").not("#adminbarsearch");		    
 		    
   		if ( inputs.length !== 0 ) {
   			jQuery(window).on("beforeunload", HILRCC.onUnload);
@@ -670,9 +670,26 @@ var HILRCC = {
 					item.before(slotDiv[0]);
 				}
 			}
-
-    		
-    		
+			/* Sometimes the RTE output renders as <table> elements instead of <p> elements.
+			 * We need to get rid of these because they are treated differently in MS Word.
+			 */
+			
+			var courseDescQuery = "." + HILRCC.stringTable.course_desc_class + ">table";
+			var sglOneBioQuery = "." + HILRCC.stringTable.sgl_1_bio_class + ">table";
+			var sglTwoBioQuery = "." + HILRCC.stringTable.sgl_2_bio_class + ">table";
+			var needsFixing = jQuery(courseDescQuery).add(sglOneBioQuery).add(sglTwoBioQuery);
+			
+			for (var i=0; i < needsFixing.length; ++i) {
+				var tbl = needsFixing[i];
+				var cell = jQuery(tbl).find("td")[0];
+				if (cell) {
+					var markup = cell.innerHTML;
+					var parent = tbl.parentElement;
+					jQuery(tbl).remove();
+					jQuery(parent).append("<p>" + markup + "</p>");
+				}
+			
+			}
     	}
     },
     

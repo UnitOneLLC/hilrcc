@@ -15,11 +15,12 @@ define('HILRCC_PROPOSAL_FORM_ID', '2');
 define('HILRCC_VIEW_ID_REVIEW', '129');
 define('HILRCC_VIEW_ID_CATALOG', '201');
 define('HILRCC_VIEW_ID_VOTING', '273');
-define('HILRCC_VIEW_ID_ALL', '308');
+define('HILRCC_VIEW_ID_ACTIVE', '308');
 define('HILRCC_VIEW_ID_DISCUSS', '376');
 define('HILRCC_VIEW_ID_WEEKLY', '405');
 define('HILRCC_VIEW_ID_INBOX', '415');
 define('HILRCC_VIEW_ID_GLANCE', '426');
+define('HILRCC_VIEW_ID_ADMIN_ALL', '592');
 #
 # IDs for fields in the Gravity Forms form
 define('HILRCC_FIELD_ID_TITLE', '1');
@@ -284,7 +285,7 @@ function HILRCC_inject_workflow_link()
 		   for the All Proposals view
 		*/
 		$view_id = HILRCC_get_view_id_from_url();
-		if ($view_id == HILRCC_VIEW_ID_ALL) {
+		if (($view_id == HILRCC_VIEW_ID_ACTIVE) || ($view_id == HILRCC_VIEW_ID_ADMIN_ALL)) {
 			?>
 				<div><a id="hilr_edit_this_proposal_link">Edit this proposal⟶</a></div>
 			<?php
@@ -309,8 +310,9 @@ function add_actions_for_workflow_links() {
 	$have_workflow_views = array(
 		HILRCC_VIEW_ID_REVIEW,
 		HILRCC_VIEW_ID_VOTING,
-		HILRCC_VIEW_ID_ALL,
-		HILRCC_VIEW_ID_DISCUSS
+		HILRCC_VIEW_ID_ACTIVE,
+		HILRCC_VIEW_ID_DISCUSS,
+		HILRCC_VIEW_ID_ADMIN_ALL
 	);
 	foreach ($have_workflow_views as &$view_id) {
 		add_action('gravityview_render_entry_' . $view_id, 'HILRCC_inject_workflow_link');
@@ -794,7 +796,7 @@ function HILRCC_get_view_id_from_url()
 	if (strpos($url, "voting-review") !== false)
 		return HILRCC_VIEW_ID_VOTING;
 	if (strpos($url, "all-proposals") !== false)
-		return HILRCC_VIEW_ID_ALL;
+		return HILRCC_VIEW_ID_ACTIVE;
 	if (strpos($url, "weekly-update") !== false)
 		return HILRCC_VIEW_ID_WEEKLY;
 	if (strpos($url, "catalog") !== false)

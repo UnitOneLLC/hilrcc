@@ -503,7 +503,7 @@ var HILRCC = {
     			anchor.attr('href', 'javascript:HILRCC.goToInboxView(' + id + ')');
         	}
         }
-        else if (viewId == 'all-proposals-single') {
+        else if ((viewId == 'all-proposals-single') || (viewId == 'all-proposals-2-single')) {
         	/* process edit link for single entry view */
 			var entryEditLink = jQuery(".gv-field-" + HILRCC.stringTable.formId + "-edit_link td a");
 			if (entryEditLink.length == 1) {

@@ -540,6 +540,10 @@ input.gform_button:hover, a.gform_save_link:hover, #hilr_reset_btn:hover, input[
 form.gv-widget-search {
 	width: 66%;
 }
+/* allow the columns of the table on scheduling page to expand when item is double-clicked */
+#hilr-sched-table table.gv-table-view {
+	table-layout: auto;
+}
 
 /* printing rules */
 @media print {

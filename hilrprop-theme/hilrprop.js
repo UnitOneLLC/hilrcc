@@ -261,6 +261,7 @@ var HILRCC = {
     
     setupAdminPage: function() {
     	jQuery(window).load(function() {
+    		jQuery("#hilr-start-number").val(HILRCC.stringTable.starting_course_number);
 	    	jQuery("#hilr-clear-numbers-btn").on('click', HILRCC.clearCourseNumbers);
 			jQuery("#hilr-assign-numbers-btn").on('click',HILRCC.assignCourseNumbers);
 		});
@@ -432,6 +433,11 @@ var HILRCC = {
     },
     
     getCurrentSemester: function() {
+		var curSemester = HILRCC.stringTable.current_semester;
+		if (curSemester)
+			return curSemester;
+			
+		/* fallback to using current date if not in settings */
 		var today = new Date();
 		var month = today.getMonth();
 		var year = today.getYear() + 1900;

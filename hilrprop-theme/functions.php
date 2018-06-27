@@ -19,6 +19,7 @@ define('HILRCC_VIEW_ID_ACTIVE', '308');
 define('HILRCC_VIEW_ID_DISCUSS', '376');
 define('HILRCC_VIEW_ID_WEEKLY', '405');
 define('HILRCC_VIEW_ID_INBOX', '415');
+define('HILRCC_VIEW_ID_SCHEDULE', '419');
 define('HILRCC_VIEW_ID_GLANCE', '426');
 define('HILRCC_VIEW_ID_ADMIN_ALL', '592');
 #
@@ -95,12 +96,11 @@ $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_VOTING => array("APPROVE"=>"Approve", "REJECT"=>"Reject", "REVERT"=>"Send to Sponsor"),
 	HILRCC_STEP_ID_FINAL_SPONSOR_REVIEW => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_PRE_PUB => array("SUBMIT"=>"Submit for Catalog", "SAVE"=>"Save"),
-	HILRCC_STEP_ID_PUB => array("SUBMIT"=>"Submit", "SAVE"=>"Save")
+	HILRCC_STEP_ID_PUB => array("SUBMIT"=>"Done", "SAVE"=>"Update")
 );
 
 function HILRCC_enqueue_styles()
-{
-    
+{  
     /* $parent_style = 'twentyseventeen-style'; */
     $parent_style = 'gravityflow_status';
     
@@ -136,12 +136,15 @@ function HILRCC_enqueue_styles()
 		'sgl_1_bio_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_SGL1_BIO,
 		'sgl_2_bio_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_SGL2_BIO,
 		'room_list' => HILRCC_ROOMS,
-		'role_context' => $role_context
+		'role_context' => $role_context,
+		'current_semester' => get_option('current_semester'),
+		'starting_course_number' => get_option('starting_course_number')
 	));
 }
 add_action('wp_enqueue_scripts', 'HILRCC_enqueue_styles');
 
 /* Function to create a shortcode for the URL of the Inbox page */
+add_shortcode('HILRCC_inbox_url', 'HILRCC_show_inbox_url');
 function HILRCC_show_inbox_url($atts)
 {
     
@@ -168,9 +171,9 @@ function HILRCC_show_inbox_url($atts)
     
     return site_url() . '/index.php/inbox/?page=gravityflow-inbox&view=entry&id=' . $formid . '&lid=' . $entryid;
 }
-add_shortcode('HILRCC_inbox_url', 'HILRCC_show_inbox_url');
 
 /* Function to create a shortcode for the URL of the Proposal View page */
+add_shortcode('HILRCC_proposal_view_url', 'HILRCC_show_proposal_view_url');
 function HILRCC_show_proposal_view_url($atts)
 {
     $entryid      = 0;
@@ -185,9 +188,9 @@ function HILRCC_show_proposal_view_url($atts)
     }
     return site_url() . '/index.php/proposal-view';
 }
-add_shortcode('HILRCC_proposal_view_url', 'HILRCC_show_proposal_view_url');
 
 /* Function to create a shortcode for the URL of the Voting Review page */
+add_shortcode('HILRCC_voting_review_url', 'HILRCC_show_voting_review_url');
 function HILRCC_show_voting_review_url($atts)
 {
     $entryid      = 0;
@@ -202,7 +205,32 @@ function HILRCC_show_voting_review_url($atts)
     }
     return site_url() . '/index.php/voting-review';
 }
-add_shortcode('HILRCC_voting_review_url', 'HILRCC_show_voting_review_url');
+
+/* shortcode to force a recompute of computed fields */
+add_shortcode('HILRCC_Recompute_Fields', 'HILRCC_recompute_fields');
+function HILRCC_recompute_fields()
+{
+	$semester = get_option('current_semester');
+	$search = array();
+	$search[HILRCC_FIELD_ID_SEMESTER] = $semester;
+	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
+	$entries = GFAPI::get_entries(0, $search, null);
+	
+	if (!is_wp_error($entries)) {
+		foreach($entries as &$entry) {
+			$entry_id = $entry['id'];
+			HILRCC_update_computed_fields($entry_id);
+		}
+	}
+}
+/* shortcode to force renumbering of courses */
+add_shortcode('HILRCC_Renumber_Courses', 'HILRCC_renumber_courses');
+function HILRCC_renumber_courses() {
+	$startNumber = intval(get_option("starting_course_number"));
+	$semester = get_option("current_semester");
+
+	do_renumber_courses($startNumber, $semester);
+}
 
 
 /**
@@ -262,6 +290,7 @@ function get_entry_id_from_gravityview_url() {
  */
 function HILRCC_inject_workflow_link()
 {
+	$view_id = HILRCC_get_view_id_from_url();
 	$link = site_url() . "/index.php/";
 	$entry_id = get_entry_id_from_gravityview_url();
 	if ($entry_id == NULL) {
@@ -312,6 +341,7 @@ function add_actions_for_workflow_links() {
 		HILRCC_VIEW_ID_VOTING,
 		HILRCC_VIEW_ID_ACTIVE,
 		HILRCC_VIEW_ID_DISCUSS,
+		HILRCC_VIEW_ID_SCHEDULE,
 		HILRCC_VIEW_ID_ADMIN_ALL
 	);
 	foreach ($have_workflow_views as &$view_id) {
@@ -323,11 +353,16 @@ add_actions_for_workflow_links();
 /*
  * ajax handler to re-number the courses
  */
-add_action('wp_ajax_renumber_courses', 'renumber_courses');
-function renumber_courses() {
+add_action('wp_ajax_renumber_courses', 'ajax_renumber_courses');
+function ajax_renumber_courses() {
 	$start = stripslashes_deep($_POST["start"]);
 	$startNumber = intval($start);
 	$semester = stripslashes_deep($_POST["semester"]);
+	do_renumber_courses($startNumber, $semester);
+	echo "SUCCESS";
+}
+
+function do_renumber_courses($startNumber, $semester) {
 	$search = array();
 	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
 	
@@ -368,7 +403,6 @@ function renumber_courses() {
 			GFAPI::update_entry_field($entry['id'], HILRCC_FIELD_ID_COURSE_NO, $number);
 			$number = $number + 1;
 		}
-		echo "SUCCESS";
 	}
 }
 
@@ -795,6 +829,8 @@ function HILRCC_get_view_id_from_url()
 		return HILRCC_VIEW_ID_REVIEW;
 	if (strpos($url, "voting-review") !== false)
 		return HILRCC_VIEW_ID_VOTING;
+	if (strpos($url, "adminstrative/all-proposals")
+		return HILRCC_VIEW_ID_ADMIN_ALL;
 	if (strpos($url, "all-proposals") !== false)
 		return HILRCC_VIEW_ID_ACTIVE;
 	if (strpos($url, "weekly-update") !== false)
@@ -803,6 +839,10 @@ function HILRCC_get_view_id_from_url()
 		return HILRCC_VIEW_ID_CATALOG;
 	if (strpos($url, "at-a-glance") !== false)
 		return HILRCC_VIEW_ID_GLANCE;
+	if (strpos($url, "sched") !== false) 
+		return HILRCC_VIEW_ID_SCHEDULE;
+	if (strpos($url, "under-discussion") !== false)
+		return HILRCC_VIEW_ID_DISCUSS;
 	return '0';
 }
 
@@ -1063,9 +1103,9 @@ function HILRCC_update_readings($entry_id)
 			}
 		}
         
-        $author = $book[HILRCC_LABEL_AUTHOR] . ", ";
+        $author = $book[HILRCC_LABEL_AUTHOR] . ",&nbsp;";
         $title  = "<em>" . $book[HILRCC_LABEL_TITLE] . "</em>";
-        $pubed  = " (" . $book[HILRCC_LABEL_PUBLISHER] . ", " . $book[HILRCC_LABEL_EDITION] . ")";
+        $pubed  = "&nbsp;(" . $book[HILRCC_LABEL_PUBLISHER] . ",&nbsp;" . $book[HILRCC_LABEL_EDITION] . ")";
         
         $readingString = $readingString . $author . $title . $pubed;
     }
@@ -1194,7 +1234,7 @@ function HILRCC_filter_edit_success($entry_updated_message , $view_id, $entry, $
 	return "<script>location.replace('" . $back_link . "')</script>";
 }
 
-
+include 'settings.php';
 include 'schedgrid.php';
 include 'drafts.php';
 ?>

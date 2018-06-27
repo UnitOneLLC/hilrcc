@@ -327,7 +327,7 @@ li.menu-item-object-page:hover,li.menu-item-object-custom:hover {
 
 
 .site-branding {
-	background-image: url(http://ccsubmit.com/wp-content/themes/hilrprop-theme/images/banner-no-shield.jpg);
+	background-image: url(https://ccsubmit.com/wp-content/themes/hilrprop-theme/images/banner-no-shield.jpg);
 	background-repeat: no-repeat;
     background-position: 21px 0;
     font-size: 14px;
@@ -538,11 +538,15 @@ input.gform_button:hover, a.gform_save_link:hover, #hilr_reset_btn:hover, input[
 	height: 28px;
 }
 form.gv-widget-search {
-	width: 66%;
+	width: 100%;
 }
 /* allow the columns of the table on scheduling page to expand when item is double-clicked */
 #hilr-sched-table table.gv-table-view {
 	table-layout: auto;
+}
+/* hide the magnifying glass on the wp admin bar */
+#wp-admin-bar-search {
+	max-height: 0;
 }
 
 /* printing rules */

@@ -314,7 +314,8 @@ function HILRCC_inject_workflow_link()
 		   for the All Proposals view
 		*/
 		$view_id = HILRCC_get_view_id_from_url();
-		if (($view_id == HILRCC_VIEW_ID_ACTIVE) || ($view_id == HILRCC_VIEW_ID_ADMIN_ALL)) {
+		if (($view_id == HILRCC_VIEW_ID_ACTIVE) || ($view_id == HILRCC_VIEW_ID_ADMIN_ALL)
+			|| ($view_id == HILRCC_VIEW_ID_SCHEDULE)) {
 			?>
 				<div><a id="hilr_edit_this_proposal_link">Edit this proposal⟶</a></div>
 			<?php
@@ -829,7 +830,7 @@ function HILRCC_get_view_id_from_url()
 		return HILRCC_VIEW_ID_REVIEW;
 	if (strpos($url, "voting-review") !== false)
 		return HILRCC_VIEW_ID_VOTING;
-	if (strpos($url, "adminstrative/all-proposals")
+	if (strpos($url, "adminstrative/all-proposals") !== false)
 		return HILRCC_VIEW_ID_ADMIN_ALL;
 	if (strpos($url, "all-proposals") !== false)
 		return HILRCC_VIEW_ID_ACTIVE;
@@ -1103,9 +1104,9 @@ function HILRCC_update_readings($entry_id)
 			}
 		}
         
-        $author = $book[HILRCC_LABEL_AUTHOR] . ",&nbsp;";
+        $author = $book[HILRCC_LABEL_AUTHOR] . ",<span style='font-size:1px'> </span>&nbsp;";
         $title  = "<em>" . $book[HILRCC_LABEL_TITLE] . "</em>";
-        $pubed  = "&nbsp;(" . $book[HILRCC_LABEL_PUBLISHER] . ",&nbsp;" . $book[HILRCC_LABEL_EDITION] . ")";
+        $pubed  = "<span style='font-size:1px'> </span>&nbsp;(" . $book[HILRCC_LABEL_PUBLISHER] . ",<span style='font-size:1px'> </span>&nbsp;" . $book[HILRCC_LABEL_EDITION] . ")";
         
         $readingString = $readingString . $author . $title . $pubed;
     }

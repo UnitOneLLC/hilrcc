@@ -509,7 +509,7 @@ var HILRCC = {
     			anchor.attr('href', 'javascript:HILRCC.goToInboxView(' + id + ')');
         	}
         }
-        else if ((viewId == 'all-proposals-single') || (viewId == 'all-proposals-2-single')) {
+        else if ((viewId == 'all-proposals-single') || (viewId == 'all-proposals-2-single') || (viewId == 'scheduling-single')) {
         	/* process edit link for single entry view */
 			var entryEditLink = jQuery(".gv-field-" + HILRCC.stringTable.formId + "-edit_link td a");
 			if (entryEditLink.length == 1) {
@@ -616,6 +616,24 @@ var HILRCC = {
     				(new InplaceCellEditor()).create(this, props);
     			}
     		);
+
+			// add a tooltip on cells in the "time-preference-summary" column    		
+    		var tps = jQuery("td.hilr-sched-tps");
+    		tps.tooltip();
+    		for (var i=0; i < tps.length; ++i) {
+    			var cell = jQuery(tps[i]);
+    			var parent = cell.parent();
+    			var roomReq = parent.children(".hilr-sched-room-req");
+    			var schedInfo = parent.children(".hilr-sched-info");
+    			var tipText = roomReq[0].innerText + " " + schedInfo[0].innerText;
+    			if (tipText.length > 1) {
+					cell.attr("title", " ");
+					cell.tooltip("option", "content", tipText);
+    			}
+    		}
+    		tps.tooltip();
+    		
+    		
     	}
     	else if (viewId === 'catalog') {
 			HILRCC.combineCourseNumbersWithTitle();

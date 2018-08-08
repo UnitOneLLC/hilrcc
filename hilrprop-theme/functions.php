@@ -70,6 +70,15 @@ define('HILRCC_STEP_ID_FINAL_SPONSOR_REVIEW', '16');
 define('HILRCC_STEP_ID_PRE_PUB', '10');
 define('HILRCC_STEP_ID_PUB', '11');
 #
+# Proposal status values
+define('HILRCC_PROP_STATUS_VALUE_ACTIVE', 'Active');
+define('HILRCC_PROP_STATUS_VALUE_DISCUSS', 'Under discussion');
+define('HILRCC_PROP_STATUS_VALUE_APPROVED', 'Approved');
+define('HILRCC_PROP_STATUS_VALUE_DEFERRED', 'Deferred');
+define('HILRCC_PROP_STATUS_VALUE_REJECTED', 'Rejected');
+define('HILRCC_PROP_STATUS_VALUE_WITHDRAWN', 'Withdrawn');
+define('HILRCC_PROP_STATUS_VALUE_MISTAKE', 'Mistake');
+
 # Other string constants
 define('HILRCC_LABEL_AUTHOR', 'Author (first last)');
 define('HILRCC_LABEL_TITLE', 'Title');
@@ -100,7 +109,7 @@ $workflow_button_labels_map = array(
 );
 
 function HILRCC_enqueue_styles()
-{  
+{
     /* $parent_style = 'twentyseventeen-style'; */
     $parent_style = 'gravityflow_status';
     
@@ -369,7 +378,7 @@ function do_renumber_courses($startNumber, $semester) {
 	
 	$search['field_filters'] = array();
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_SEMESTER, 'operator'=>'is', 'value'=>$semester);
-	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_STATUS, 'operator'=>'is', 'value'=>'Approved');
+	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_STATUS, 'operator'=>'is', 'value'=>HILRCC_PROP_STATUS_VALUE_APPROVED);
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_DURATION, 'operator'=>'isnot', 'value'=>'Either First or Second Half');
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_TIMESLOT, 'operator'=>'isnot', 'value'=>'');
 	
@@ -821,12 +830,12 @@ function HILRCC_set_name_sort_last() {
 /* In GravityView, display the label of a dropdown field value instead of its sorting value */
 add_filter('gravityview/fields/select/output_label', '__return_true');
 
-function HILRCC_get_view_id_from_url() 
+function HILRCC_get_view_id_from_url()
 {
 	$url = $_SERVER['REQUEST_URI'];
 	if (strpos($url, "inbox-view") !== false)
 		return HILRCC_VIEW_ID_INBOX;
-	if (strpos($url, "proposal-view") !== false) 
+	if (strpos($url, "proposal-view") !== false)
 		return HILRCC_VIEW_ID_REVIEW;
 	if (strpos($url, "voting-review") !== false)
 		return HILRCC_VIEW_ID_VOTING;
@@ -840,7 +849,7 @@ function HILRCC_get_view_id_from_url()
 		return HILRCC_VIEW_ID_CATALOG;
 	if (strpos($url, "at-a-glance") !== false)
 		return HILRCC_VIEW_ID_GLANCE;
-	if (strpos($url, "sched") !== false) 
+	if (strpos($url, "sched") !== false)
 		return HILRCC_VIEW_ID_SCHEDULE;
 	if (strpos($url, "under-discussion") !== false)
 		return HILRCC_VIEW_ID_DISCUSS;
@@ -1008,9 +1017,9 @@ function HILRCC_gravityflow_step_complete($step_id, $entry_id, $form_id, $status
         $newFieldValue = NULL;
         $formStatus    = $_POST['gravityflow_approval_new_status_step_' . HILRCC_STEP_ID_REV_BY_COMM];
         if ($formStatus == 'rejected') {
-            $newFieldValue = 'Under discussion';
+            $newFieldValue = HILRCC_PROP_STATUS_VALUE_DISCUSS;
         } else if ($formStatus == 'approved') {
-            $newFieldValue = 'Active';
+            $newFieldValue = HILRCC_PROP_STATUS_VALUE_ACTIVE;
         }
         if ($newFieldValue != NULL) {
             $result = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_STATUS, $newFieldValue);
@@ -1020,7 +1029,7 @@ function HILRCC_gravityflow_step_complete($step_id, $entry_id, $form_id, $status
         $newFieldValue = NULL;
         $formStatus    = $_POST['gravityflow_approval_new_status_step_' . HILRCC_STEP_ID_VOTING];
         if ($formStatus == 'approved') {
-            $newFieldValue = 'Approved';
+            $newFieldValue = HILRCC_PROP_STATUS_VALUE_APPROVED;
         } else if ($formStatus == 'rejected') {
             $newFieldValue = 'Rejected';
         }
@@ -1028,15 +1037,16 @@ function HILRCC_gravityflow_step_complete($step_id, $entry_id, $form_id, $status
             $result = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_STATUS, $newFieldValue);
         }
     }
+    $api  = new Gravity_Flow_API($form_id);
+    $step = $api->get_current_step(GFAPI::get_entry($entry_id));
+    
     /* copy the workflow note to the discussion thread */
     $note = stripslashes_deep($_POST['gravityflow_note']);
-    if (!empty($note)) {
+    if (!empty($note) and (HILRCC_is_UI_step($step) or HILRCC_is_approval_step($step))) {
       $comment = "[Workflow note] " . $note;
       HILRCC_add_comment($entry_id, $comment);
     }
     /* for UI steps, update computed fields */
-    $api  = new Gravity_Flow_API($form_id);
-    $step = $api->get_current_step(GFAPI::get_entry($entry_id));
     if (HILRCC_is_UI_step($step)) {
         HILRCC_update_computed_fields($entry_id);
     }
@@ -1047,7 +1057,12 @@ function HILRCC_is_UI_step($step)
     $step_type = $step->get_type();
     return $step_type == 'user_input';
 }
-
+/* return true if the passed step is a User Input step */
+function HILRCC_is_approval_step($step)
+{
+    $step_type = $step->get_type();
+    return $step_type == 'approval';
+}
 /* computed fields are based on the values of other fields */
 function HILRCC_update_computed_fields($entry_id)
 {
@@ -1058,7 +1073,7 @@ function HILRCC_update_computed_fields($entry_id)
     HILRCC_compress_spaces($entry_id);
 }
 /* update the Readings string for the catalog based on the Books field */
-
+define("SPACE_SPAN", "&nbsp;");
 function HILRCC_update_readings($entry_id)
 {
     
@@ -1103,10 +1118,9 @@ function HILRCC_update_readings($entry_id)
 				$readingString = $readingString . "This edition only: ";
 			}
 		}
-        
-        $author = $book[HILRCC_LABEL_AUTHOR] . ",<span style='font-size:1px'> </span>&nbsp;";
+        $author = $book[HILRCC_LABEL_AUTHOR] . ", ";
         $title  = "<em>" . $book[HILRCC_LABEL_TITLE] . "</em>";
-        $pubed  = "<span style='font-size:1px'> </span>&nbsp;(" . $book[HILRCC_LABEL_PUBLISHER] . ",<span style='font-size:1px'> </span>&nbsp;" . $book[HILRCC_LABEL_EDITION] . ")";
+        $pubed  = SPACE_SPAN . "(" . $book[HILRCC_LABEL_PUBLISHER] . ", " . $book[HILRCC_LABEL_EDITION] . ")";
         
         $readingString = $readingString . $author . $title . $pubed;
     }
@@ -1168,7 +1182,7 @@ function HILRCC_update_time_summary($entry_id)
     		$val .= 'PM';
     	}
     	if ($i !== 3) {
-    		$val .= ' / ';
+    		$val .= '-';
     	}
     }
     GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_TIME_PREFERENCE, $val);
@@ -1225,8 +1239,16 @@ function HILRCC_compress_spaces($entry_id)
 }
 
 /*
- * After a GV edit, the default is to stay in edit mode. This function is 
- * filter that is intended to let you change the message string on a 
+ * When a workflow is cancelled, force the proposal status to 'mistake'
+ */
+add_action( 'gravityflow_pre_cancel_workflow', 'HILRCC_hook_cancel_workflow', 10, 3 );
+function HILRCC_hook_cancel_workflow( $entry, $form, $step ) {
+	$entry_id = $entry['id'];
+	GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_STATUS, HILRCC_PROP_STATUS_VALUE_MISTAKE);	
+}
+/*
+ * After a GV edit, the default is to stay in edit mode. This function is
+ * filter that is intended to let you change the message string on a
  * successful edit. The hack is to instead inject script that redirects
  * to the provided backlink (saving the user a click).
  */

@@ -376,8 +376,15 @@ li.menu-item-object-page:hover,li.menu-item-object-custom:hover {
 	padding: 3px 8px;
 	margin: 0 4px;
 }
-.hilr-scheduling-entryid {
+.hilr-scheduling-hidden {
 	display:none; /* hidden column in scheduling table */
+}
+.hilr-sched-tps {
+	font-size: 0.9em;
+}
+.hilr-sched-tps:hover {
+	font-weight: 600;
+	font-weight: 0.8em;
 }
 /* this is for in-place editing on the scheduling view */
 .gv-field-2-55 {

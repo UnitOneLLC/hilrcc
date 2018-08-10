@@ -555,7 +555,10 @@ form.gv-widget-search {
 #wp-admin-bar-search {
 	max-height: 0;
 }
-
+/* make the textarea for adding comments stand out more on the page */
+#hilr_comment_input {
+	background-color: #ffc;
+}
 /* printing rules */
 @media print {
 	* { /* this fixes background colors (Chrome) */
@@ -571,6 +574,26 @@ form.gv-widget-search {
 	
 	#masthead, .gv-sort {
 		display: none;
+	}
+	
+	/* scheduling page */
+	#sched_grid_0 {
+		display: none;
+	}
+	.parent-pageid-373 a.gv-sort {
+		display: none;
+	}
+	
+	.parnt-pageid-373 div.custom-header {
+		display: none;
+	}
+	
+	.hilr-sched-info, .hilr-sched-room-req {
+		display: table-cell !important;
+	}
+	
+	.parent-pageid-373 a {
+		text-decoration: none;
 	}
 }
 

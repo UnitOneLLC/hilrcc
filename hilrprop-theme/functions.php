@@ -1239,6 +1239,15 @@ function HILRCC_compress_spaces($entry_id)
 }
 
 /*
+ * action to set the HILRCC_FIELD_ID_STATUS field to 'Active' when the workflow restarts.
+ */
+add_action('gravityflow_pre_restart_workflow', 'HILRCC_hook_restart_workflow', 10, 3);
+function HILRCC_hook_restart_workflow($entry, $form) {
+	$entry_id = $entry['id'];
+	GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_STATUS, HILRCC_PROP_STATUS_VALUE_ACTIVE);
+}
+
+/*
  * When a workflow is cancelled, force the proposal status to 'mistake'
  */
 add_action( 'gravityflow_pre_cancel_workflow', 'HILRCC_hook_cancel_workflow', 10, 3 );

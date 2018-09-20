@@ -561,6 +561,16 @@ form.gv-widget-search {
 #hilr_comment_input {
 	background-color: #ffc;
 }
+/* make form submission error notice more visible */
+.gform_wrapper div.validation_error {
+	color: #dd0000 !important;
+	font-size: 1.3em !important;
+}
+.hilr-val-err-more {
+	font-size: 0.8em;
+	font-weight: normal;
+	padding-top: 7px;
+}
 /* printing rules */
 @media print {
 	* { /* this fixes background colors (Chrome) */

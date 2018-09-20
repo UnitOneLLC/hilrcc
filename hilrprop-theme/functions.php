@@ -8,6 +8,7 @@
 # course proposal forms and a workflow to process them, culminating
 # in formatting for publication in the course catalog.
 #
+define('HILRCC_BUILD', '1.0.2');
 #ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 #
@@ -113,12 +114,12 @@ function HILRCC_enqueue_styles()
     /* $parent_style = 'twentyseventeen-style'; */
     $parent_style = 'gravityflow_status';
     
-    wp_enqueue_style($parent_style, get_template_directory_uri() . '/style.css', array(), '1.0.1');
+    wp_enqueue_style($parent_style, get_template_directory_uri() . '/style.css', array(), HILRCC_BUILD);
 	wp_enqueue_script('jquery-ui-tooltip');
     wp_enqueue_script('jquery-ui-tabs');
     wp_register_script('hilrpropjs', get_stylesheet_directory_uri() . '/hilrprop.js', array(
         'jquery'
-    ));
+    ), HILRCC_BUILD);
     wp_enqueue_script('hilrpropjs');
 
 	if (!is_user_logged_in())

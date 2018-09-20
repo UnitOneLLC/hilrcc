@@ -48,6 +48,12 @@ var HILRCC = {
 	  	
 	  	HILRCC.fixInboxTab();
 	  	
+	  	HILRCC.fixValidationMessage();
+	  	
+	  	HILRCC.removeExcessSectionHeader();
+	  	
+	  	HILRCC.fixViewMoreLessToggle();
+	  	
 	  	// disable autofill
 		jQuery("input").attr( 'autocomplete', 'new-password' );
 		
@@ -294,6 +300,39 @@ var HILRCC = {
 			var inboxTab = jQuery("#top-menu>li:first-child");
 			if (inboxTab.length == 1) 
 				inboxTab.addClass("current_page_item current-menu-item page_item");    	
+    	}
+    },
+    
+    fixValidationMessage: function() {
+    	var valErr = jQuery(".gform_validation_error div.validation_error");
+    	if (valErr.length !== 0) {
+    		var moreText = jQuery(document.createElement("div"));
+    		moreText.text("Your proposal has not been submitted yet. Please correct the problems and submit again. You can also choose Save and Continue Later to save a draft without fixing the problems.");
+    		moreText.addClass("hilr-val-err-more");
+    		valErr.append(moreText);
+    	}
+    },
+    
+	/*
+	 * if there's a "View More" toggle, just get rid of it
+	 */
+    fixViewMoreLessToggle: function() {
+		var viewMoreLess = jQuery("a[title='View More']");
+		viewMoreLess.remove();
+		var hidden = jQuery(".gravityflow-dicussion-item-hidden");
+		if (hidden.length !== 0) {
+			hidden.attr("style", "display:block");
+		}
+    },
+    
+    removeExcessSectionHeader: function() {
+    	var secHeads = jQuery(".entry-detail-view .entry-view-section-break");
+    	for (var i=0; i < secHeads.length; ++i) {
+    		var sh = jQuery(secHeads[i]);
+    		if (sh.text().indexOf("Thank you for preparing") == 0) {
+    			sh.remove();
+    			return;
+    		}
     	}
     },
     

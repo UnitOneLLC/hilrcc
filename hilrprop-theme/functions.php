@@ -8,7 +8,7 @@
 # course proposal forms and a workflow to process them, culminating
 # in formatting for publication in the course catalog.
 #
-define('HILRCC_BUILD', '1.0.2');
+define('HILRCC_BUILD', '1.0.3');
 #ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 #
@@ -1175,15 +1175,17 @@ function HILRCC_update_time_summary($entry_id)
     foreach ($choices as $id) {
     	$i += 1;
     	$choice = $entry[$id];
-    	$val .= substr($choice, 0, 3) . " ";
-    	if (strpos($choice, 'AM') !== false) {
-    		$val .= 'AM';
-    	}
-    	else {
-    		$val .= 'PM';
-    	}
-    	if ($i !== 3) {
-    		$val .= '-';
+    	if (!empty($choice)) {
+			$val .= substr($choice, 0, 3) . " ";
+			if (strpos($choice, 'AM') !== false) {
+				$val .= 'AM';
+			}
+			else {
+				$val .= 'PM';
+			}
+			if ($i !== 3) {
+				$val .= '-';
+			}
     	}
     }
     GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_TIME_PREFERENCE, $val);

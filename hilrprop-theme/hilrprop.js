@@ -54,6 +54,8 @@ var HILRCC = {
 	  	
 	  	HILRCC.fixViewMoreLessToggle();
 	  	
+	  	HILRCC.showDescriptionWordCount();
+	  	
 	  	// disable autofill
 		jQuery("input").attr( 'autocomplete', 'new-password' );
 		
@@ -335,6 +337,35 @@ var HILRCC = {
     		}
     	}
     },
+    
+    showDescriptionWordCount: function() {
+   		var cdRow = jQuery("tr." + HILRCC.stringTable.course_desc_class);
+   		if (cdRow.length !== 0) {
+   			var cdparas = jQuery(cdRow.find("td p"));
+   			var wc = 0;
+   			for (var i=0; i < cdparas.length; ++i) {
+   				var cd = jQuery(cdparas[i]);
+				if (cd.length !== 0) {
+					wc += HILRCC.wordCount(cd.text());
+				}
+   			}
+			var label = jQuery(cdRow.find("th span")[0]);
+			var countSpan = jQuery(document.createElement("span"));
+			countSpan.text("   (" + wc + " words)");
+			countSpan.addClass("hilr-word-count");
+			label.after(countSpan);
+			label.after(document.createElement("br"));
+   		}
+    },
+    
+    wordCount: function(s) {
+		var count = 0;
+		var matches = s.match(/\b/g);
+		if (matches) {
+			count = matches.length / 2;
+		}
+		return count;
+   },
     
     warningIframeLoaded: function(h) {
     	var frame = jQuery('#hilr-admin-warning-frame');

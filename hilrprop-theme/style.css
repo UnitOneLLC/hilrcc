@@ -571,6 +571,9 @@ form.gv-widget-search {
 	font-weight: normal;
 	padding-top: 7px;
 }
+.hilr-word-count {
+	font-weight: normal;
+}
 /* printing rules */
 @media print {
 	* { /* this fixes background colors (Chrome) */

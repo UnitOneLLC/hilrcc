@@ -21,7 +21,7 @@ function HILRCC_fetch_sched_grid()
 	$semester = stripslashes_deep($_POST["semester"]);
 	$search = array();
 	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
-	
+	$search['status'] = 'active';
 	$search['field_filters'] = array();
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_SEMESTER, 'operator'=>'is', 'value'=>$semester);
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_STATUS, 'operator'=>'is', 'value'=>'Approved');

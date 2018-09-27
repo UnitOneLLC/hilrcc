@@ -54,7 +54,7 @@ var HILRCC = {
 	  	
 	  	HILRCC.fixViewMoreLessToggle();
 	  	
-	  	HILRCC.showDescriptionWordCount();
+	  	HILRCC.showWordCounts();
 	  	
 	  	// disable autofill
 		jQuery("input").attr( 'autocomplete', 'new-password' );
@@ -338,10 +338,14 @@ var HILRCC = {
     	}
     },
     
-    showDescriptionWordCount: function() {
+    showWordCounts: function() {
    		var cdRow = jQuery("tr." + HILRCC.stringTable.course_desc_class);
-   		if (cdRow.length !== 0) {
-   			var cdparas = jQuery(cdRow.find("td p"));
+   		cdRow = cdRow.add("tr." + HILRCC.stringTable.sgl_1_bio_class);
+   		cdRow = cdRow.add("tr." + HILRCC.stringTable.sgl_2_bio_class);
+   		var k;
+   		for (k=0; k < cdRow.length; ++k) {
+   			var thisRow = jQuery(cdRow[k]);
+   			var cdparas = jQuery(thisRow.find("td p"));
    			var wc = 0;
    			for (var i=0; i < cdparas.length; ++i) {
    				var cd = jQuery(cdparas[i]);
@@ -349,7 +353,7 @@ var HILRCC = {
 					wc += HILRCC.wordCount(cd.text());
 				}
    			}
-			var label = jQuery(cdRow.find("th span")[0]);
+			var label = jQuery(thisRow.find("th span")[0]);
 			var countSpan = jQuery(document.createElement("span"));
 			countSpan.text("   (" + wc + " words)");
 			countSpan.addClass("hilr-word-count");

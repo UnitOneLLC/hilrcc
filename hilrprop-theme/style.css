@@ -574,6 +574,10 @@ form.gv-widget-search {
 .hilr-word-count {
 	font-weight: normal;
 }
+/* don't display the 'show empty fields checkbox */
+.entry-detail-view #gentry_display_empty_fields,label[for='gentry_display_empty_fields'] {
+	display: none;
+}
 /* printing rules */
 @media print {
 	* { /* this fixes background colors (Chrome) */

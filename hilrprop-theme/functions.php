@@ -8,7 +8,7 @@
 # course proposal forms and a workflow to process them, culminating
 # in formatting for publication in the course catalog.
 #
-define('HILRCC_BUILD', '1.0.7');
+define('HILRCC_BUILD', '1.0.8');
 #ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 #
@@ -99,7 +99,7 @@ define('HILRCC_LOGO_PATH', '/images/smaller_text_logo.png');
 $workflow_button_labels_map = array(
 	HILRCC_STEP_ID_SPONSOR_ASSIGNMENT => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_TABLING => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
-	HILRCC_STEP_ID_REV_BY_COMM => array("APPROVE"=>"Ready to Vote", "REJECT"=>"Needs Discussion", "REVERT"=>"Edit"),
+	HILRCC_STEP_ID_REV_BY_COMM => array("APPROVE"=>"Ready to Vote", "REJECT"=>"Refer to Co-chairs", "REVERT"=>"Edit"),
 	HILRCC_STEP_ID_MOD_BY_SPONSOR => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_POST_REV_MOD => array("SUBMIT"=>"Submit", "SAVE"=>"Save"),
 	HILRCC_STEP_ID_POST_REV_ROUT => array("APPROVE"=>"Approve", "REJECT"=>"Reject", "REVERT"=>"Send to Sponsor"),

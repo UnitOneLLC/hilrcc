@@ -853,8 +853,8 @@ var HILRCC = {
 			var submitButton = buttonContainer.children("input")[0];
 			var newButton = jQuery(submitButton).clone(true);
 			buttonContainer.append(newButton);
-			jQuery(submitButton).val("Submit and send email");
-			newButton.val("Submit");
+			jQuery(submitButton).val("Done (send email)");
+			newButton.val("Done");
 			newButton.attr('disabled', false);
 			
 			newButton.click(function() {

@@ -24,6 +24,8 @@ var HILRCC = {
 	 * this function is invoked via jQuery when any page on the site loads.
 	 */
 	onLoad: function() {
+		HILRCC.formIsDirty = false;
+
 		/* if this is the home page (i.e. the form), add a button to reset the form */
 		if (window.location.pathname === "/" || window.location.pathname === "") {
 			HILRCC.setupMainForm();
@@ -95,7 +97,6 @@ var HILRCC = {
   			if (submitBtn.length) {
   				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
   			}
-	 		HILRCC.formIsDirty = false;
   		}
      },
     
@@ -312,6 +313,7 @@ var HILRCC = {
     		moreText.text("Your proposal has not been submitted yet. Please correct the problems and submit again. You can also choose Save and Continue Later to save a draft without fixing the problems.");
     		moreText.addClass("hilr-val-err-more");
     		valErr.append(moreText);
+    		HILRCC.formIsDirty = true;
     	}
     },
     

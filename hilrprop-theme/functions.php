@@ -8,7 +8,7 @@
 # course proposal forms and a workflow to process them, culminating
 # in formatting for publication in the course catalog.
 #
-define('HILRCC_BUILD', '1.0.6');
+define('HILRCC_BUILD', '1.0.7');
 #ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 #

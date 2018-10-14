@@ -856,6 +856,8 @@ var HILRCC = {
 			jQuery(submitButton).val("Done (send email)");
 			newButton.val("Done");
 			newButton.attr('disabled', false);
+			newButton.attr('type', 'button');
+			newButton.attr('onclick', '');
 			
 			newButton.click(function() {
 					HILRCC.setSuppressNotification(true);

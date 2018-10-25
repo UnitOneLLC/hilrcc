@@ -47,7 +47,7 @@ function display_HILR_settings()
 {
 	add_settings_section("hilr-section", "All Settings", null, "theme-options");
 	
-	add_settings_field("submissions_enabled", "Enable propoosal submissions", "display_submissions_enabled", "theme-options", "hilr-section");
+	add_settings_field("submissions_enabled", "Enable proposal submissions", "display_submissions_enabled", "theme-options", "hilr-section");
 	add_settings_field("current_semester", "Current Semester", "display_current_semester", "theme-options", "hilr-section");
     add_settings_field("starting_course_number", "Starting Course Number", "display_starting_course_number", "theme-options", "hilr-section");
 

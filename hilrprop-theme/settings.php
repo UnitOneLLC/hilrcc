@@ -5,7 +5,7 @@ function setup_HILR_settings_page(){
 	    <h1>HILR Settings</h1>
 	    <form method="post" action="options.php">
 	        <?php
-	            settings_fields("section");
+	            settings_fields("hilr-section");
 	            do_settings_sections("theme-options");      
 	            submit_button(); 
 	        ?>          
@@ -21,6 +21,13 @@ function add_HILR_menu_item()
 
 add_action("admin_menu", "add_HILR_menu_item");
 
+
+function display_submissions_enabled()
+{
+	?>
+    	<input type="checkbox" name="submissions_enabled" id="submissions_enabled" value="1" <?php checked( '1', get_option( 'submissions_enabled' ))?> />
+    <?php
+}
 
 function display_current_semester()
 {
@@ -38,13 +45,15 @@ function display_starting_course_number()
 
 function display_HILR_settings()
 {
-	add_settings_section("section", "All Settings", null, "theme-options");
+	add_settings_section("hilr-section", "All Settings", null, "theme-options");
 	
-	add_settings_field("current_semester", "Current Semester", "display_current_semester", "theme-options", "section");
-    add_settings_field("starting_course_number", "Starting Course Number", "display_starting_course_number", "theme-options", "section");
+	add_settings_field("submissions_enabled", "Enable propoosal submissions", "display_submissions_enabled", "theme-options", "hilr-section");
+	add_settings_field("current_semester", "Current Semester", "display_current_semester", "theme-options", "hilr-section");
+    add_settings_field("starting_course_number", "Starting Course Number", "display_starting_course_number", "theme-options", "hilr-section");
 
-    register_setting("section", "current_semester");
-    register_setting("section", "starting_course_number");
+    register_setting("hilr-section", "submissions_enabled");
+    register_setting("hilr-section", "current_semester");
+    register_setting("hilr-section", "starting_course_number");
 }
 
 add_action("admin_init", "display_HILR_settings");

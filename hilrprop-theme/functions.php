@@ -8,7 +8,7 @@
 # course proposal forms and a workflow to process them, culminating
 # in formatting for publication in the course catalog.
 #
-define('HILRCC_BUILD', '1.0.10');
+define('HILRCC_BUILD', '1.0.11');
 #ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 #
@@ -235,9 +235,10 @@ function HILRCC_recompute_fields()
 {
 	$semester = get_option('current_semester');
 	$search = array();
+	$search['status'] = 'active';
 	$search[HILRCC_FIELD_ID_SEMESTER] = $semester;
 	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
-	$entries = GFAPI::get_entries(0, $search, null);
+	$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
 	
 	if (!is_wp_error($entries)) {
 		foreach($entries as &$entry) {
@@ -389,7 +390,7 @@ function ajax_renumber_courses() {
 function do_renumber_courses($startNumber, $semester) {
 	$search = array();
 	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
-	
+	$search['status'] = 'active';	
 	$search['field_filters'] = array();
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_SEMESTER, 'operator'=>'is', 'value'=>$semester);
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_STATUS, 'operator'=>'is', 'value'=>HILRCC_PROP_STATUS_VALUE_APPROVED);
@@ -398,7 +399,7 @@ function do_renumber_courses($startNumber, $semester) {
 	
 	/** THERE MAY BE ADDITIONAL SEARCH CRITERIA **/
 		
-	$entries = GFAPI::get_entries(0, $search, null);
+	$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
 	
 	if (is_wp_error($entries)) {
 		echo $entries.get_error_message($entries.get_error_code());
@@ -437,10 +438,11 @@ add_action('wp_ajax_clear_course_numbers', 'clear_course_numbers');
 function clear_course_numbers() {
 	$semester = stripslashes_deep($_POST["semester"]);
 	$search = array();
+	$search['status'] = 'active';
 	$search[HILRCC_FIELD_ID_SEMESTER] = $semester;
 	/** THERE MAY BE ADDITIONAL SEARCH CRITERIA **/
 	
-	$entries = GFAPI::get_entries(0, $search, null);
+	$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
 	if (is_wp_error($entries)) {
 		echo $entries.get_error_message($entries.get_error_code());
 	}
@@ -528,6 +530,7 @@ function HILRCC_fetch_time_summary() {
 	$search = array();
 	$search[HILRCC_FIELD_ID_SEMESTER] = $semester;
 	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
+	$search['status'] = 'active';
 	/** THERE MAY BE ADDITIONAL SEARCH CRITERIA **/
 	
 	$map = array("",
@@ -540,7 +543,7 @@ function HILRCC_fetch_time_summary() {
 				  "Thursday AM",
 				  "Thursday PM");
 		
-	$entries = GFAPI::get_entries(0, $search, null);
+	$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
 	$result = array();
 	
 	$result['Full Term'] = array("Monday AM" => 0, "Monday PM" => 0,
@@ -670,7 +673,8 @@ function HILRCC_ajax_update_computed_fields()
 	$search = array();
 	$search[HILRCC_FIELD_ID_SEMESTER] = $semester;
 	$search['form_id'] = HILRCC_PROPOSAL_FORM_ID;
-	$entries = GFAPI::get_entries(0, $search, null);
+	$search['status'] = 'active';
+	$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
 	
 	if (is_wp_error($entries)) {
 		echo "FAIL: " . $entries.get_error_message($entries.get_error_code());
@@ -875,8 +879,6 @@ function HILRCC_get_view_id_from_url()
 add_filter('gravityview/view/entries', 'HILRCC_custom_view_entries');
 function HILRCC_custom_view_entries($entry_coll)
 {
-#####    $view_id = GravityView_View::getInstance()->getViewId();
-
 	$entries = $entry_coll->all();
 	$view_id = HILRCC_get_view_id_from_url();
 	

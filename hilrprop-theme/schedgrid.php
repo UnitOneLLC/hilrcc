@@ -26,7 +26,7 @@ function HILRCC_fetch_sched_grid()
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_SEMESTER, 'operator'=>'is', 'value'=>$semester);
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_STATUS, 'operator'=>'is', 'value'=>'Approved');
 	
-	$entries = GFAPI::get_entries(0, $search, null);
+	$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
 	$result = array();
 	
 	foreach ($entries as &$entry) {
@@ -35,6 +35,10 @@ function HILRCC_fetch_sched_grid()
 		$term = rgar($entry, HILRCC_FIELD_ID_DURATION);
 		$title = rgar($entry, HILRCC_FIELD_ID_TITLE);
 		
+/* debug code
+		array_push($result, ["slot"=>$slot, "room"=>$room, "term"=>$term, "title"=>$title]);
+		continue;
+*/
 		if (empty($slot) or empty($term) or strcmp($term, "Either First or Second Half") == 0) {
 			continue;
 		}

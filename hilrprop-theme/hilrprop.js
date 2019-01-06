@@ -65,7 +65,8 @@ var HILRCC = {
     },
 
 	allowedChangeElementIds: ["gravityflow-note", "gravityflow-admin-action", "gentry_display_empty_fields"],
-	     
+	
+	clearDirty:  function() {HILRCC.formIsDirty = false;},
     installUnloadHandler: function() {
 
 		jQuery("iframe").contents().find("#tinymce").on("keyup", function() {
@@ -85,18 +86,23 @@ var HILRCC = {
 	  			HILRCC.formIsDirty = true;
   			});
   			
-  			var submitBtn = jQuery("#gform_submit_button_" + HILRCC.stringTable.formId);
+ 			var submitBtn = jQuery("#gform_submit_button_" + HILRCC.stringTable.formId);
   			if (submitBtn.length) {
-  				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
+  				submitBtn.on("click", HILRCC.clearDirty);
+  			}
+  			var submitBtn = jQuery("#gravityflow_submit_button");
+  			if (submitBtn.length) {
+  				submitBtn.on("click", HILRCC.clearDirty);
   			}
   			submitBtn = jQuery("#gravityflow_update_button");
   			if (submitBtn.length) {
-  				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
+  				submitBtn.on("click", HILRCC.clearDirty);
   			}
   			submitBtn = jQuery("#gravityflow_save_progress_button");
   			if (submitBtn.length) {
-  				submitBtn.on("click", function() {HILRCC.formIsDirty = false;});
+  				submitBtn.on("click", HILRCC.clearDirty);
   			}
+
   		}
      },
     

@@ -62,6 +62,7 @@ function HILRCC_enqueue_styles()
 		'room_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_ROOM,
 		'sgl_1_bio_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_SGL1_BIO,
 		'sgl_2_bio_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_SGL2_BIO,
+		'last_mod_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_LAST_MOD_TIME,
 		'room_list' => HILRCC_ROOMS,
 		'role_context' => $role_context,
 		'current_semester' => get_option('current_semester'),

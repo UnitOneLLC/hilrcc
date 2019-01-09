@@ -331,5 +331,12 @@
 		parse_str($_SERVER['QUERY_STRING'], $output);
 		return $output[$param];
 	}
+	
+	function HILRCC_update_last_mod_time($entry) {
+		date_default_timezone_set(HILRCC_DEFAULT_TIMEZONE); 
+		$dt = new DateTime();
+		$stamp = "" . date_timestamp_get($dt) . "000";
+		GFAPI::update_entry_field($entry['id'], HILRCC_FIELD_ID_LAST_MOD_TIME, $stamp);
+	}
 
 ?>

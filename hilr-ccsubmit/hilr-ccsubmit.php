@@ -54,6 +54,7 @@ define('HILRCC_FIELD_ID_SGL1_LAST', '56.6');
 define('HILRCC_FIELD_ID_SGL2_NAME', '57');
 define('HILRCC_FIELD_ID_SGL2_FIRST', '57.3');
 define('HILRCC_FIELD_ID_SGL2_LAST', '57.6');
+define('HILRCC_FIELD_ID_SGL2_EMAIL', '53');
 define('HILRCC_FIELD_ID_WORKLOAD', '58');
 define('HILRCC_FIELD_ID_READINGS_STRING', '64');
 define('HILRCC_FIELD_ID_SUPPRESS_NOTIFY', '66');
@@ -62,6 +63,7 @@ define('HILRCC_FIELD_ID_COURSE_INFO_STRING', '68');
 define('HILRCC_FIELD_ID_ROOM', '69');
 define('HILRCC_FIELD_ID_INSTRUCTIONS', '72');
 define('HILRCC_FIELD_ID_FLEX_HALF', '75');
+define('HILRCC_FIELD_ID_LAST_MOD_TIME', '78');
 #
 # IDs for steps in the Gravity Flow workflow attached to the form
 define('HILRCC_STEP_ID_SPONSOR_ASSIGNMENT', '1');
@@ -97,7 +99,9 @@ define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
 #
 # Room List - the room list is comma-separated. This is used on the scheduling page.
 define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM,305,307');
-/* Function to create short_code that generates the homepage, based on setting */
+
+# for timestamps on entries
+define('HILRCC_DEFAULT_TIMEZONE', 'America/New_York');
 
 include_once plugin_dir_path(__FILE__) . 'bizlogic.php';
 include_once plugin_dir_path(__FILE__) . 'shortcode.php';

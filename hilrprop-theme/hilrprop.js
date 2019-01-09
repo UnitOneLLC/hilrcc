@@ -57,6 +57,8 @@ var HILRCC = {
 	  	HILRCC.fixViewMoreLessToggle();
 	  	
 	  	HILRCC.showWordCounts();
+	
+		HILRCC.fixWorkflowNoteLabel();
 	  	
 	  	// disable autofill
 		jQuery("input").attr( 'autocomplete', 'new-password' );
@@ -378,6 +380,13 @@ var HILRCC = {
 		}
 		return count;
    },
+
+	fixWorkflowNoteLabel: function () {
+		var noteLabel = jQuery("#gravityflow-notes-label");
+		if (noteLabel.length !== 0) {
+			noteLabel.text("Workflow Note");
+		}
+	},
     
     warningIframeLoaded: function(h) {
     	var frame = jQuery('#hilr-admin-warning-frame');
@@ -644,6 +653,7 @@ var HILRCC = {
     				}
     			}
     		}
+
 			/* set up the copy-to-clipboard button */
 			jQuery("#hilr-copy-glance-to-clipboard-btn").click(HILRCC.copyGravityViewListViewToClipboard);
     		
@@ -658,7 +668,7 @@ var HILRCC = {
     		jQuery("td." + HILRCC.stringTable.slot_cell_class).dblclick(
     		  	function() {
 					var props = {
-						options: ["", "Monday AM", "Monday PM", "Tuesday AM", "Tuesday PM",
+						options: ["—", "Monday AM", "Monday PM", "Tuesday AM", "Tuesday PM",
 								   "Wednesday AM", "Wednesday PM", "Thursday AM", "Thursday PM" ],
 						updateAjaxAction: "update_timeslot",
 						onAjaxSuccess: HILRCC.updateScheduleGrid
@@ -691,13 +701,22 @@ var HILRCC = {
      		jQuery("td." + HILRCC.stringTable.room_cell_class).dblclick(
     		  	function() {
 					var props = {
-						options: ['Unassigned'].concat(HILRCC.stringTable.room_list.split(',')),
+						options: ['—'].concat(HILRCC.stringTable.room_list.split(',')),
 						updateAjaxAction: "update_room",
 						onAjaxSuccess: HILRCC.updateScheduleGrid
      				};
     				(new InplaceCellEditor()).create(this, props);
     			}
     		);
+
+			// if table cells in the Room or Slot columns are empty, put in a — char
+			var maybeEmptyCells = jQuery("td.hilr-sched-maybe-empty");
+			for (var k=0; k < maybeEmptyCells.length; ++k) {
+				var cell = maybeEmptyCells[k];
+				if (jQuery(cell).html().length === 0) {
+					jQuery(cell).html('—')
+				}
+			}
 
 			// add a tooltip on cells in the "time-preference-summary" column    		
     		var tps = jQuery("td.hilr-sched-tps");
@@ -802,6 +821,16 @@ var HILRCC = {
 			/* set up the copy-to-clipboard button */
 			jQuery("#hilr-copy-cat-to-clipboard-btn").click(HILRCC.copyGravityViewListViewToClipboard);
     	}
+
+		/* convert timestamp (for last modify time) to formatted string */
+		var tsCells = jQuery("td." + HILRCC.stringTable.last_mod_class);
+		for (var j=0; j < tsCells.length; ++j){
+			var cell = tsCells[j];
+			var stamp = parseInt(jQuery(cell).html());
+			var dateText = new Date(stamp).toLocaleString("en-US");
+			if (dateText.indexOf("Invalid") !== 0)
+				jQuery(cell).html(dateText);
+		}
     },
     
     copyGravityViewListViewToClipboard: function() {
@@ -1072,7 +1101,7 @@ function InplaceCellEditor() {
 			var parentRow = jQuery(btn).parent().parent();
 			var id = parentRow.children(".hilr-scheduling-entryid").text();
 			var val = jQuery(btn).parent().children("select").val()
-			if (val === 'Unassigned') {
+			if (val === '—') {
 				val = "";
 			}
 			var data = {

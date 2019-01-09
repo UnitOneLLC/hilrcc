@@ -237,7 +237,18 @@
 			/* for UI steps, update computed fields */
 			if (HILRCC_is_UI_step($step)) {
 					HILRCC_update_computed_fields($entry_id);
+					HILRCC_update_last_mod_time(GFAPI::get_entry($entry_id));
 			}
+	}
+
+	/*
+	 * update the entry timestamp when it is saved
+	 */
+	add_filter( 'gform_entry_post_save', 'HILRCC_post_save');
+	/* not clear when/if this gets called */
+	function HILRCC_post_save( $entry ) {
+		HILRCC_update_last_mod_time($entry);
+		return $entry;
 	}
 	
 	/*

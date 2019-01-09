@@ -31,12 +31,16 @@ header('Content-Disposition: attachment; filename="course_report.csv"');
 		$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
 
 		$columns = [
-			["label"=>'course_number', "fid"=>HILRCC_FIELD_ID_COURSE_NO],
-			["label"=>'title', "fid"=>HILRCC_FIELD_ID_TITLE],
-			["label"=>'sgl1_first', "fid"=>HILRCC_FIELD_ID_SGL1_FIRST],
-			["label"=>'sgl1_last', "fid"=>HILRCC_FIELD_ID_SGL1_LAST],
-			["label"=>'sgl2_first', "fid"=>HILRCC_FIELD_ID_SGL2_FIRST],
-			["label"=>'sgl2_last', "fid"=>HILRCC_FIELD_ID_SGL2_LAST],
+			["label"=>'CRN', "fid"=>HILRCC_FIELD_ID_COURSE_NO],
+			["label"=>'COURSE NAME', "fid"=>HILRCC_FIELD_ID_TITLE],
+			["label"=>'SGL1 - First and Last', "fid"=>[HILRCC_FIELD_ID_SGL1_FIRST, HILRCC_FIELD_ID_SGL1_LAST]],
+			["label"=>'SGL1 - FIRST', "fid"=>HILRCC_FIELD_ID_SGL1_FIRST],
+			["label"=>'SGL1 - LAST', "fid"=>HILRCC_FIELD_ID_SGL1_LAST],
+			["label"=>'SGL1 EMAIL', "fid"=>HILRCC_FIELD_ID_SGL1_EMAIL],
+			["label"=>'SGL2 - First and Last', "fid"=>[HILRCC_FIELD_ID_SGL2_FIRST, HILRCC_FIELD_ID_SGL2_LAST]],
+			["label"=>'SGL2 - FIRST', "fid"=>HILRCC_FIELD_ID_SGL2_FIRST],
+			["label"=>'SGL2 - LAST', "fid"=>HILRCC_FIELD_ID_SGL2_LAST],
+			["label"=>'SGL2 EMAIL', "fid"=>HILRCC_FIELD_ID_SGL2_EMAIL],
 			["label"=>'slot', "fid"=>HILRCC_FIELD_ID_TIMESLOT, "map"=>$timeslot_map],
 			["label"=>'duration', "fid"=>HILRCC_FIELD_ID_DURATION],
 			["label"=>'room', "fid"=>HILRCC_FIELD_ID_ROOM]
@@ -58,7 +62,22 @@ header('Content-Disposition: attachment; filename="course_report.csv"');
 				if (!$first)
 					$response .= ",";
 				$first = false;
-				$field_val = rgar($entry, $col["fid"]);
+				if (!is_array($col["fid"])) {
+					$field_val = rgar($entry, $col["fid"]);
+				}
+				else {
+					$colids = $col["fid"];
+					$field_val = "";
+					$firstx = true;
+					foreach ($colids as $colid) {
+						if (!$firstx) {
+							$field_val .= " ";
+						}
+						$firstx = false;
+						$field_val .= rgar($entry, $colid);
+					}
+					
+				}
 				if (!empty($col["map"])) {
 					$field_val = $col["map"][$field_val];
 				}

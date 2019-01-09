@@ -114,6 +114,7 @@
 	    $result = HILRCC_add_comment($entry_id, $comment);
 
 	    if ($result) {
+			HILRCC_update_last_mod_time($entry);
 	        echo ("SUCCESS");
 	    } else {
 	        echo ("FAIL: GFAPI");

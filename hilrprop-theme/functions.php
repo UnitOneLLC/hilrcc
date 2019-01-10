@@ -55,6 +55,8 @@ function HILRCC_enqueue_styles()
 		'formId' => HILRCC_PROPOSAL_FORM_ID,
 		'slot_cell_class' => "gv-field-" . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_TIMESLOT,
 		'suppress_id' => "field_" . HILRCC_PROPOSAL_FORM_ID . "_" . HILRCC_FIELD_ID_SUPPRESS_NOTIFY,
+		'lastmod_id' => "field_" . HILRCC_PROPOSAL_FORM_ID . "_" . HILRCC_FIELD_ID_LAST_MOD_TIME,
+		'flexhalf_id' => "field_" . HILRCC_PROPOSAL_FORM_ID . "_" . HILRCC_FIELD_ID_FLEX_HALF,
 		'course_desc_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_COURSE_DESC,
 		'course_info_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_COURSE_INFO_STRING,
 		'size_cell_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_CLASS_SIZE,

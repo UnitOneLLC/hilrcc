@@ -59,6 +59,8 @@ var HILRCC = {
 	  	HILRCC.showWordCounts();
 	
 		HILRCC.fixWorkflowNoteLabel();
+		
+		HILRCC.removeHiddenFields();
 	  	
 	  	// disable autofill
 		jQuery("input").attr( 'autocomplete', 'new-password' );
@@ -893,6 +895,32 @@ var HILRCC = {
     	}
     	return false;
     },
+
+	removeHiddenFields: function() {
+		var fieldsToRemove = [
+			"last_mod_time",
+			"Flexible half",
+			"Readings catalog text",
+			"suppress"
+		];
+		if ((window.location.href.indexOf("/inbox/") >= 0) ||
+			(window.location.href.indexOf("workflow-status") >= 0)) {
+
+			var cells = jQuery("td.entry-view-field-name");
+			cells.each(function(index) {
+				var thisText = jQuery(this).html();
+				for (var i=0; i < fieldsToRemove.length; ++i) {
+					if (thisText == fieldsToRemove[i]) {
+						var parent = jQuery(this).parent();
+						var nextRow = parent.next();
+						parent.remove();
+						nextRow.remove();
+					}
+				}
+			});
+		}
+		
+	},
     
     /*
      * clone the submit button so that we can distinguish submit with/without
@@ -917,8 +945,11 @@ var HILRCC = {
 					jQuery(jQuery(".gravityflow-action-buttons").children("input")[0]).trigger('click');
 				});
 		}
-		/* hide the 'suppress notify' input */
+		/* hide the 'suppress notify' input and other hidden inputs */
 		jQuery("#" + HILRCC.stringTable.suppress_id).hide();
+		jQuery("#" + HILRCC.stringTable.lastmod_id).hide();
+		jQuery("#" + HILRCC.stringTable.flexhalf_id).hide();
+		
     },
     
     /*

@@ -382,7 +382,7 @@ var HILRCC = {
    },
 
 	fixWorkflowNoteLabel: function () {
-		var noteLabel = jQuery("#gravityflow-notes-label");
+		var noteLabel = jQuery("#gravityflow-notes-label, label[for='gravityflow-note']");
 		if (noteLabel.length !== 0) {
 			noteLabel.text("Workflow Note");
 		}
@@ -661,7 +661,16 @@ var HILRCC = {
     	else if (viewId === 'scheduling') {
     	
     		/* allow a little more width */
-    		jQuery("#primary").css("max-width", "1400px");
+    		jQuery("#primary").css("max-width", "1500px");
+
+			/* apply a special CSS class to the 'duration' cell if the value of flex_half in the row is 'true' */
+			
+			jQuery("td.hilr-scheduling-flex").each(function (index) {
+				var jFlex = jQuery(this);
+				if (jFlex.html() === 'true') {
+					jFlex.parent().children("." + HILRCC.stringTable.duration_cell_class).addClass("hilr-flex-duration");
+				}
+			});
     	
     		/* install in-place editors for slot, size, room, and duration columns */
     		

@@ -77,10 +77,21 @@
 			}
 		}
 	}
+
+	function HILRCC_set_either_half_flag_by_id($entry_id) {
+		HILRCC_set_either_half_flag(GFAPI::get_entry($entry_id));
+	}
 	
 	function HILRCC_set_either_half_flag($entry) {
 		$duration = rgar($entry, HILRCC_FIELD_ID_DURATION);
-		GFAPI::update_entry_field($entry['id'], HILRCC_FIELD_ID_FLEX_HALF, ($duration == 'Either First or Second Half') ? "true" : "false");
+		$flex = rgar($entry, HILRCC_FIELD_ID_FLEX_HALF);
+		/* once the flag is true, never set it back to false */
+		if ($flex === 'true') {
+			return;
+		}
+		else if ($duration === 'Either First or Second Half') {
+			GFAPI::update_entry_field($entry['id'], HILRCC_FIELD_ID_FLEX_HALF, 'true');
+		}
 	}
 	
 	function HILRCC_remove_empty_book_rows_by_id($entry_id) {
@@ -128,6 +139,7 @@
 		HILRCC_update_workload_string($entry_id);
 		HILRCC_compress_spaces($entry_id);
 		HILRCC_remove_empty_book_rows_by_id($entry_id);
+		HILRCC_set_either_half_flag_by_id($entry_id);
 	}
 	/* update the Readings string for the catalog based on the Books field */
 	define("SPACE_SPAN", "&nbsp;");

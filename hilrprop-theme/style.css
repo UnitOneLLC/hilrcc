@@ -386,6 +386,9 @@ li.menu-item-object-page:hover,li.menu-item-object-custom:hover {
 	font-weight: 600;
 	font-weight: 0.8em;
 }
+.hilr-flex-duration {
+	color: #009600;
+}
 /* this is for in-place editing on the scheduling view */
 .gv-field-2-55 {
 	min-width: 250px;

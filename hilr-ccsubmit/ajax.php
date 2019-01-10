@@ -265,11 +265,12 @@
 	add_action('wp_ajax_update_duration', 'HILRCC_update_duration');
 	function HILRCC_update_duration() {
 		$entry_id = $_POST["entry_id"];
-		$class_size = $_POST["value"];
+		$duration = $_POST["value"];
 		
-		$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_DURATION, $class_size) ;
+		$result   = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_DURATION, $duration) ;
 	    
 	    if ($result) {
+			HILRCC_set_either_half_flag_by_id($entry_id);
 	        echo ("SUCCESS");
 	    } else {
 	        echo ("FAIL: GFAPI");

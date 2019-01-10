@@ -248,6 +248,7 @@
 	/* not clear when/if this gets called */
 	function HILRCC_post_save( $entry ) {
 		HILRCC_update_last_mod_time($entry);
+		HILRCC_strip_tags($entry);
 		return $entry;
 	}
 	

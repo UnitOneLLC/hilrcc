@@ -350,5 +350,24 @@
 		$stamp = "" . date_timestamp_get($dt) . "000";
 		GFAPI::update_entry_field($entry['id'], HILRCC_FIELD_ID_LAST_MOD_TIME, $stamp);
 	}
+	
+	/*
+	 * When the form is submitted, remove some tags from rich text fields that 
+	 * appear in the catalog.
+	 */
+	function HILRCC_strip_tags($entry) {
+		$std_allowed_tags = "<b><i>";
+		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_COURSE_DESC, $std_allowed_tags); 
+		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_SGL1_BIO, $std_allowed_tags); 
+		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_SGL2_BIO, $std_allowed_tags); 
+	}
+
+	function HILRCC_strip_tags_from_field($entry, $field_id, $allowed) {
+		$richtext = rgar($entry, $field_id);
+		if (!empty($richtext)) {
+			$stripped = strip_tags($richtext, $allowed);
+			GFAPI::update_entry_field($entry['id'], $field_id, $stripped);
+		}
+	}
 
 ?>

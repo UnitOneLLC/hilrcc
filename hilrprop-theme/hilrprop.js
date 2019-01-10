@@ -68,11 +68,16 @@ var HILRCC = {
 
 	allowedChangeElementIds: ["gravityflow-note", "gravityflow-admin-action", "gentry_display_empty_fields"],
 	
-	clearDirty:  function() {HILRCC.formIsDirty = false;},
+	clearDirty:  function() {
+		HILRCC.formIsDirty = false;
+	},
+	setDirty: function() {
+		HILRCC.formIsDirty = true;
+	},
     installUnloadHandler: function() {
 
 		jQuery("iframe").contents().find("#tinymce").on("keyup", function() {
-			HILRCC.formIsDirty = true;
+			HILRCC.setDirty();
 		}); 
   			
 		var inputs = jQuery("form").not(".gv-widget-search").not("#adminbarsearch");		    
@@ -85,7 +90,7 @@ var HILRCC = {
   					if (HILRCC.allowedChangeElementIds[i] == lookingFor)
   						return;
   				}
-	  			HILRCC.formIsDirty = true;
+	  			HILRCC.setDirty();
   			});
   			
  			var submitBtn = jQuery("#gform_submit_button_" + HILRCC.stringTable.formId);
@@ -158,7 +163,7 @@ var HILRCC = {
 		var ajaxSubmitIframe = jQuery("#gform_ajax_frame_" + HILRCC.stringTable.formId);
 		if (ajaxSubmitIframe.length) {
 			ajaxSubmitIframe[0].onload = function() {
-				HILRCC.formIsDirty = false;
+				HILRCC.clearDirty();
 				ajaxSubmitIframe.off("load", HILRCC.onLoad);
 				ajaxSubmitIframe.on("load", HILRCC.onLoad);		
 				setTimeout(function() {
@@ -315,13 +320,17 @@ var HILRCC = {
     },
     
     fixValidationMessage: function() {
+		/* if the confirmation message is present, skip this */
+		var confId = "#gform_confirmation_message_" + HILRCC.stringTable.formId;
+		if (jQuery("iframe").contents().find(confId).length !== 0)
+			return;
     	var valErr = jQuery(".gform_validation_error div.validation_error");
     	if (valErr.length !== 0) {
     		var moreText = jQuery(document.createElement("div"));
     		moreText.text("Your proposal has not been submitted yet. Please correct the problems and submit again. You can also choose Save and Continue Later to save a draft without fixing the problems.");
     		moreText.addClass("hilr-val-err-more");
     		valErr.append(moreText);
-    		HILRCC.formIsDirty = true;
+    		HILRCC.setDirty();
     	}
     },
     
@@ -488,7 +497,7 @@ var HILRCC = {
 
 		jQuery.post(HILRCC.stringTable.ajaxURL, data, function(response) {
 			if (response.indexOf("SUCCESS") == 0) {
-				HILRCC.formIsDirty = false;
+				HILRCC.clearDirty();
 				window.location.reload();
 			}
 			else if (response.indexOf("EMPTY") != 0) {
@@ -517,7 +526,7 @@ var HILRCC = {
     handle_discard_comment: function() {
     	var textarea = jQuery("#hilr_comment_input");
     	if ((textarea.val() == '') || window.confirm("Are you sure?")) {
-    		HILRCC.formIsDirty = false;
+    		HILRCC.clearDirty();
 	    	textarea.val("");
     		window.history.back();
     	}
@@ -567,7 +576,7 @@ var HILRCC = {
     },
     
     confirmClearForm: function() {
-    	HILRCC.formIsDirty = false;
+    	HILRCC.clearDirty();
     	return confirm('Do you really want to reset the form?');
     },
     

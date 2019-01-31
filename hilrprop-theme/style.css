@@ -79,7 +79,7 @@ div.gform_wrapper {
 	
 /* rule to remove excess whitespace on inbox page at top */
 @media screen and (min-width: 48em) {
-.page.page-one-column .entry-header, .twentyseventeen-front-page.page-one-column .entry-header, 
+.page.page-one-column .entry-header, .twentyseventeen-front-page.page-one-column .entry-header,
 .archive.page-one-column:not(.has-sidebar) .page-header {
     /* margin-bottom: 4em; */
 }}
@@ -150,7 +150,7 @@ li.menu-item-object-page,li.menu-item-object-custom {
 	background-color: #d88080;
 	vertical-align: central;
 	font-weight: normal;
-	border-radius: 6px 6px 0 0 
+	border-radius: 6px 6px 0 0
 }
 li.menu-item-object-page a, li.menu-item-object-custom a {
 	color: #f0f0f0 !important;
@@ -193,18 +193,23 @@ li.menu-item-object-page:hover,li.menu-item-object-custom:hover {
 
 /* apportion the table cells of the list of books in the course proposal form */
 .hilr-booklist td[class*="_cell1"] { /* author */
-	width: 25%;
+	width: 30%;
 }
 .hilr-booklist td[class*="_cell2"] { /* title */
-	width: 40%;
+	width: 30%;
 }
 .hilr-booklist td[class*="_cell3"] { /* publisher */
 	width: 15%;
 }
-.hilr-booklist td[class*="_cell4"] { /* publisher */
-	width: 15%;
+.hilr-booklist td[class*="_cell4"] { /* year */
+	width: 10%;
 }
-
+.hilr-booklist td[class*="_cell5"] { /* only this edition */
+	width: 5%;
+}
+.hilr-booklist tbody td[class='gfield_list_icons'] { /* add icon */
+  width: 16px;
+}
 /* Keep the booklist column headers close to their inputs */
 .hilr-booklist thead th {
 	vertical-align: bottom !important;
@@ -355,7 +360,7 @@ li.menu-item-object-page:hover,li.menu-item-object-custom:hover {
 .hilr-glance-first {
 	background-color: #ddd;
 }
-.hilr-glance-second { 
+.hilr-glance-second {
 	background-color: #999;
 }
 .hilr-admin-btn {
@@ -420,7 +425,7 @@ td.gv-field-2-55, td.gv-field-2-3, td.gv-field-2-27, td.gv-field-2-69 {
     margin-top: -1px !important;
 }
 /* suppress date created column on workflow status page (?) */
-.column-date_created { 	
+.column-date_created {
 	display:none;
 }
 /* make the checkbox for "Print timeline" in the workflow controls align correctly with its label */
@@ -437,7 +442,7 @@ label[for="print_notes"], .gravityflow_workflow_wrap .detail-view-print .button 
 	margin: 0 auto;
 }
 #sched_grid_0 td {
-    text-align:	center; 
+    text-align:	center;
     vertical-align:	middle;
 }
 #hilr-toggle-admin-btn {
@@ -484,14 +489,14 @@ li label {
 }
 
 /* buttons */
-input.gform_button, 
-a.gform_save_link, 
+input.gform_button,
+a.gform_save_link,
 #hilr_reset_btn,
 #hilr-copy-cat-to-clipboard-btn,
-#hilr-copy-glance-to-clipboard-btn, 
+#hilr-copy-glance-to-clipboard-btn,
 .gravityflow-action-buttons input[type=submit].button,
 .gravityflow-action-buttons input[type=button].button,
-.gravityflow-action-buttons button[type=submit].button, 
+.gravityflow-action-buttons button[type=submit].button,
 .hilr-add-comment-button,
 .hilr-admin-btn,
 .gv-search-button
@@ -513,7 +518,7 @@ a.gform_save_link,
     box-shadow:
 		0 1px 0 rgba(0,0,0,.08),
         inset 0 1px 2px rgba(255,255,255,.67),
-        inset 0 -1px 0 rgba(0,0,0,.14) !important;    
+        inset 0 -1px 0 rgba(0,0,0,.14) !important;
     background-image: -moz-linear-gradient(0deg, #811314 0%, #c14455 100%);
     background-image: -o-linear-gradient(0deg, #811314 0%, #c14455 100%);
     background-image: -webkit-linear-gradient(0deg, #811314 0%, #c14455 100%);
@@ -590,7 +595,7 @@ form.gv-widget-search {
 /* printing rules */
 @media print {
 	* { /* this fixes background colors (Chrome) */
-		 -webkit-print-color-adjust: exact; 
+		 -webkit-print-color-adjust: exact;
 	}
 	.gv-table-container tfoot, .entry-title, #colophon {
 		display: none;

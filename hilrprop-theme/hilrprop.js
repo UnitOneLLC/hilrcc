@@ -848,8 +848,13 @@ var HILRCC = {
 			var cell = tsCells[j];
 			var stamp = parseInt(jQuery(cell).html());
 			var dateText = new Date(stamp).toLocaleString("en-US");
-			if (dateText.indexOf("Invalid") !== 0)
+			if (dateText.indexOf("Invalid") !== 0) {
+				/* remove seconds */
+				var lastColon = dateText.lastIndexOf(":");
+				var killText = dateText.slice(lastColon, lastColon+3);
+				dateText = dateText.replace(killText, '');
 				jQuery(cell).html(dateText);
+			}
 		}
     },
     

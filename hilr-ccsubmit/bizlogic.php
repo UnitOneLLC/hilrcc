@@ -310,7 +310,7 @@
 		HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_SGL2_BIO);
 		HILRCC_compress_spaces_in_field($entry_id, HILRCC_FIELD_ID_OTHER_MAT);
 	}
-
+	
 	function is_entry_assigned_current_user($entry)
 	{
 		$flow_api  = new Gravity_Flow_API(HILRCC_PROPOSAL_FORM_ID);
@@ -356,7 +356,7 @@
 	 * appear in the catalog.
 	 */
 	function HILRCC_strip_tags($entry) {
-		$std_allowed_tags = "<b><i>";
+		$std_allowed_tags = "<b><i><em><strong>";
 		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_COURSE_DESC, $std_allowed_tags); 
 		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_SGL1_BIO, $std_allowed_tags); 
 		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_SGL2_BIO, $std_allowed_tags); 

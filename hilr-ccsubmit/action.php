@@ -8,6 +8,8 @@
 	add_action( 'gform_entry_created', 'HILRCC_on_entry_created' );
 	function HILRCC_on_entry_created( $entry, $form ) {
 		HILRCC_set_either_half_flag($entry);
+		/* disallow mark-up in rich text fields */
+		HILRCC_strip_tags($entry);
 		/* don't allow empty rows in the Books list */
 	 	HILRCC_remove_empty_book_rows($entry);
 	}

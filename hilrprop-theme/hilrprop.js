@@ -29,6 +29,7 @@ var HILRCC = {
 		/* if this is the home page (i.e. the form), add a button to reset the form */
 		if (window.location.pathname === "/" || window.location.pathname === "") {
 			HILRCC.setupMainForm();
+			setTimeout(HILRCC.moveRTEButtons, 2500);
 		}
 	
 		/* install the unload handler */
@@ -119,6 +120,17 @@ var HILRCC = {
     	return (jQuery(".hilr-view-course-title").length == 1);
     },
     
+	moveRTEButtons: function() {
+		/* show the 'special character' button on the RTE as a sibling of the italic button */
+		var rtes = jQuery('.hilr-hide-rte-tools');
+		rtes.each(function(div) {
+			div = jQuery(rtes[div]);
+			var ital = div.find('.mce-btn[aria-label="Italic"]');
+			var spec = div.find('.mce-btn[aria-label="Special character"]');
+			spec.detach().appendTo(ital.parent());
+		});
+	},
+
     /*
      * initialization of the main form
      */
@@ -150,7 +162,7 @@ var HILRCC = {
 				delayStartOption.hide();
 			}
 		}
-
+		
 		/* initialize listeners for schedule choice radio buttons */
 		/**** DISABLING THIS CODE
 		jQuery('.hilr-sched-1 input[type=radio]').click(function() {HILRCC.onSchedClick(this.value, 1);});

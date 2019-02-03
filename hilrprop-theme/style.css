@@ -222,6 +222,10 @@ li.menu-item-object-page:hover,li.menu-item-object-custom:hover {
 .hilr-hide-rte-tools .mce-btn[aria-label="Italic"] {
 	display: inline-block !important;
 }
+
+.hilr-hide-rte-tools .mce-btn[aria-label="Special character"] {
+	display: inline-block !important;
+}
 .hilr-hide-toggle .mce-btn[aria-label="Toolbar Toggle"] {
 	display: none !important;
 }

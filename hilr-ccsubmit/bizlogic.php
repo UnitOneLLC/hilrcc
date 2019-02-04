@@ -360,6 +360,7 @@
 		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_COURSE_DESC, $std_allowed_tags); 
 		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_SGL1_BIO, $std_allowed_tags); 
 		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_SGL2_BIO, $std_allowed_tags); 
+		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_OTHER_MAT, $std_allowed_tags); 
 	}
 
 	function HILRCC_strip_tags_from_field($entry, $field_id, $allowed) {

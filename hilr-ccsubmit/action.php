@@ -6,7 +6,7 @@
 		Action for entry creation and update
 	*/
 	add_action( 'gform_entry_created', 'HILRCC_on_entry_created' );
-	function HILRCC_on_entry_created( $entry, $form ) {
+	function HILRCC_on_entry_created( $entry) {
 		HILRCC_set_either_half_flag($entry);
 		/* disallow mark-up in rich text fields */
 		HILRCC_strip_tags($entry);

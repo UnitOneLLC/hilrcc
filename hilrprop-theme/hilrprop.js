@@ -29,11 +29,10 @@ var HILRCC = {
 		/* if this is the home page (i.e. the form), add a button to reset the form */
 		if (window.location.pathname === "/" || window.location.pathname === "") {
 			HILRCC.setupMainForm();
-			setTimeout(HILRCC.moveRTEButtons, 2500);
 		}
 	
-		/* install the unload handler */
-		setTimeout(HILRCC.installUnloadHandler, 2500); /* allow settle time for RTE (bug?) */
+		/* delayed actions for RTEs */
+		setTimeout(HILRCC.delayedSetup, 2500); /* allow settle time for RTE (bug?) */
 	
 		var viewId = HILRCC.getGravityViewId();
 		if (viewId) {
@@ -76,6 +75,10 @@ var HILRCC = {
 	},
 	setDirty: function() {
 		HILRCC.formIsDirty = true;
+	},
+	delayedSetup: function() {
+		HILRCC.installUnloadHandler();
+		HILRCC.moveRTEButtons();	
 	},
     installUnloadHandler: function() {
 
@@ -127,7 +130,9 @@ var HILRCC = {
 			div = jQuery(rtes[div]);
 			var ital = div.find('.mce-btn[aria-label="Italic"]');
 			var spec = div.find('.mce-btn[aria-label="Special character"]');
-			spec.detach().appendTo(ital.parent());
+			if (ital && spec) {
+				spec.detach().appendTo(ital.parent());
+			}
 		});
 	},
 

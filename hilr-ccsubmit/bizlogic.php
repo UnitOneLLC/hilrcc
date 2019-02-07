@@ -99,6 +99,9 @@
 	}
 	function HILRCC_remove_empty_book_rows($entry) {
 		$books_in = unserialize(rgar($entry, HILRCC_FIELD_ID_BOOKS));
+		if (empty($books_in)) {
+			return true;
+		}
 		$books_out = array();
 		$found_blank = false;
 		
@@ -154,7 +157,7 @@
 			return;
 		}
 		
-		usort($books, edition_sort_comparator);
+		usort($books, 'edition_sort_comparator');
 		
 		/* Check for special case: multiple books all with 'This edition only'.
 		 * In this case, we emit 'These editions only:'

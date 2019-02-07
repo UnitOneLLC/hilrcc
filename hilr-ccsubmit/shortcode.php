@@ -35,10 +35,10 @@
 			$entryid      = $atts['entryid'];
 			$have_entryid = ($entryid != 0);
 		}
-		if (have_formid === false) {
+		if ($have_formid === false) {
 			return esc_url(site_url() . '/index.php/inbox/');
 		}
-		if (have_entryid === false) {
+		if ($have_entryid === false) {
 			return site_url() . '/index.php/inbox/?page=gravityflow-inbox&view=entry&id=' . $formid;
 		}
 		

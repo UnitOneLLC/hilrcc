@@ -81,11 +81,24 @@ function HILRCC_redirect_page()
 		include($path);
 		exit;
 	}
+	
+	/*
+	 * A request to the All Proposals view with no query string gets 
+	 * redirected to the same URL with a query string appended to 
+	 * limit the search to the current semester.
+	 */
+	if (is_page('all-proposals')) {
+		$query = parse_url($_SERVER['REQUEST_URI'])['query'];
+		if (empty($query)) {
+			$semester = get_option('current_semester');
+			if (!empty($semester)) {
+				$new_url = $_SERVER['REQUEST_URI'] . '?filter_' . HILRCC_FIELD_ID_SEMESTER . '=' . urlencode($semester) . '&mode=all';
+				wp_redirect($new_url);
+			}
+		}
+	}
 }
 add_action( 'template_redirect', 'HILRCC_redirect_page' );
-
-
-
 
 /**
  * Hide the nav menu on the homempage

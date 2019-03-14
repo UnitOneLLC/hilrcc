@@ -148,59 +148,68 @@
 	define("SPACE_SPAN", "&nbsp;");
 	function HILRCC_update_readings($entry_id)
 	{
-		
 		$books = unserialize(rgar(GFAPI::get_entry($entry_id), HILRCC_FIELD_ID_BOOKS));
 		$readingString = "";
 		if (!empty($books)) {
 			$readingString = "<strong>Readings: </strong>";
-		} else {
-			return;
-		}
 		
-		usort($books, 'edition_sort_comparator');
-		
-		/* Check for special case: multiple books all with 'This edition only'.
-		 * In this case, we emit 'These editions only:'
-		 */
-		 
-		$isSpecialTheseCase = true;
-		if (count($books) <= 1) {
-			$isSpecialTheseCase = false;
-		}
-		else {
+			usort($books, 'edition_sort_comparator');
+			
+			/* Check for special case: multiple books all with 'This edition only'.
+			 * In this case, we emit 'These editions only:'
+			 */
+			 
+			$isSpecialTheseCase = true;
+			if (count($books) <= 1) {
+				$isSpecialTheseCase = false;
+			}
+			else {
+				foreach ($books as &$book) {
+					if (!is_this_edition_only($book)) {
+						$isSpecialTheseCase = false;
+						break;
+					}
+				}
+			}
+			
+			/* now generate the string */
+			$isFirst = true;
 			foreach ($books as &$book) {
-				if (!is_this_edition_only($book)) {
-					$isSpecialTheseCase = false;
-					break;
+				if (!$isFirst) {
+					$readingString .= "; ";
 				}
+				if ($isFirst and $isSpecialTheseCase) {
+					$readingString .= "Only these editions: ";
+				}
+				$isFirst = false;
+				
+				if (!$isSpecialTheseCase) {
+					if (is_this_edition_only($book)) {
+						$readingString = $readingString . "This edition only: ";
+					}
+				}
+				$author = $book[HILRCC_LABEL_AUTHOR] . ", ";
+				$title  = "<em>" . $book[HILRCC_LABEL_TITLE] . "</em>";
+				$pubed  = SPACE_SPAN . "(" . $book[HILRCC_LABEL_PUBLISHER] . ", " . $book[HILRCC_LABEL_EDITION] . ")";
+				
+				$readingString = $readingString . $author . $title . $pubed;
+			}
+			
+			if (!empty($readingString)) {
+				$readingString = $readingString . ".";
 			}
 		}
 		
-		/* now generate the string */
-		$isFirst = true;
-		foreach ($books as &$book) {
-			if (!$isFirst) {
-				$readingString .= "; ";
+		/* add the "other material" text if present */
+		$other_mat = rgar(GFAPI::get_entry($entry_id), HILRCC_FIELD_ID_OTHER_MAT);
+		if (!empty($other_mat)) {
+			if (!empty($readingString)) {
+				$readingString .= " ";
 			}
-			if ($isFirst and $isSpecialTheseCase) {
-				$readingString .= "Only these editions: ";
+			else {
+				$readingString = "<strong>Readings: </strong>";
 			}
-			$isFirst = false;
-			
-			if (!$isSpecialTheseCase) {
-				if (is_this_edition_only($book)) {
-					$readingString = $readingString . "This edition only: ";
-				}
-			}
-			$author = $book[HILRCC_LABEL_AUTHOR] . ", ";
-			$title  = "<em>" . $book[HILRCC_LABEL_TITLE] . "</em>";
-			$pubed  = SPACE_SPAN . "(" . $book[HILRCC_LABEL_PUBLISHER] . ", " . $book[HILRCC_LABEL_EDITION] . ")";
-			
-			$readingString = $readingString . $author . $title . $pubed;
-		}
-		
-		if (!empty($readingString)) {
-			$readingString = $readingString . ".";
+			$readingString .= $other_mat;
 		}
 		
 		$result = GFAPI::update_entry_field($entry_id, HILRCC_FIELD_ID_READINGS_STRING, $readingString);

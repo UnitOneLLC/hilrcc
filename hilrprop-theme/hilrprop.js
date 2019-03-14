@@ -503,10 +503,18 @@ var HILRCC = {
     /*
      * Make an ajax call to post a comment (discussion entry).
      */
+	lastCommentAdded: "",
+	
     handle_add_comment: function() {
     	var text = jQuery("#hilr_comment_input").val();
     	var path = location.pathname.split('/');
    		var entryId = path[path.length-1];
+
+		if (text == HILRCC.lastCommentAdded) {
+			return; /* multiple clicks on the button -- just ignore */
+		}
+		HILRCC.lastCommentAdded = text;
+		
     	if (!entryId) entryId = path[path.length-2];    
     	var data = {
 			'action': 'add_comment',
@@ -521,6 +529,7 @@ var HILRCC = {
 			}
 			else if (response.indexOf("EMPTY") != 0) {
 				alert("Sorry, there was a problem: " + response);
+				HILRCC.lastCommentAdded = "";
 			}
 		});
 

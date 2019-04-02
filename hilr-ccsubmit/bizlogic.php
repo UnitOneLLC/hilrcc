@@ -139,6 +139,7 @@
 		HILRCC_update_readings($entry_id);
 		HILRCC_auto_bold_sgl_names($entry_id);
 		HILRCC_update_time_summary($entry_id);
+		HILRCC_strip_tags_id($entry_id);
 		HILRCC_update_workload_string($entry_id);
 		HILRCC_compress_spaces($entry_id);
 		HILRCC_remove_empty_book_rows_by_id($entry_id);
@@ -367,6 +368,7 @@
 	 * When the form is submitted, remove some tags from rich text fields that 
 	 * appear in the catalog.
 	 */
+	function HILRCC_strip_tags_id($entry_id) {HILRCC_strip_tags(GFAPI::get_entry($entry_id));}
 	function HILRCC_strip_tags($entry) {
 		$std_allowed_tags = "<b><i><em><strong>";
 		HILRCC_strip_tags_from_field($entry, HILRCC_FIELD_ID_COURSE_DESC, $std_allowed_tags); 

@@ -37,10 +37,12 @@ header('Content-Disposition: attachment; filename="course_report.csv"');
 			["label"=>'SGL1 - FIRST', "fid"=>HILRCC_FIELD_ID_SGL1_FIRST],
 			["label"=>'SGL1 - LAST', "fid"=>HILRCC_FIELD_ID_SGL1_LAST],
 			["label"=>'SGL1 EMAIL', "fid"=>HILRCC_FIELD_ID_SGL1_EMAIL],
+			["label"=>'SGL1 - prev led', "fid"=>HILRCC_FIELD_ID_SGL1_PREV],
 			["label"=>'SGL2 - First and Last', "fid"=>[HILRCC_FIELD_ID_SGL2_FIRST, HILRCC_FIELD_ID_SGL2_LAST]],
 			["label"=>'SGL2 - FIRST', "fid"=>HILRCC_FIELD_ID_SGL2_FIRST],
 			["label"=>'SGL2 - LAST', "fid"=>HILRCC_FIELD_ID_SGL2_LAST],
 			["label"=>'SGL2 EMAIL', "fid"=>HILRCC_FIELD_ID_SGL2_EMAIL],
+			["label"=>'SGL2 - prev led', "fid"=>HILRCC_FIELD_ID_SGL2_PREV],
 			["label"=>'slot', "fid"=>HILRCC_FIELD_ID_TIMESLOT, "map"=>$timeslot_map],
 			["label"=>'duration', "fid"=>HILRCC_FIELD_ID_DURATION],
 			["label"=>'room', "fid"=>HILRCC_FIELD_ID_ROOM]

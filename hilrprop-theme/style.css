@@ -596,10 +596,16 @@ form.gv-widget-search {
 .entry-detail-view #gentry_display_empty_fields,label[for='gentry_display_empty_fields'] {
 	display: none;
 }
+.print-only-block {
+	display: none;
+}
 /* printing rules */
 @media print {
 	* { /* this fixes background colors (Chrome) */
 		 -webkit-print-color-adjust: exact;
+	}
+	.print-only-block {
+		display: block !important;
 	}
 	.gv-table-container tfoot, .entry-title, #colophon {
 		display: none;
@@ -609,13 +615,16 @@ form.gv-widget-search {
 		font-size: 0.8em;
 	}
 	
-	#masthead, .gv-sort {
+	#masthead, .gv-sort, .hilrcc-no-print {
 		display: none;
 	}
 	
 	/* scheduling page */
-	#sched_grid_0 {
-		display: none;
+	#sched_grid_1, #sched_grid_2 {
+		display: table !important;
+	}
+	#sched_grid_2 {
+		page-break-after: always;
 	}
 	.parent-pageid-373 a.gv-sort {
 		display: none;

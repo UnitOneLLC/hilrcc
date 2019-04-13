@@ -100,11 +100,12 @@ function HILRCC_emit_sched_grid()
 ?>
 
 <div id="sched_grid_0">
-  <ul>
+  <ul class="hilrcc-no-print">
     <li><a href="#sched_grid_1">First Half</a></li>
     <li><a href="#sched_grid_2">Second Half</a></li>
   </ul>
 
+<h3 class="print-only-block">First Half</h3>
 <table id='sched_grid_1'>
 	<tbody>
 		<tr>
@@ -128,7 +129,7 @@ function HILRCC_emit_sched_grid()
 ?>		
 	</tbody>
 </table>
-
+<h3 class="print-only-block" style="page-break-before: always;">Second Half</h3>
 <table id='sched_grid_2'>
 	<tbody>
 		<tr>

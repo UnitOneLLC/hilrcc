@@ -17,6 +17,10 @@ header('Content-Disposition: attachment; filename="course_report.csv"');
 					  "Wednesday PM",
 					  "Thursday AM",
 					  "Thursday PM");
+					
+		$queries = array();
+		parse_str($_SERVER['QUERY_STRING'], $queries);
+		$sched_only = $queries['sched'] == '1';
 
 		$semester = get_option('current_semester');
 		$search = array();
@@ -25,8 +29,10 @@ header('Content-Disposition: attachment; filename="course_report.csv"');
 		$search['field_filters'] = array();
 		$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_SEMESTER, 'operator'=>'is', 'value'=>$semester);
 		$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_STATUS, 'operator'=>'is', 'value'=>HILRCC_PROP_STATUS_VALUE_APPROVED);
-		$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_DURATION, 'operator'=>'isnot', 'value'=>'Either First or Second Half');
-		$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_TIMESLOT, 'operator'=>'isnot', 'value'=>'');
+		if ($sched_only) {
+			$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_DURATION, 'operator'=>'isnot', 'value'=>'Either First or Second Half');
+			$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_TIMESLOT, 'operator'=>'isnot', 'value'=>'0');
+		}
 		
 		$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
 

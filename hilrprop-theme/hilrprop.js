@@ -1128,7 +1128,20 @@ var HILRCC = {
 			}
 		}
     
-    }
+    },
+
+	doCourseReport() {
+		var bSchedOnly = false;
+		var ckbox = jQuery("#report-sched-only-ckbox");
+		if (ckbox) {
+			bSchedOnly = ckbox.prop("checked")
+		}
+		var qString = "";
+		if (bSchedOnly) {
+			qString = "?sched=1";
+		}
+		window.location.replace("/index.php/course_report/" + qString);
+	}
         
 };
 		

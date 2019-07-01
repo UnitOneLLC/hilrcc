@@ -11,7 +11,7 @@
 	Copyright 2019, Harvard Institute for Learning in Retirement
 */
 
-define('HILRCC_BUILD', '2.0.06');
+define('HILRCC_BUILD', '2.1.0');
 #ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 #
@@ -42,6 +42,7 @@ define('HILRCC_FIELD_ID_STATUS', '37');
 define('HILRCC_FIELD_ID_CHOICE_1', '38');
 define('HILRCC_FIELD_ID_CHOICE_3', '39');
 define('HILRCC_FIELD_ID_CHOICE_2', '40');
+define('HILRCC_FIELD_ID_COLLOQUIUM', '41');
 define('HILRCC_FIELD_ID_COURSE_NO', '42');
 define('HILRCC_FIELD_ID_PHONE_1', '46');
 define('HILRCC_FIELD_ID_PHONE_2', '50');
@@ -66,6 +67,7 @@ define('HILRCC_FIELD_ID_ROOM', '69');
 define('HILRCC_FIELD_ID_INSTRUCTIONS', '72');
 define('HILRCC_FIELD_ID_FLEX_HALF', '75');
 define('HILRCC_FIELD_ID_LAST_MOD_TIME', '78');
+define('HILRCC_FIELD_ID_PREV_OFFERING', '79');
 #
 # IDs for steps in the Gravity Flow workflow attached to the form
 define('HILRCC_STEP_ID_SPONSOR_ASSIGNMENT', '1');

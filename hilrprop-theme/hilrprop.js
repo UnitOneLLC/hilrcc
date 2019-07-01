@@ -685,6 +685,8 @@ var HILRCC = {
     					currentSlot = slot;
     					var headerDiv = document.createElement("div");
     					jQuery(headerDiv).addClass("hilr-glanceview-header");
+						slot = slot.replace(" AM", ", 10 AM–12 NOON");
+						slot = slot.replace(" PM", ", 1 PM–3 PM");
     					jQuery(headerDiv).text(slot);
     					item.before(headerDiv);
     				}
@@ -772,7 +774,8 @@ var HILRCC = {
     			var parent = cell.parent();
     			var roomReq = parent.children(".hilr-sched-room-req");
     			var schedInfo = parent.children(".hilr-sched-info");
-    			var tipText = roomReq[0].innerText + " " + schedInfo[0].innerText;
+				var collo = parent.children(".hilr-scheduling-collo");
+    			var tipText = roomReq[0].innerText + " " + schedInfo[0].innerText + " " + collo[0].innerText;
     			if (tipText.length > 1) {
 					cell.attr("title", " ");
 					cell.tooltip("option", "content", tipText);
@@ -840,6 +843,8 @@ var HILRCC = {
 					currentSlot = slot;
 					let slotDiv = jQuery(document.createElement("div"));
 					slotDiv.addClass("hilr-catview-slot-header");
+					slot = slot.replace("AM", "10am–12 noon");
+					slot = slot.replace("PM", "1pm–3pm");
 					slotDiv.text(slot);
 					item.before(slotDiv[0]);
 				}

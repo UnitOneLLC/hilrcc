@@ -51,7 +51,8 @@ header('Content-Disposition: attachment; filename="course_report.csv"');
 			["label"=>'SGL2 - prev led', "fid"=>HILRCC_FIELD_ID_SGL2_PREV],
 			["label"=>'slot', "fid"=>HILRCC_FIELD_ID_TIMESLOT, "map"=>$timeslot_map],
 			["label"=>'duration', "fid"=>HILRCC_FIELD_ID_DURATION],
-			["label"=>'room', "fid"=>HILRCC_FIELD_ID_ROOM]
+			["label"=>'room', "fid"=>HILRCC_FIELD_ID_ROOM],
+			["label"=>'cap', "fid"=>HILRCC_FIELD_ID_CLASS_SIZE]
 		];
 		
 		$response = "";

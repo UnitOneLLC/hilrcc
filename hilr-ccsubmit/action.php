@@ -6,7 +6,7 @@
 		Action for entry creation and update
 	*/
 	add_action( 'gform_entry_created', 'HILRCC_on_entry_created' );
-	function HILRCC_on_entry_created($entry, $form) {
+	function HILRCC_on_entry_created($entry) {
 		HILRCC_set_either_half_flag($entry);
 		/* disallow mark-up in rich text fields */
 		HILRCC_strip_tags($entry);
@@ -14,7 +14,7 @@
 	 	HILRCC_remove_empty_book_rows($entry);
 	}
 	add_action( 'gform_post_update_entry', 'HILRCC_on_entry_updated' );
-	function HILRCC_on_entry_updated( $entry, $form ) {
+	function HILRCC_on_entry_updated( $entry) {
 		/* don't allow empty rows in the Books list */
 	 	HILRCC_remove_empty_book_rows($entry);
 	}

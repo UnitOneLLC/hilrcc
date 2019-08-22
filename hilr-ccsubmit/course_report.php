@@ -8,15 +8,18 @@ header('Content-Disposition: attachment; filename="course_report.csv"');
 	 */
 	function HILRCC_generate_course_report()
 	{
-		$timeslot_map = array("",
-					  "Monday AM",
-					  "Monday PM",
-					  "Tuesday AM",
-					  "Tuesday PM",
-					  "Wednesday AM",
-					  "Wednesday PM",
-					  "Thursday AM",
-					  "Thursday PM");
+		$day_map = array("",
+					  "Monday",
+					  "Monday",
+					  "Tuesday",
+					  "Tuesday",
+					  "Wednesday",
+					  "Wednesday",
+					  "Thursday",
+					  "Thursday");
+		$time_map = array("",
+			"10:00", "1:00","10:00", "1:00","10:00", "1:00","10:00", "1:00"
+		);
 					
 		$queries = array();
 		parse_str($_SERVER['QUERY_STRING'], $queries);
@@ -49,7 +52,8 @@ header('Content-Disposition: attachment; filename="course_report.csv"');
 			["label"=>'SGL2 - LAST', "fid"=>HILRCC_FIELD_ID_SGL2_LAST],
 			["label"=>'SGL2 EMAIL', "fid"=>HILRCC_FIELD_ID_SGL2_EMAIL],
 			["label"=>'SGL2 - prev led', "fid"=>HILRCC_FIELD_ID_SGL2_PREV],
-			["label"=>'slot', "fid"=>HILRCC_FIELD_ID_TIMESLOT, "map"=>$timeslot_map],
+			["label"=>'day', "fid"=>HILRCC_FIELD_ID_TIMESLOT, "map"=>$day_map],
+			["label"=>'time', "fid"=>HILRCC_FIELD_ID_TIMESLOT, "map"=>$time_map],
 			["label"=>'duration', "fid"=>HILRCC_FIELD_ID_DURATION],
 			["label"=>'room', "fid"=>HILRCC_FIELD_ID_ROOM],
 			["label"=>'cap', "fid"=>HILRCC_FIELD_ID_CLASS_SIZE]

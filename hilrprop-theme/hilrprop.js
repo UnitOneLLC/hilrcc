@@ -843,8 +843,8 @@ var HILRCC = {
 					currentSlot = slot;
 					let slotDiv = jQuery(document.createElement("div"));
 					slotDiv.addClass("hilr-catview-slot-header");
-					slot = slot.replace("AM", "10am–12 noon");
-					slot = slot.replace("PM", "1pm–3pm");
+					slot = slot.replace("AM", "10 am–12 noon");
+					slot = slot.replace("PM", "1 pm–3pm");
 					slotDiv.text(slot);
 					item.before(slotDiv[0]);
 				}

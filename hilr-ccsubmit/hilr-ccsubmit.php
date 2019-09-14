@@ -11,7 +11,7 @@
 	Copyright 2019, Harvard Institute for Learning in Retirement
 */
 
-define('HILRCC_BUILD', '2.1.0');
+define('HILRCC_BUILD', '2.1.1');
 #ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 #
@@ -37,6 +37,7 @@ define('HILRCC_FIELD_ID_SGL1_BIO', '18');
 define('HILRCC_FIELD_ID_SGL2_BIO', '19');
 define('HILRCC_FIELD_ID_CLASS_SIZE', '27');
 define('HILRCC_FIELD_ID_THANK_YOU', '44');
+define('HILRCC_FIELD_ID_SPONSOR', '35');
 define('HILRCC_FIELD_ID_DISCUSSION', '36');
 define('HILRCC_FIELD_ID_STATUS', '37');
 define('HILRCC_FIELD_ID_CHOICE_1', '38');

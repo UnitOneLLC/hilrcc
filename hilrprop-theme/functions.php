@@ -155,6 +155,28 @@ function filter_submit_label_workflow_detail( $text ) {
 
 }
 
+/* for the sponsor field on the form, populate the dropdown only with users who have both
+   the member role and the cc_sponsor role
+*/
+add_filter( 'gravityflow_user_field', 'filter_sponsor_field', 10, 3 );
+function filter_sponsor_field($users, $form_id, $field) {
+	if ($field['id'] == HILRCC_FIELD_ID_SPONSOR) {
+		$users = array();
+		$all = get_users();
+		foreach ($all as $user) {
+			if ( in_array( 'cc_member', (array) $user->roles ) &&
+			     in_array( 'cc_sponsor', (array) $user->roles )) {
+				$elem = array(
+					'value' => $user->ID,
+					'text'  => $user->display_name
+				);
+				
+				array_push($users, $elem);
+			}
+		}
+	}
+	return $users;
+}
 
 /* login page customization */
 function my_login_logo()

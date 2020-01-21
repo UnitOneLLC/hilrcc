@@ -263,4 +263,15 @@
 		return "<script>location.replace('" . $back_link . "')</script>";
 	}
 
+	/*
+	 * Gravity Forms 2.4.15 emits a lot of superflous notifications about email that this filter suppresses.
+	 * See https://docs.gravityforms.com/gform_notification_note/
+	 */
+	add_filter( 'gform_notification_note', function ( $note_args, $entry_id, $result, $notification ) {
+		if ( ! empty( $notification['workflow_notification_type'] ) && $result ) {
+			$note_args = array();
+		}
+		return $note_args;
+	}, 10, 4 );
+
 ?>

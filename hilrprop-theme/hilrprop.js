@@ -159,7 +159,7 @@ var HILRCC = {
 			jQuery(resetBtn).click(HILRCC.confirmClearForm);
 		}
 		
-		/* hide the delayed start if target semester is Fall */
+/* hide the delayed start if target semester is Fall — NO LONGER APPLICABLE
 		if (HILRCC.getCurrentSemester().indexOf("Fall") == 0) {
 			var idclass = ".gchoice_" + HILRCC.stringTable.formId + "_3_1";
 			var delayStartOption = jQuery(".hilr-duration " + idclass);
@@ -167,6 +167,7 @@ var HILRCC = {
 				delayStartOption.hide();
 			}
 		}
+*/		
 		
 		/* initialize listeners for schedule choice radio buttons */
 		/**** DISABLING THIS CODE

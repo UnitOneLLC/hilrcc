@@ -60,14 +60,14 @@
 	{
 		$result = array();
 		$workload = rgpost('input_' . HILRCC_FIELD_ID_WORKLOAD);
-		$is_match = preg_match("/[0-4]/", $workload, $matches);
+		$is_match = preg_match("/[1-4]/", $workload, $matches);
 		if ($is_match and ($matches[0] == trim($workload))) {
 			$result['is_valid'] = true;
 			$result['message'] = '';
 		}
 		else {
 			$result['is_valid'] = false;
-			$result['message'] = 'Please enter a whole number of hours between 0 and 4.';
+			$result['message'] = 'Please enter a whole number of hours between 1 and 4.';
 		}
 		return $result;
 	}

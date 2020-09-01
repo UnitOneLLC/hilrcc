@@ -17,6 +17,8 @@ var HILRCC = {
 	COLSPAN_STEM : "hilr-colspan-",
 	KEEP_TH : "hilr-keep-th",
 	
+	CLASS_CAPS: ["12", "16", "20", "24"],
+	
 	formIsDirty: false, /* flag used by unload handler */
 	loadTime: new Date(),
 	
@@ -61,6 +63,8 @@ var HILRCC = {
 		HILRCC.fixWorkflowNoteLabel();
 		
 		HILRCC.removeHiddenFields();
+		
+		HILRCC.fixAllProposalsUrl();
 	  	
 	  	// disable autofill
 		jQuery("input").attr( 'autocomplete', 'new-password' );
@@ -128,8 +132,8 @@ var HILRCC = {
 		var rtes = jQuery('.hilr-hide-rte-tools');
 		rtes.each(function(div) {
 			div = jQuery(rtes[div]);
-			var ital = div.find('.mce-btn[aria-label="Italic"]');
-			var spec = div.find('.mce-btn[aria-label="Special character"]');
+			var ital = div.find('.mce-btn[aria-label^="Italic"]');
+			var spec = div.find('.mce-btn[aria-label^="Special character"]');
 			if (ital && spec) {
 				spec.detach().appendTo(ital.parent());
 			}
@@ -729,7 +733,7 @@ var HILRCC = {
     		jQuery("td." + HILRCC.stringTable.size_cell_class).dblclick(
     		  	function() {
 					var props = {
-						options: ["12", "18", "20", "22", "25"],
+						options: HILRCC.CLASS_CAPS,
 						updateAjaxAction: "update_class_size"
 					};
     				(new InplaceCellEditor()).create(this, props);
@@ -957,6 +961,13 @@ var HILRCC = {
 			});
 		}
 		
+	},
+	
+	fixAllProposalsUrl: function() {
+		var anch = jQuery(jQuery("#menu-item-598").children("a")[0]);
+		var url = anch.attr("href");
+		url += "?filter_" + HILRCC.stringTable.semester_field_id + "=" + encodeURIComponent(HILRCC.stringTable.current_semester) + "&mode=all"
+		anch.attr("href", url);
 	},
     
     /*

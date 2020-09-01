@@ -65,6 +65,7 @@ function HILRCC_enqueue_styles()
 		'sgl_1_bio_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_SGL1_BIO,
 		'sgl_2_bio_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_SGL2_BIO,
 		'last_mod_class' => 'gv-field-' . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_LAST_MOD_TIME,
+		'semester_field_id' => HILRCC_FIELD_ID_SEMESTER,
 		'room_list' => HILRCC_ROOMS,
 		'role_context' => $role_context,
 		'current_semester' => get_option('current_semester'),
@@ -87,13 +88,14 @@ function HILRCC_redirect_page()
 	 * redirected to the same URL with a query string appended to 
 	 * limit the search to the current semester.
 	 */
-	if (is_page('all-proposals')) {
+	if (is_page('all-proposals') && (strpos($_SERVER['REQUEST_URI'], '/administrative/') != false)) {
 		$query = parse_url($_SERVER['REQUEST_URI'])['query'];
 		if (empty($query) && (strpos($_SERVER['REQUEST_URI'], '/entry/') === false)) { /* avoid single-entry case */
 			$semester = get_option('current_semester');
 			if (!empty($semester)) {
 				$new_url = $_SERVER['REQUEST_URI'] . '?filter_' . HILRCC_FIELD_ID_SEMESTER . '=' . urlencode($semester) . '&mode=all';
 				wp_redirect($new_url);
+				exit;
 			}
 		}
 	}

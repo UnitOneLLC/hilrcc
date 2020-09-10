@@ -262,6 +262,11 @@
 	function HILRCC_filter_edit_success($entry_updated_message , $view_id, $entry, $back_link) {
 		return "<script>location.replace('" . $back_link . "')</script>";
 	}
+	
+	add_filter('gform_savecontinue_expired_message', 'HILRCC_gform_savecontinue_expired_message', 10, 4);
+	function HILRCC_gform_savecontinue_expired_message($arg1, $arg2) {
+		return 'Your Save and Continue link was already used, is invalid for some reason, or it has expired. You may submit a fresh proposal below. If you believe this happened in error, please contact the Curriculum Committee.';
+	}
 
 	/*
 	 * Gravity Forms 2.4.15 emits a lot of superflous notifications about email that this filter suppresses.

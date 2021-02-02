@@ -26,7 +26,12 @@ function HILRCC_fetch_sched_grid()
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_SEMESTER, 'operator'=>'is', 'value'=>$semester);
 	$search['field_filters'][] = array('key'=>HILRCC_FIELD_ID_STATUS, 'operator'=>'is', 'value'=>'Approved');
 	
-	$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
+	try {
+		$entries = GFAPI::get_entries(0, $search, null, array( 'offset' => 0, 'page_size' => 1000));
+	}
+	catch (Exception $e) {
+		return 'get_entries, exception: ' . $e->getMessage() . "\n";
+	}
 	$result = array();
 	
 	foreach ($entries as &$entry) {

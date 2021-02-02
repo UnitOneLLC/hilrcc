@@ -34,26 +34,23 @@
 			echo $entries.get_error_message($entries.get_error_code());
 		}
 		else {
-		    usort($entries, catalog_comparator);
-			$number = $startNumber;
-			$roundedFor1stHalf = false;
-			$roundedFor2ndHalf = false;
+		    usort($entries, 'catalog_comparator');
+			
+			$number = HILRCC_COURSENO_FULLSEM_START;
+			$sawFirstHalf = false;
+			$sawSecondHalf = false;
 			
 			foreach ($entries as &$entry) {
-				if (!$roundedFor1stHalf) {
-					$term = $entry[HILRCC_FIELD_ID_DURATION];
-					if ($term == "First Half") {
-						$roundedFor1stHalf = true;
-						$number = (intval($number/10) + 1) * 10;
-					}
+				$term = $entry[HILRCC_FIELD_ID_DURATION];
+				if (($term == "First Half") && !$sawFirstHalf) {
+					$sawFirstHalf = true;
+					$number = HILRCC_COURSENO_1STHALF_START;
 				}
-				if (!$roundedFor2ndHalf) {
-					$term = $entry[HILRCC_FIELD_ID_DURATION];
-					if ($term == "Second Half") {
-						$roundedFor2ndHalf = true;
-						$number = (intval($number/10) + 1) * 10;
-					}
+				else if (($term == "Second Half") && !$sawSecondHalf) {
+					$sawSecondHalf = true;
+					$number = HILRCC_COURSENO_2NDHALF_START;
 				}
+				
 				GFAPI::update_entry_field($entry['id'], HILRCC_FIELD_ID_COURSE_NO, $number);
 				$number = $number + 1;
 			}

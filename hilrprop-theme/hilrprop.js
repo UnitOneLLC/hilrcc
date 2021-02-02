@@ -306,7 +306,6 @@ var HILRCC = {
     
     setupAdminPage: function() {
     	jQuery(window).load(function() {
-    		jQuery("#hilr-start-number").val(HILRCC.stringTable.starting_course_number);
 	    	jQuery("#hilr-clear-numbers-btn").on('click', HILRCC.clearCourseNumbers);
 			jQuery("#hilr-assign-numbers-btn").on('click',HILRCC.assignCourseNumbers);
 		});
@@ -780,7 +779,7 @@ var HILRCC = {
     			var schedInfo = parent.children(".hilr-sched-info");
 				var collo = parent.children(".hilr-scheduling-collo");
     			var tipText = roomReq[0].innerText + " " + schedInfo[0].innerText + " " + collo[0].innerText;
-    			if (tipText.length > 1) {
+    			if (tipText.trim().length > 1) {
 					cell.attr("title", " ");
 					cell.tooltip("option", "content", tipText);
     			}

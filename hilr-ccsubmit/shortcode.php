@@ -100,7 +100,7 @@
 	/* shortcode to force renumbering of courses */
 	add_shortcode('HILRCC_Renumber_Courses', 'HILRCC_renumber_courses');
 	function HILRCC_renumber_courses() {
-		$startNumber = intval(get_option("starting_course_number"));
+		$startNumber = HILRCC_COURSENO_FULLSEM_START;
 		$semester = get_option("current_semester");
 
 		do_renumber_courses($startNumber, $semester);

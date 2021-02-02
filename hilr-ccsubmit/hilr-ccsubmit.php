@@ -11,7 +11,7 @@
 	Copyright 2019, Harvard Institute for Learning in Retirement
 */
 
-define('HILRCC_BUILD', '2.1.5');
+define('HILRCC_BUILD', '2.1.7');
 #ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 #
@@ -107,6 +107,11 @@ define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM,305,307');
 
 # for timestamps on entries
 define('HILRCC_DEFAULT_TIMEZONE', 'America/New_York');
+
+# course numbering
+define('HILRCC_COURSENO_FULLSEM_START', 300);
+define('HILRCC_COURSENO_1STHALF_START', 100);
+define('HILRCC_COURSENO_2NDHALF_START', 200);
 
 include_once plugin_dir_path(__FILE__) . 'bizlogic.php';
 include_once plugin_dir_path(__FILE__) . 'shortcode.php';

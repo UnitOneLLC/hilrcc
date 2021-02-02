@@ -61,13 +61,13 @@
 		$result = array();
 		$workload = rgpost('input_' . HILRCC_FIELD_ID_WORKLOAD);
 		$is_match = preg_match("/[1-4]/", $workload, $matches);
-		if ($is_match and ($matches[0] == trim($workload))) {
+		if ($is_match and ($matches[0] === trim($workload))) {
 			$result['is_valid'] = true;
 			$result['message'] = '';
 		}
 		else {
 			$result['is_valid'] = false;
-			$result['message'] = 'Please enter a whole number of hours between 1 and 4.';
+			$result['message'] = 'Please enter a whole number of hours between 1 and 4, with no decimal point.';
 		}
 		return $result;
 	}
@@ -156,7 +156,7 @@
 		
 	    if ($view_id == HILRCC_VIEW_ID_CATALOG) {
 	        try {
-	            usort($entries, catalog_comparator);
+	            usort($entries, 'catalog_comparator');
 	            $coll = new \GV\Entry_Collection();
 	            foreach($entries as $entry) {
 	            	$coll->add($entry);
@@ -169,7 +169,7 @@
 	    }
 	    else if ($view_id == HILRCC_VIEW_ID_GLANCE) {
 	        try {
-	            usort($entries, glance_comparator);
+	            usort($entries, 'glance_comparator');
 	            $coll = new \GV\Entry_Collection();
 	            foreach($entries as $entry) {
 	            	$coll->add($entry);

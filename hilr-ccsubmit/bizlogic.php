@@ -44,19 +44,38 @@
 	/* comparison function for glance view sort */
 	function glance_comparator($a_entry, $b_entry)
 	{
+		global $duration_map;
+		
 		$a_slot = $a_entry[HILRCC_FIELD_ID_TIMESLOT];
 		$b_slot = $b_entry[HILRCC_FIELD_ID_TIMESLOT];
-		$a_course_no = $a_entry[HILRCC_FIELD_ID_COURSE_NO];
-		$b_course_no = $b_entry[HILRCC_FIELD_ID_COURSE_NO];
-
+		$a_duration = $duration_map[$a_entry[HILRCC_FIELD_ID_DURATION]];
+		$b_duration = $duration_map[$b_entry[HILRCC_FIELD_ID_DURATION]];
+		
 		if ($a_slot < $b_slot) {
 			return -1;
-		} elseif ($a_slot > $b_slot) {
+		} 
+		elseif ($a_slot > $b_slot) {
 			return 1;
-		}  else {
-			$result = strcmp($a_course_no, $b_course_no);
-			return $result;
 		}
+		elseif ($a_duration < $b_duration) 
+		{
+			return -1;
+		} 
+		elseif ($a_duration > $b_duration) 
+		{
+			return 1;
+		}
+		else {
+			$a_title = $a_entry[HILRCC_FIELD_ID_TITLE];
+			$b_title = $b_entry[HILRCC_FIELD_ID_TITLE];
+			if ($a_title < $b_title) {
+				return -1;
+			} elseif ($a_title > $b_title) {
+				return 1;
+			}
+		}
+		
+		return 0; // shouldn't happen!
 	}
 	
 	function edition_sort_comparator($a_book, $b_book) {

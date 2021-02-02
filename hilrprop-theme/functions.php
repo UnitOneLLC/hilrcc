@@ -68,8 +68,7 @@ function HILRCC_enqueue_styles()
 		'semester_field_id' => HILRCC_FIELD_ID_SEMESTER,
 		'room_list' => HILRCC_ROOMS,
 		'role_context' => $role_context,
-		'current_semester' => get_option('current_semester'),
-		'starting_course_number' => get_option('starting_course_number')
+		'current_semester' => get_option('current_semester')
 	));
 }
 add_action('wp_enqueue_scripts', 'HILRCC_enqueue_styles');

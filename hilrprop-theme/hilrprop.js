@@ -273,43 +273,33 @@ var HILRCC = {
 	 * view for adding comments on a proposal
 	 */
     setupForCommentInput: function() {
-    	jQuery(window).load(function() {
-			 var editLinkRow = jQuery(".hilr-edit-link");
-			 if (editLinkRow.length) {
-			 	editLinkRow.removeClass("gv-field-2-edit_link");
-				var markup=
-					"<th>Add a comment</th>" +
-					"<td colspan='3'>" +
-					"<textarea id='hilr_comment_input' rows='5' cols='80' class='hilr-comment-input'></textarea>" +
-					"<button id='hilr_add_comment_btn' class='hilr-add-comment-button'>Submit</button>" +
-					"<button id='hilr_discard_comment_btn' class='hilr-add-comment-button'>Discard and Go Back</button>" +
-					"</td>";
-		 
-				editLinkRow.html(markup);
-				jQuery("#hilr_add_comment_btn").click(HILRCC.handle_add_comment);
-				jQuery("#hilr_discard_comment_btn").click(HILRCC.handle_discard_comment);
-			 }
-			 /*
-			 * This code is to contain a discussion thread in a scrolling div
-			 * so that it doesn't take up too much vertical real-estate.
-			 */
-			var discussionRow = jQuery(".hilr-view-discussion");
-			if (discussionRow.length) {
-				var tcell = jQuery(discussionRow).children("td")[0];
-				var contents = jQuery(tcell).html();
-				contents = "<div class='hilr-discussion-scroller'>" + contents + "</div>";
-				jQuery(tcell).html(contents);
-			}
-		});
-
+		var editLinkRow = jQuery(".hilr-edit-link");
+		if (editLinkRow.length) {
+			editLinkRow.removeClass("gv-field-2-edit_link");
+			var markup=
+				"<th>Add a comment</th>" +
+				"<td colspan='3'>" +
+				"<textarea id='hilr_comment_input' rows='5' cols='80' class='hilr-comment-input'></textarea>" +
+				"<button id='hilr_add_comment_btn' class='hilr-add-comment-button'>Submit</button>" +
+				"<button id='hilr_discard_comment_btn' class='hilr-add-comment-button'>Discard and Go Back</button>" +
+				"</td>";
+	
+			editLinkRow.html(markup);
+			jQuery("#hilr_add_comment_btn").click(HILRCC.handle_add_comment);
+			jQuery("#hilr_discard_comment_btn").click(HILRCC.handle_discard_comment);
+		}
+		/*
+		* This code is to contain a discussion thread in a scrolling div
+		* so that it doesn't take up too much vertical real-estate.
+		*/
+		var discussionRow = jQuery(".hilr-view-discussion");
+		if (discussionRow.length) {
+			var tcell = jQuery(discussionRow).children("td")[0];
+			var contents = jQuery(tcell).html();
+			contents = "<div class='hilr-discussion-scroller'>" + contents + "</div>";
+			jQuery(tcell).html(contents);
+		}
 	},
-    
-    setupAdminPage: function() {
-    	jQuery(window).load(function() {
-	    	jQuery("#hilr-clear-numbers-btn").on('click', HILRCC.clearCourseNumbers);
-			jQuery("#hilr-assign-numbers-btn").on('click',HILRCC.assignCourseNumbers);
-		});
-    },
     
     fixAdminBox: function() {
     	var adminBox = jQuery("#postbox-container-1 div.postbox").not("#gravityflow-status-box-container");

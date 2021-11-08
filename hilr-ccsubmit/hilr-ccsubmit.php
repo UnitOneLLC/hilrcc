@@ -11,7 +11,7 @@
 	Copyright 2019, Harvard Institute for Learning in Retirement
 */
 
-define('HILRCC_BUILD', '2.1.8');
+define('HILRCC_BUILD', '2.1.9');
 #ID of the Gravity Forms form for course proposals
 define('HILRCC_PROPOSAL_FORM_ID', '2');
 #
@@ -103,7 +103,7 @@ define('HILRCC_TAG_BOLD_OPEN', '<strong>');
 define('HILRCC_TAG_BOLD_CLOSE', '</strong>');
 #
 # Room List - the room list is comma-separated. This is used on the scheduling page.
-define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM,305,307');
+define('HILRCC_ROOMS', 'G20,118,120,204,205,206,CLQM,305,307,Zoom');
 
 # for timestamps on entries
 define('HILRCC_DEFAULT_TIMEZONE', 'America/New_York');

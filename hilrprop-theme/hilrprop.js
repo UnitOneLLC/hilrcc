@@ -1122,11 +1122,15 @@ var HILRCC = {
 		for (key in gridData) {
 			var cellData = gridData[key];
 			var cell = jQuery("#" + key);
+
 			if (key.indexOf("Unassigned") !== -1) {
 				cell.text("\u2753"); // question mark in Unassigned row
 			}
+			else if (key.indexOf("Zoom") !== -1) {
+					cell.text("" + cellData.length); // show count if Zoom room
+			}
 			else if (cellData.length > 1) {
-				cell.text("\u2757"); // exclamation point if multiple
+					cell.text("\u2757"); // exclamation point if multiple
 			}
 			else {
 				cell.text("\u2714"); // otherwise checkmark

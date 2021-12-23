@@ -8,8 +8,13 @@ function setup_HILR_settings_page(){
 	            settings_fields("hilr-section");
 	            do_settings_sections("theme-options");      
 	            submit_button(); 
-	        ?>          
-	    </form>
+	        ?>
+		</form>
+		<form method="post" action="uploadhelp.php" enctype="multipart/form-data">
+			<h3>Upload the Canvas help file</h3>
+			<input type="file" id="canhelpfile" accept="text/*"/>
+			<input type="submit"/>
+		</form>
 		</div>
 	<?php
 }

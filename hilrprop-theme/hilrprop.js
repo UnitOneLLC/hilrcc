@@ -1073,11 +1073,12 @@ var HILRCC = {
 		    bUsesImgs = false;
 			cells = jQuery("#sched_grid_1 td").add("#sched_grid_2 td").not(".hilr-room-name"); /* Firefox */
 		 }
+		 cells = cells.add("td[id*=Zoom]");
 		 cells.attr('title', " ");
 		 cells.tooltip();
 		 for (var i=0; i < cells.length; ++i) {
 		 	var cell = cells[i];
-		 	var id = bUsesImgs ? cell.parentElement.id : cell.id;
+		 	var id = (bUsesImgs && (cell.id.indexOf("Zoom") == -1)) ? cell.parentElement.id : cell.id;
 			if (HILRCC.lastGridDataSet) {
 				var courses = HILRCC.lastGridDataSet[id];
 				if (courses && courses.length) {

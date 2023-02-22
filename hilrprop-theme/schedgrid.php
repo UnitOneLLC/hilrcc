@@ -102,7 +102,7 @@ function HILRCC_emit_sched_grid()
 {
 	$rooms = preg_split('/,/', 'Unassigned,' . HILRCC_ROOMS);    
 
-?>
+	$output=<<<OUT1
 
 <div id="sched_grid_0">
   <ul class="hilrcc-no-print">
@@ -116,22 +116,22 @@ function HILRCC_emit_sched_grid()
 		<tr>
 			<th></th><th>Mon AM</th><th>Mon PM</th><th>Tue AM</th><th>Tue PM</th><th>Wed AM</th><th>Wed PM</th><th>Thu AM</th><th>Thu PM</th>
 		</tr>
-<?php		
+OUT1;
 
 	foreach($rooms as $room) {
-		echo "<tr>";
-		echo "<td class='hilr-room-name'>$room</td>";
-		echo "<td id='MonAM-1-$room'></td>";
-		echo "<td id='MonPM-1-$room'></td>";
-		echo "<td id='TueAM-1-$room'></td>";
-		echo "<td id='TuePM-1-$room'></td>";
-		echo "<td id='WedAM-1-$room'></td>";
-		echo "<td id='WedPM-1-$room'></td>";
-		echo "<td id='ThuAM-1-$room'></td>";
-		echo "<td id='ThuPM-1-$room'></td>";
-		echo "</tr>";
+		$output .= "<tr>";
+		$output .= "<td class='hilr-room-name'>$room</td>";
+		$output .= "<td id='MonAM-1-$room'></td>";
+		$output .= "<td id='MonPM-1-$room'></td>";
+		$output .= "<td id='TueAM-1-$room'></td>";
+		$output .= "<td id='TuePM-1-$room'></td>";
+		$output .= "<td id='WedAM-1-$room'></td>";
+		$output .= "<td id='WedPM-1-$room'></td>";
+		$output .= "<td id='ThuAM-1-$room'></td>";
+		$output .= "<td id='ThuPM-1-$room'></td>";
+		$output .= "</tr>";
 	}
-?>		
+	$output .= <<<OUT2
 	</tbody>
 </table>
 <h3 class="print-only-block" style="page-break-before: always;">Second Half</h3>
@@ -140,25 +140,26 @@ function HILRCC_emit_sched_grid()
 		<tr>
 			<th></th><th>Mon AM</th><th>Mon PM</th><th>Tue AM</th><th>Tue PM</th><th>Wed AM</th><th>Wed PM</th><th>Thu AM</th><th>Thu PM</th>
 		</tr>
-<?php		
+OUT2;		
 
 	foreach($rooms as $room) {
-		echo "<tr>";
-		echo "<td class='hilr-room-name'>$room</td>";
-		echo "<td id='MonAM-2-$room'></td>";
-		echo "<td id='MonPM-2-$room'></td>";
-		echo "<td id='TueAM-2-$room'></td>";
-		echo "<td id='TuePM-2-$room'></td>";
-		echo "<td id='WedAM-2-$room'></td>";
-		echo "<td id='WedPM-2-$room'></td>";
-		echo "<td id='ThuAM-2-$room'></td>";
-		echo "<td id='ThuPM-2-$room'></td>";
-		echo "</tr>";
+		$output .= "<tr>";
+		$output .= "<td class='hilr-room-name'>$room</td>";
+		$output .= "<td id='MonAM-2-$room'></td>";
+		$output .= "<td id='MonPM-2-$room'></td>";
+		$output .= "<td id='TueAM-2-$room'></td>";
+		$output .= "<td id='TuePM-2-$room'></td>";
+		$output .= "<td id='WedAM-2-$room'></td>";
+		$output .= "<td id='WedPM-2-$room'></td>";
+		$output .= "<td id='ThuAM-2-$room'></td>";
+		$output .= "<td id='ThuPM-2-$room'></td>";
+		$output .= "</tr>";
 	}
-?>		
+	$output .= <<<OUT3
 	</tbody>
 </table>
 </div>
-<?php
+OUT3;
+	return $output;
 }
 ?>

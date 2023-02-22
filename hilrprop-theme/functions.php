@@ -37,6 +37,8 @@ function HILRCC_enqueue_styles()
     wp_register_script('hilrpropjs', get_stylesheet_directory_uri() . '/hilrprop.js', array(
         'jquery'
     ), HILRCC_BUILD);
+	
+	wp_enqueue_style('jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css');
     wp_enqueue_script('hilrpropjs');
 
 	if (!is_user_logged_in())

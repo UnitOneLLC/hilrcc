@@ -43,8 +43,8 @@ function HILRCC_emit_drafts_table()
 <?php
 	foreach($drafts as &$draft) {
 	  $uuid = $draft['uuid'];
-    $protocol = empty($_SERVER[HTTPS]) ? "http://" : "https://";
-	  $link_url = $protocol . $_SERVER[HTTP_HOST] . "/?gf_token=" . $uuid;
+    $protocol = empty($_SERVER['HTTPS']) ? "http://" : "https://";
+	  $link_url = $protocol . $_SERVER['HTTP_HOST'] . "/?gf_token=" . $uuid;
 	  $email = $draft['email'];
 	  $created = $draft['date_created'];
 ?>

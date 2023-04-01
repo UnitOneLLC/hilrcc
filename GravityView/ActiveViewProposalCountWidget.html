@@ -1,0 +1,21 @@
+<div>
+Proposal count: <span id="__count"></span><br>
+Full Term: <span id="__fullTerm"></span><br>
+First Half: <span id="__1stHalf"></span><br>
+Second Half: <span id="__2ndHalf"></span><br>
+Either Half: <span id="__eitherHalf"></span><br>
+</div>
+<script>
+var v__text = jQuery(jQuery(".gv-table-view")[0]).text();
+var v__count = jQuery("tbody [data-label=ID").length; 
+var v__fullTerm = v__text.match(/Full Term/g); v__fullTerm = v__fullTerm ? v__fullTerm.length : 0;
+var v__1stHalf = v__text.match(/First Half/g); v__1stHalf= v__1stHalf ? v__1stHalf.length : 0;
+var v__eitherHalf = v__text.match(/Either First or Second Half/g); v__eitherHalf = v__eitherHalf ? v__eitherHalf.length : 0;
+var v__2ndHalf = v__text.match(/Second Half/g); v__2ndHalf = v__2ndHalf ? v__2ndHalf.length - v__eitherHalf : 0;
+
+jQuery("#__count").text(v__count);
+jQuery("#__fullTerm").text(v__fullTerm);
+jQuery("#__1stHalf").text(v__1stHalf);
+jQuery("#__2ndHalf").text(v__2ndHalf);
+jQuery("#__eitherHalf").text(v__eitherHalf);
+</script>

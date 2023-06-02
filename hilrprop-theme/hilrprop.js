@@ -4,7 +4,6 @@
  *
  * Client-side code for HILR Course proposal app
  */
- 
 var HILRCC = {
 	/* the string table is set up in functions.php -- see HILRCC_enqueue_styles */
 	stringTable: HILRCC_stringTable,
@@ -65,6 +64,8 @@ var HILRCC = {
 		HILRCC.removeHiddenFields();
 		
 		HILRCC.fixAllProposalsUrl();
+		
+		HILRCC.addCancelButton();
 	  	
 	  	// disable autofill
 		jQuery("input").attr( 'autocomplete', 'new-password' );
@@ -987,6 +988,33 @@ var HILRCC = {
 		jQuery("#" + HILRCC.stringTable.flexhalf_id).hide();
 		
     },
+	
+	/* For workflow entry pages, add a cancel button that returns the user to the inbox view */
+	addCancelButton: function() {
+		var buttonContainer = jQuery(".gravityflow-action-buttons");
+		if (buttonContainer.length > 0) {
+			buttonContainer = buttonContainer[0]
+		}
+		else return;
+		
+		var lastButton = jQuery(buttonContainer).find("button:last");
+		if (lastButton.length == 0) {
+			lastButton = jQuery(buttonContainer).find("input[type='submit']:last");
+		}
+		if (lastButton.length == 0)
+			return;
+		
+		var clone = lastButton.clone();
+		
+		jQuery(buttonContainer).append(clone);
+		clone.val("Cancel");
+		clone.attr("disabled", false);
+		clone.attr('type', "button");
+		clone.attr('name', 'cancel')
+		clone.attr('onclick', '');
+		clone.text('Cancel');
+		clone.click(()=>{history.back(); setTimeout(()=>{location.assign("/index.php/inbox-view/")}, 1000)});
+	},
     
     /*
      * Control the setting of a hidden input that determines if the Notification of Changes step

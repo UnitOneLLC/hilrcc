@@ -505,6 +505,7 @@ a.gform_save_link,
 .gravityflow-action-buttons input[type=submit].button,
 .gravityflow-action-buttons input[type=button].button,
 .gravityflow-action-buttons button[type=submit].button,
+.gravityflow-action-buttons button[type=button].button,
 .hilr-add-comment-button,
 .hilr-admin-btn,
 .gv-search-button
@@ -552,6 +553,7 @@ li>.gfield_label {
 }
 
 .postbox-container .gravityflow-action-buttons button[type=submit],
+.postbox-container .gravityflow-action-buttons button[type=button],
 .postbox-container .gravityflow-action-buttons input[type=submit] {
 	padding-top: 0;
 	padding-right: 10px;

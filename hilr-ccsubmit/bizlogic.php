@@ -272,7 +272,7 @@
 	{
 		$entry = GFAPI::get_entry($entry_id);
 		$val = "";
-		$choices = array(HILRCC_FIELD_ID_CHOICE_1, HILRCC_FIELD_ID_CHOICE_2, HILRCC_FIELD_ID_CHOICE_3);
+		$choices = array(HILRCC_FIELD_ID_CHOICE_1, HILRCC_FIELD_ID_CHOICE_2, HILRCC_FIELD_ID_CHOICE_3, HILRCC_FIELD_ID_CHOICE_4);
 		$i = 0;
 		foreach ($choices as $id) {
 			$i += 1;
@@ -285,7 +285,7 @@
 				else {
 					$val .= 'PM';
 				}
-				if ($i !== 3) {
+				if ($i !== count($choices)) {
 					$val .= '-';
 				}
 			}

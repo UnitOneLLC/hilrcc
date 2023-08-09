@@ -310,6 +310,7 @@ var HILRCC = {
     		return;
 
 		var warningUrl = HILRCC.stringTable.childThemeRootURL + "/adminwarning.html";
+		warningUrl = addNoCacheQueryParam(warningUrl);
   		var markUp = "<div class='hilr-admin-postbox-wrapper'>" +
 						"<button id='hilr-toggle-admin-btn'>Workflow Controls</button>" +
 					 "</div>" +
@@ -1261,6 +1262,19 @@ function InplaceCellEditor() {
 			jQuery(this.tcell).html(this.saveText);
 		}
 	};
+}
+
+function addNoCacheQueryParam(u) {
+	// Generate eight pseudo-random numbers
+	const pseudoRandomNumbers = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+	
+	// Check if the URL already has query parameters
+	const separator = u.includes('?') ? '&' : '?';
+	
+	// Construct the new URL with the "nocache" query parameter
+	const newUrl = `${u}${separator}nocache=${pseudoRandomNumbers}`;
+	
+	return newUrl;
 }
 
 /*

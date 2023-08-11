@@ -960,6 +960,13 @@ var HILRCC = {
 		var url = anch.attr("href");
 		url += "?filter_" + HILRCC.stringTable.semester_field_id + "=" + encodeURIComponent(HILRCC.stringTable.current_semester) + "&mode=all"
 		anch.attr("href", url);
+		
+		if (location.href.indexOf("adminstrative/all-proposals/entry") !== -1) {
+			var gobackAnch = jQuery("p.gv-back-link a");
+			if (gobackAnch) {
+				gobackAnch.attr("href", "javascript:window.history.back()");
+			}
+		}
 	},
     
     /*

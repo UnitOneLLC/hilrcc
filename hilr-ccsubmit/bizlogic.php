@@ -4,7 +4,7 @@
 */
 	$duration_map = array(
 		"Full Term" => 1,
-		"Full Term Delayed Start" => 1,
+		"Full Term (10-week)" => 1,
 		"First Half" => 2,
 		"Second Half" => 3,
 		"Either First or Second Half" => 4

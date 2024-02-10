@@ -968,12 +968,36 @@ var HILRCC = {
 			}
 		}
 	},
-    
+
+	teamValueIsSet: function() {
+		var query = "input[name='" + HILRCC.stringTable.team_input + "']:checked";
+		return jQuery(query).length != 0;
+	},
+
     /*
-     * clone the submit button so that we can distinguish submit with/without
+	 * Check if the Team value is set. If not, set it based on the proposal id,
+	 * which is found in the URL
+	 *
+     * Clone the submit button so that we can distinguish submit with/without
      * notification for the "Modification by Sponsor" step.
      */
     modifyInboxEntry: function() {
+		if (!HILRCC.teamValueIsSet()) {
+			let queryParams = new URLSearchParams(window.location.search);
+			if (queryParams.has("lid")) {
+				var lid = queryParams.get("lid");
+				var proposalId = parseInt(lid);
+				var elem = null;
+				if ((proposalId % 2) == 1) { // Odd proposals are BLUE team
+					elem = jQuery("input[value='🔵']");					
+				}
+				else { // Even proposals are GREEN team
+					elem = jQuery("input[value='🟩']");
+				}
+				elem.prop("checked", true);
+			}
+		}
+
 		var workflowBox = jQuery("#gravityflow-status-box-container");
 		if (workflowBox.text().toLowerCase().indexOf("modification by sponsor") != -1) {
 			HILRCC.setSuppressNotification(false);

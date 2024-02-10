@@ -53,6 +53,7 @@ function HILRCC_enqueue_styles()
         'ajaxURL' => admin_url('admin-ajax.php'),
         'childThemeRootURL' => get_stylesheet_directory_uri(),
 		'suppress_input' => 'input_' . HILRCC_FIELD_ID_SUPPRESS_NOTIFY,
+		'team_input' => 'input_' . HILRCC_FIELD_ID_TEAM,
 		'sgl1_email_name' => 'input_' . HILRCC_FIELD_ID_SGL1_EMAIL,
 		'formId' => HILRCC_PROPOSAL_FORM_ID,
 		'slot_cell_class' => "gv-field-" . HILRCC_PROPOSAL_FORM_ID . "-" . HILRCC_FIELD_ID_TIMESLOT,
